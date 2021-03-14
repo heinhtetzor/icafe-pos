@@ -1,0 +1,13 @@
+Add to cart
+--needed data for db- table_id,menu_id,waiter_id,quantity
+--needed data for display- menu->name,price,quantity, total
+
+--check Tablestatus if table is free - status === 0
+--create new Order entry
+--bind orderMenus to newly created Order
+
+another scenario
+--if table is not free
+--get the orderId linked to that table
+--bind orderMenus to this old Order
+

@@ -1,0 +1,15 @@
+setup git and test deploy local/remote
+repair menu icon - done 90%
+implement order details page to track order  - done 80%
+implement kitchen display
+a little bit customised design
+add waiter_id in orders table - done 100%
+order CRUD for admin (incl view orders by date, view order_menus) - done 50%
+
+seeding data
+
+kitchen account crud
+kitchen account - username, password
+
+implement sockets.io
+

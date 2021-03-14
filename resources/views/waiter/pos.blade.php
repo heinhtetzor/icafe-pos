@@ -1,0 +1,582 @@
+@extends('layouts.client')
+@section('style')
+<style>
+    /* hide cart panel for mobile and small screens */
+    @media screen and (max-width: 600px) {
+        .cart-panel-container > #cart-panel {
+            display: none;
+        }
+        #cart-modal-button {
+            display: inline-block;
+        }       
+    }
+    @media screen and (min-width: 600px) {
+        #cart-modal-button {
+            display: none;
+        }
+        #counter {
+            display: none;
+        }
+    }
+    .row {
+        margin: 0 0px;
+        --panel-height: 80vh;
+    }
+    .menus-panel {
+        padding: 8px;
+        /* height: var(--panel-height); */
+        position: relative;
+        /* border: 1px solid #353434; */
+        border-radius: 10px;
+        overflow-y: scroll;
+    }
+    .menus-grid {        
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        grid-row-gap: 2rem;
+        grid-column-gap: 4px;
+        /* padding-bottom: 3rem; */
+    }
+    .menus-grid-item {
+        width: 100px;
+        height: 100px;
+        border: 1px solid #d3d2d2;
+        /* border-bottom: none; */
+        cursor: pointer;
+        position: relative;         
+        overflow: hidden;
+        transition: all 0.3s ease-in-out;
+    }
+    .menus-grid-item:hover, .menus-grid-item:active {
+        /* border: 3px solid green; */
+        transform: scale(0.9);
+    }
+    /* to prevent event to propagate DOWN */
+    .menus-grid-item * {
+        pointer-events: none;        
+    }
+    .caption {             
+        position: absolute;
+        bottom: 0;
+        /* right: 0; */
+        background-color: purple;
+        
+        color: white;       
+        white-space: nowrap;     
+        /* display: inline-block; */
+        /* display: block;
+        white-space: nowrap;
+        overflow: hidden;
+        border: 2px solid rgb(155, 155, 155);
+        border-top: none;
+        background-color: rgb(255, 236, 174);
+        text-overflow: ellipsis; */
+
+    }
+    .price {
+        position: absolute;
+        top: 0;
+        right: 0;
+        background-color: purple;
+        color: white;
+    }
+    .price::after {
+        content: ' ကျပ်';
+    }
+    .cart-panel {
+        border: 1px solid #aca9a9;
+        border-radius: 10px;
+        padding: 8px;
+        height: var(--panel-height);
+        overflow-y: scroll;
+    }
+    
+    .menugroups-flex-container {        
+        white-space: nowrap;
+        overflow-x: scroll;       
+        margin-bottom: 1rem;
+        height: 100px;
+        background-color: rgb(241, 238, 238);  
+        
+        position: sticky;
+        top: 0;
+    }
+    .menugroups-flex-item {
+        overflow: hidden;
+        display: inline-block;
+        /* border: 1px solid black; */
+        border-radius: 10%;
+        width: 100px;
+        background-color: rgb(251, 255, 202); 
+        height: 90%;        
+        cursor: pointer;            
+        position: relative;
+    }
+    .menugroups-flex-item  span {
+        position: absolute;
+        bottom: 0;
+    }
+    /* hack for hover to work on mobile (touch) */
+    .menugroups-flex-item:hover, .menugroups-flex-item:active {
+        border: 4px solid green;
+        background-color: #fff;
+    }    
+    /* .menugroups-flex-item[data-id="all"] {
+        background-color: purple;
+        color: white;
+        /* border: 4px solid rgb(228, 74, 3); */
+    } */
+    .cart-table {
+        color: #fff;
+        
+    }
+    .cart-body {
+        position: relative;        
+    }
+    .sticky {
+        position: sticky;
+        bottom: 0;
+        width: 100%;
+        /* height: 2rem; */
+        border-radius: 10px;
+        background-color: rgb(9, 82, 25);
+        padding: 8px;
+        text-align: center;
+    }
+
+</style>
+@endsection
+@section('content')
+<div class="container-fluid mt-5">
+    {{-- CSRF token --}}
+    <input type="hidden" name="_token" id="_token" value="{{csrf_token()}}">
+    <h3>
+            Table - {{$table->name}}
+            @if($current_order)
+            <a href="{{route('waiter.orders', $current_order->id)}}">အသေးစိတ်</a>
+            @endif
+        
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#cart-modal" id="cart-modal-button">
+          မှာမည့် Menu များ
+        </button> 
+
+    </h3>
+
+    <div class="row">
+        <div class="col-sm-8 menus-panel">
+            {{-- <h3>MENU ရွေးရန်</h3> --}}
+            {{-- menu group selector - scroll snap --}}
+            <div class="menugroups-flex-container">
+                <div class="menugroups-flex">
+                    <div data-id="all" class="menugroups-flex-item">
+                        <span>အားလုံး</span>
+                    </div>
+                    @forelse($menu_groups as $menu_group)
+                    <div data-id="{{$menu_group->id}}" class="menugroups-flex-item">
+                        <span>{{$menu_group->name}}</span>
+                    </div>
+                    @empty
+                    NO MENU GROUP
+                    @endforelse
+                </div>
+            </div>
+            <div class="menus-grid">                
+                @forelse($menus as $menu)                
+                <div 
+                    data-menugroup-id="{{$menu->menu_group->id}}"
+                    data-menu-id="{{$menu->id}}"
+                    data-menu-name="{{$menu->name}}"                
+                    data-menu-price="{{$menu->price}}"                
+                    class="menus-grid-item"
+                    style="background-size:cover;background-image: url('/storage/menu_images/{{$menu->image ?? 'default.png'}}')">
+                    <span class="price">{{$menu->price}}</span>
+                    <span class="caption">{{$menu->name}}</span>
+                    
+                </div>
+                @empty 
+                NO MENU
+                @endforelse
+            </div>
+ 
+        </div>
+        <div class="col-sm-4 cart-panel-container">
+  
+            {{-- panel for larger screens --}}
+            <div class="cart-panel card text-warning bg-success" id="cart-panel">
+                {{-- <div class="card-header">
+                    <h3>မှာမည့် Menu များ</h3>
+                </div> --}}
+                <div class="card-body">
+                    <table class="table table-hovered cart-table text-white">
+                        <thead>
+                            <tr>
+                                <th>Qty</th>
+                                <th></th>
+                                <th>Menu</th>
+                                <th>Price</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($order_menus as $order_menu)
+                            <tr class="cartRowsToBeSaved" data-id="{{$order_menu->menu_id}}" data-price="{{$order_menu->price}}">
+                                <td id="qty">{{$order_menu->quantity}}</td>
+                                <td>x</td>
+                                <td>{{$order_menu->menu->name}}</td>
+                                <td>
+                                    {{$order_menu->price}}
+                                </td>
+                                <td>{{$order_menu->price*$order_menu->quantity}}</td>
+                            </tr>
+                   
+                            @endforeach
+                        </tbody>
+                    </table>
+                    <div class="sticky">
+                        <i>Total </i> : <b class="subtotal">{{$total}} ကျပ်</b><br>
+                        <button class="btn btn-success" id="orderBtn">မှာမည်</button>
+                        <button class="btn btn-primary" id="payBtn">ရှင်းမည်</button>
+                        <button class="btn btn-danger" id="rollbackBtn"><<<</button>
+                    </div>
+           
+                </div>
+            </div>
+     
+            {{-- modal for mobile/small screens --}}
+            <div class="modal modal-fullscreen" id="cart-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">{{date("d-m-Y")}}</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="cart-modal-body">
+                      {{-- cart content copied from original cart panel --}}
+                      
+                    </div>
+                   
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+@endsection
+@section('script')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js" integrity="sha512-aMGMvNYu8Ue4G+fHa359jcPb1u+ytAF+P2SCb+PxrjCdO3n3ZTxJ30zuH39rimUggmTwmh2u7wvQsDTHESnmfQ==" crossorigin="anonymous"></script>
+<script>
+    (() => {
+        const socket = io('http://127.0.0.1:5000');        
+        socket.emit('join-room', {
+            roomId: 1
+        })
+
+        
+
+
+        const menuGroupItems=document.querySelectorAll('.menugroups-flex-item');
+        const menuItems=document.querySelectorAll('.menus-grid-item');
+        const originalMenuItems=[...document.querySelector('.menus-grid').children];
+        const cartTable=document.querySelector('.cart-table');
+        const cartTableBody=document.querySelector('.cart-table > tbody');
+        const cartPanel=document.querySelector('.cart-panel');
+        const orderBtn=document.querySelector('#orderBtn');
+        const payBtn=document.querySelector('#payBtn');
+        const rollbackBtn=document.querySelector('#rollbackBtn');
+        const cartModalButton=document.querySelector('#cart-modal-button');
+        //for mobile
+        const counter=document.querySelector('#counter');
+        
+        //attaching event listeners for menu groups
+        for(menuGroupItem of menuGroupItems) {
+            menuGroupItem.addEventListener('click', menuGroupItemClickHandler);
+        }
+        //attaching event listeners for menu items
+        for(menuItem of menuItems) {
+            menuItem.addEventListener('click', menuItemClickHandler);
+        }
+        //attching event listener to orderBtn         
+        orderBtn.addEventListener('click', orderBtnClickHandler);        
+        //attaching event listener to payBtn
+        payBtn.addEventListener('click', payBtnClickHandler);
+        //attching event listener to rollbackBtn
+        rollbackBtn.addEventListener('click', rollbackBtnClickHandler);
+
+        //modal open listener
+        const cartModal=document.querySelector('#cart-modal');
+        const modalBody=document.querySelector('.cart-modal-body');
+        cartModal.addEventListener('show.bs.modal', function(e) {            
+            const clonedCart=cartPanel.cloneNode(true);
+            modalBody.innerHTML=clonedCart.outerHTML;
+            //select orderBtn inside modal
+            const orderBtn=document.querySelector('.cart-modal-body > .cart-panel > .card-body > .sticky > #orderBtn');
+            const payBtn=document.querySelector('.cart-modal-body > .cart-panel > .card-body > .sticky > #payBtn');
+            const rollbackBtn=document.querySelector('.cart-modal-body > .cart-panel > .card-body > .sticky > #rollbackBtn');
+            //attach event listener inside modal
+            //attching event listener to orderBtn         
+            orderBtn.addEventListener('click', orderBtnClickHandler);        
+            //attaching event listener to payBtn
+            payBtn.addEventListener('click', payBtnClickHandler);
+            //attching event listener to rollbackBtn
+            rollbackBtn.addEventListener('click', rollbackBtnClickHandler);
+            
+        })
+
+
+        function filterByMenugroupId(originalMenuItems, menuGroupId) {
+            originalMenuItems.forEach(x=>{
+                x.style.display='block';
+            })
+            if(menuGroupId==="all") {
+                return originalMenuItems;
+            }
+            originalMenuItems.forEach(x=>{
+                if(x.dataset['menugroupId']!==menuGroupId) {
+                    x.style.display='none';
+                }
+            })            
+        }
+
+
+        function menuGroupItemClickHandler(e) {           
+            // const menus=filterByMenugroupId(originalMenuItems, e.target.dataset['id']);
+            filterByMenugroupId(originalMenuItems, e.target.dataset['id']);            
+            // redrawMenuList(menus);
+        }
+        var orderMenus=[];
+        function updateOrderMenusArr(e) {
+            const foundIndex=orderMenus.findIndex(x=>x.id==e.target.dataset['menuId']);
+            if(foundIndex>-1) {
+                orderMenus[foundIndex].quantity++;
+            }
+            else {
+                const menu={
+                    menu_id:e.target.dataset['menuId'],                
+                    name:e.target.dataset['menuName'],
+                    price:e.target.dataset['menuPrice'],
+                    quantity:1
+                }
+                orderMenus.push(menu);
+            }
+        }
+        function menuItemClickHandler(e) {
+            
+            const subtotal=document.querySelector('.subtotal');
+            let isNew=true;
+            // current cart Row clicked
+            let cartRow;
+            
+            let menu;
+
+            //existing old cart item
+            //check if item already exists
+            for(let i of cartTableBody.children) {
+                if(i.dataset['id']===e.target.dataset['menuId']) {
+                    isNew=false;
+                    cartRow=i;
+                    break;
+                }                
+            }
+            // console.warn('existing ends')
+
+            //to send to backend  
+            //to prepare orderMenus Array ****
+            updateOrderMenusArr(e);
+            //for displaying cart ****
+            if(isNew) {
+                //new cart item 
+                menu={
+                    id: e.target.dataset['menuId'],
+                    name: e.target.dataset['menuName'],
+                    price: e.target.dataset['menuPrice'],
+                    quantity: 1
+                }
+                
+                cartTableBody.innerHTML+= `
+                    <tr class="cartRowsToBeSaved" data-id="${menu.id}" data-price="${menu.price}">
+                        <td id="qty">${1}</td>
+                        <td>x</td>
+                        <td>${menu.name}</td>
+                        <td>
+                            ${menu.price}
+                        </td>
+                        <td>${menu.price * 1}</td>
+                    </tr>
+                `;
+            }
+            else {
+                //assuming QTY is index  0
+                cartRow.children[0].innerHTML=parseInt(cartRow.children[0].innerHTML)+1;
+                const quantity=parseInt(cartRow.children[0].innerHTML);
+                const name=cartRow.children[2].innerHTML;
+                
+                //price deferred from dataset
+                const price=parseInt(cartRow.dataset['price']);                
+                const id=cartRow.dataset['id'];
+                
+                menu={
+                    id,
+                    name,
+                    price,
+                    quantity
+                }
+                //assuming Total is last index
+                const lastCol=cartRow.children[cartRow.children.length-1];
+                const total=(price*quantity);
+                lastCol.innerHTML=total;
+            }            
+            //recalculate subtotal
+            let subTotal=0;
+            for(let row of cartTableBody.children) {
+                subTotal+=parseInt(row.children[row.children.length-1].innerHTML);
+            }
+            subtotal.innerHTML=subTotal + " ကျပ်";            
+
+            counter.innerHTML=`${menu.name} x ${menu.quantity}`;
+        }
+        function orderBtnClickHandler(e) {
+            //TODO:: Reduce the orderMenus arr to become 
+            //groupby id and sum(quantity)
+            /* implement */
+
+            //catch the cart rows whenever orderbtn is clicked
+            //only select cart rows inside panel 
+            const cartRows=document.querySelectorAll('.cart-panel-container > #cart-panel .cart-table > tbody > .cartRowsToBeSaved');
+            // console.log({{$currentWaiter}})
+            let waiterId={{$currentWaiter}};
+            let tableId={{$tableId}};
+            const token=document.querySelector('#_token').value;            
+   
+            console.warn("======saving======");
+            // api post call to Api ordercontroller             
+            // e.target.textContent="Loading"
+
+            fetch(`/api/submitOrder/${tableId}/${waiterId}`, {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json",
+                    "X-Requested-With": "XMLHttpRequest",
+                    "X-CSRF-Token": token
+                },
+                credentials: "same-origin",
+                method: 'POST',
+                body: JSON.stringify({
+                    orderMenus
+                })
+            })
+            .then(res=>res.json())
+            .then(res=>{
+                if(res.isOk) {
+                    // send to socket io server
+                    // TODO: Websocket implementation
+
+                    /*
+                    create node web server
+                    listen from order page
+                    and kitchen page
+                    test connection
+                    and res.data through
+                    */                    
+                    socket.emit('send-order', {
+                        roomId: 1,
+                        data: orderMenus
+                    })
+                    // fetch(`http://localhost:5000`, {
+                    //     mode: 'cors',
+                    //     headers: {
+                    //     "Content-Type": "application/json",
+                    //     "Accept": "application/json",
+                    //     "X-Requested-With": "XMLHttpRequest",
+                    //     "X-CSRF-Token": token
+                    //     },
+                    //     credentials: "same-origin",
+                    //     method: 'GET',                        
+                    // })
+                    // .then(res=> res.json())
+                    // .then(res=> {
+                    //     console.log(res)
+                    // })
+
+                    location.reload();
+                }
+            });
+        }
+        function payBtnClickHandler() {
+            let waiterId={{$currentWaiter}};
+            let orderId={{$current_order->id ?? "null"}};
+            
+            
+            const token=document.querySelector('#_token').value;      
+            fetch(`/api/payBill/${orderId}/${waiterId}`, {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json",
+                    "X-Requested-With": "XMLHttpRequest",
+                    "X-CSRF-Token": token
+                },
+                credentials: "same-origin",
+                method: 'GET'                
+            })
+            .then(res=>res.json())
+            .then(res=>{
+                if(res.isOk) {
+                    location.reload();
+                }
+                else {
+                    
+                }
+            })
+            // .catch(err=>console.log(err))
+        }
+        function rollbackBtnClickHandler(e) {
+            //remove last action in orderMenus array
+            const popedOrderMenu=orderMenus.pop();
+
+            //early return if there is nothing to rollback
+            if(!popedOrderMenu) return;
+
+            let cartRowToBeUpdated;
+
+            //search cart row in display
+            for(let i of cartTableBody.children) {
+                if(i.dataset['id']===popedOrderMenu.menu_id) {                    
+                    cartRowToBeUpdated=i;
+                    break;
+                }                
+            }
+
+            //update cart display
+            //remove the current row if quantity becomes  0
+            if(parseInt(cartRowToBeUpdated.children[0].innerHTML)===1) 
+                cartRowToBeUpdated.parentNode.removeChild(cartRowToBeUpdated);
+            
+            cartRowToBeUpdated.children[0].innerHTML=parseInt(cartRowToBeUpdated.children[0].innerHTML)-1;
+            
+            //TODO: update cart display in modal too
+            //check if the user is clicking from modal
+            if(e.target.parentNode.parentNode.parentNode.parentNode.classList.contains('cart-modal-body')) {
+                let c=document.querySelector('.cart-modal-body > .cart-panel > .card-body > .cart-table > tbody');
+                let cartRowToBeUpdatedModal;
+                
+                //search cart row in display for modal**
+                for(let i of c.children) {
+                    if(i.dataset.id===popedOrderMenu.menu_id) {
+                        cartRowToBeUpdatedModal=i;
+                        break;
+                    }
+                }
+
+                //update cart display
+                //remove the current row if quantity becomes  0
+                if(parseInt(cartRowToBeUpdatedModal.children[0].innerHTML)===1) 
+                    cartRowToBeUpdatedModal.parentNode.removeChild(cartRowToBeUpdatedModal);
+                
+                cartRowToBeUpdatedModal.children[0].innerHTML=parseInt(cartRowToBeUpdatedModal.children[0].innerHTML)-1;
+            }
+        }
+        
+
+    })();
+</script>
+@endsection
