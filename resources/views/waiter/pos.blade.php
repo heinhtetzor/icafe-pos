@@ -151,6 +151,7 @@
     {{-- CSRF token --}}
     <input type="hidden" name="_token" id="_token" value="{{csrf_token()}}">
     <h3>
+            <a href="{{route('waiter.home')}}">🔙</a>
             Table - {{$table->name}}
             @if($current_order)
             <a href="{{route('waiter.orders', $current_order->id)}}">အသေးစိတ်</a>
@@ -267,7 +268,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js" integrity="sha512-aMGMvNYu8Ue4G+fHa359jcPb1u+ytAF+P2SCb+PxrjCdO3n3ZTxJ30zuH39rimUggmTwmh2u7wvQsDTHESnmfQ==" crossorigin="anonymous"></script>
 <script>
     (() => {
-        const socket = io('http://127.0.0.1:5000');        
+        const socket = io('{{config('app.socket_url')}}');      
         socket.emit('join-room', {
             roomId: 1
         })

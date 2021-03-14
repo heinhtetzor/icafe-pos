@@ -43,7 +43,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js" integrity="sha512-aMGMvNYu8Ue4G+fHa359jcPb1u+ytAF+P2SCb+PxrjCdO3n3ZTxJ30zuH39rimUggmTwmh2u7wvQsDTHESnmfQ==" crossorigin="anonymous"></script>
 <script>
 	(()=> {
-	    const socket=io('http://127.0.0.1:5000');  
+	    const socket = io('{{config('app.socket_url')}}');
 	    
 	    const id=document.querySelector('#id').value;
 	    const token=document.querySelector('#_token').value;

@@ -2,6 +2,8 @@
 
 return [
 
+    'socket_url' => env('SOCKET_URL', 'http://localhost:5000'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Name

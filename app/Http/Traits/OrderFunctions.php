@@ -24,17 +24,17 @@ trait OrderFunctions {
     }
 
     function getOrderMenusList(Order $order) {
-         return $order->order_menus()
-                     ->selectRaw("id, menu_id, quantity, price, status, created_at")
-                     ->with('menu') 
-                     ->get();            
+                
+        return OrderMenu::where('order_id', $order->id)
+                        ->with('menu', 'waiter')                    
+                        ->get();
     }
 
     function getOrderMenusByMenuGroup($id) {
         // $orderMenus=OrderMenu::where('order_id', 7)->get();
         $orderMenus=OrderMenu::whereHas('menu', function($q) use ($id) {
             $q->where('menu_group_id', $id);
-        })        
+        })
         ->with('menu', 'waiter')
         ->orderBy('created_at', 'DESC')
         ->get();

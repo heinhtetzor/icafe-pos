@@ -20,7 +20,7 @@
                     <span>{{session('error')}}</span>
                 </div>
                 @endif
-                <div class="form-group">                
+                <div class="form-group">
                     <input name="username" autofocus type="text" class="form-control" placeholder="Username">
                     <br>
                     <input name="password" type="password" class="form-control" placeholder="Password">
