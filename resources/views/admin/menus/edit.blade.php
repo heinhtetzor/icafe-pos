@@ -1,6 +1,9 @@
 @extends('layouts.admin')
 @section('content')
-    <h2>Editing {{ $menu->name}}</h2>  
+<div class="container">
+    <h2>
+    <a href="{{route('menugroups.index')}}">🔙</a>
+    Editing {{ $menu->name}}</h2>  
     <section>
         <form action="{{ route('menus.update', $menu->id) }}" method="post" enctype="multipart/form-data">
             @csrf
@@ -53,4 +56,5 @@
                 <input type="hidden" name="id" value="{{ $menu->id }}">
             </form>
     </section>
+</div>
 @endsection

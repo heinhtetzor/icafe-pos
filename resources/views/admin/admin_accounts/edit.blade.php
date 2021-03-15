@@ -1,6 +1,9 @@
 @extends('layouts.admin')
 @section('content')
-    <h2>Editing {{ $admin_account->username}}</h2>  
+<div class="container">
+    <h2>
+        <a href="{{route('admin.accountmanagement')}}">🔙</a>
+        Editing {{ $admin_account->username}}</h2>  
     <section>
         <form action="{{ route('admin_accounts.update', $admin_account->id) }}" method="post">
             @csrf
@@ -31,4 +34,6 @@
                 <input type="hidden" name="id" value="{{ $admin_account->id }}">
             </form>
     </section>
+    
+</div>
 @endsection

@@ -1,15 +1,15 @@
 
-<div class="sidebar">
+<div class="sidebar col-md-3">
     <ul class="list">
         <li>
             <form action="{{ route('menugroups.store') }}" method="post" class="list-item-add-new">
-                @csrf
+                @csrf                
                 <input id="name" autofocus name="name" type="text" class="form-control" placeholder="Enter Menu Group Name" required>
-                {{-- <p style="color:red">{{ $errors->first('name') }}</p> --}}
+                {{-- <p style="color:red">{{ $errors->first('name') }}</p> --}}                
                 <button id="btn" class="btn btn-primary" type="submit">Add</button>
             </form>
         </li>
-        <li class="list-item @if  ($selected_menu_group == 'ALL') selected-list-item @endif">
+        <li class="list-item @if  ($selected_menu_group == 'ALL') selected-list-item @endif">            
             <a class="list-item-link" href="{{ route('menugroups.index')}}">
                 ALL
             </a>

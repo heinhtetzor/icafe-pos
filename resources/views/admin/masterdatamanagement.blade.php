@@ -18,7 +18,7 @@
         Master Data Management
     </h3>
     <div class="flex">
-        <div class="card bg-success text-white">
+<!--         <div class="card bg-success text-white">
             <div class="card-header">
                 <h4 class="card-title">Menu Groups</h4>
             </div>
@@ -28,7 +28,7 @@
             <div class="card-footer">
                 <a class="btn btn-warning" href="{{route('menugroups.index')}}">Go</a>
             </div> 
-        </div>
+        </div> -->
         <div class="card bg-primary text-white">
             <div class="card-header">
                 <h4 class="card-title">Menus</h4>
@@ -37,7 +37,7 @@
                 {{-- Waiter accounts and Admin Account Management --}}
             </div>
             <div class="card-footer">
-                <a class="btn btn-warning" href="{{route('menus.index')}}">Go</a>
+                <a class="btn btn-warning" href="{{route('menugroups.index')}}">Go</a>
             </div>
         </div>
 

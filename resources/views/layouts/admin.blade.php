@@ -5,9 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
-    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="/icons/font/bootstrap-icons.css">
-    @yield('css')
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>    
+    
     <style>
         .topnav {
             position: fixed;
@@ -19,6 +18,7 @@
             display: flex;
             justify-content: space-between;
             z-index: 999;
+            padding: 0px 1rem;
         }   
         .topnav > * {
             display: flex;
@@ -90,10 +90,6 @@
     /* for sidebar */
     .sidebar {
         min-height: 100vh;
-        /* position: fixed;
-        min-width: 25%;
-        left: 0;
-        top: 50px;         */
         overflow-y: scroll;
         background-color: rgb(220, 235, 255); 
     }
@@ -136,23 +132,26 @@
         flex: 1;
     }
     </style>
+    @yield('css')
 </head>
 <body>
     <nav class="topnav">
         <div class="topnav-left">
             <a class="topnav-brand" href="/admin">Admin</a>
         </div>
+        
+
         <div class="topnav-right">
             @if(Auth::guard('admin_account')->check())
             <div class="topnav-item">                
                 <span class="badge rounded-pill bg-success"> Logged in as {{Auth()->guard('admin_account')->user()->username}}</span>
             </div>
-            @endif
-            
+            @endif            
+
             @if(Auth::guard('admin_account')->check())
             <div class="topnav-item">
                 <a class="logout-button" href="#" onclick="event.preventDefault();document.querySelector('#logout-form').submit();">
-                    <i class="bi bi-box-arrow-right"></i>
+                    ⎋
                 </a>
                 <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: none;">
                     @csrf

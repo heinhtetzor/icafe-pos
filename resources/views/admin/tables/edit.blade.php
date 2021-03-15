@@ -1,6 +1,9 @@
 @extends('layouts.admin')
 @section('content')
-    <h2>Editing {{ $table->name}}</h2>  
+<div class="container">
+    <h2>
+        <a href="{{route('tables.index')}}">🔙</a>
+        Editing {{ $table->name}}</h2>  
     <section>
         <form action="{{ route('tables.update', $table->id) }}" method="post">
             @csrf
@@ -26,4 +29,5 @@
                 <input type="hidden" name="id" value="{{ $table->id }}">
             </form>
     </section>
+</div>
 @endsection

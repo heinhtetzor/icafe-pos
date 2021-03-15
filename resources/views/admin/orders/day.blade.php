@@ -9,11 +9,15 @@
         border-radius: 10px;
         background-color: #fff;
         position: fixed;
-        width: 30%;
+        /*width: 30%;*/
         min-height: 80vh;
         padding: 1rem;
     }
+    .list-container table {
+        border-radius: 10px;
+    }
     .list-container .order-link {
+
         border-radius: 10px;    
         /* padding: 1rem; */
         height: 3rem;
@@ -87,7 +91,10 @@
                     <tbody>
                         @forelse($orders as $order)
                         <tr>
-                            <td><a href="{{route('orders.show', $order->id)}}">{{$order->id}}</a></td>
+                            <td><a href="{{route('orders.show', $order->id)}}">
+                                ⇲
+                                {{$order->id}}
+                            </a></td>
                             <td>{{$order->created_at->format('d-M-Y')}}</td>
                             <td>{{$order->created_at->format('h:i')}}</td>                            
                             <td>{{($order->status===0) ? "🟠" : "🟢"}}</td>

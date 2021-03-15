@@ -14,7 +14,7 @@
         position: relative;
         text-align: center;        
         position: relative;
-        background-image: url('/assets/table.png');
+        background-image: url('/assets/table-icon.png');
         background-size: 100px;
         background-blend-mode: overlay;
         background-repeat: no-repeat;

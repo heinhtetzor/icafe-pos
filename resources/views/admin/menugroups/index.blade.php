@@ -11,7 +11,10 @@
         <div class="main">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title">All</h4>
+                    <h4 class="card-title">
+                        <a class="btn btn-danger" href="{{route('admin.masterdatamanagement')}}">←</a>
+                        All
+                    </h4>
                 </div>
                 <div class="card-body">
                     <div class="grid">                    
