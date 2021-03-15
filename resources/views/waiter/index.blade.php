@@ -36,7 +36,7 @@
 </style>
 @endsection 
 @section('content')
-<div class="container-fluid mt-5">    
+<div class="container" style="margin-top: 4rem">    
     <div class="row">
         {{-- tables --}}
         <div class="col-md-12">

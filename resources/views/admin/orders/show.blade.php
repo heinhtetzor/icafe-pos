@@ -2,8 +2,13 @@
 @section('css')
 @endsection
 @section('content')
-    <div class="container-fluid">
-        <h2><a href="javascript:history.back()">🔙</a>{{$order->id}}</h2>
+    <div class="container">
+        <h2><a href="javascript:history.back()">🔙</a>
+            {{$order->id}}
+
+            {{$order->created_at->format('d-M-Y')}} - {{$order->created_at->format('h:i A')}}
+
+        </h2>
 
         <table class="table">
             <thead>

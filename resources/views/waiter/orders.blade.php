@@ -74,7 +74,7 @@
                                 </span>
                             </td>
                             <td>${orderMenu.menu.price * orderMenu.quantity}</td>
-                            <td>${new Date(orderMenu.created_at).toLocaleString()}</td>
+                            <td>${new Date(orderMenu.created_at).toLocaleString('en-IN')}</td>
                             <td>${orderMenu.status===0 ? "🟠" : "🟢"}</td>
                         </tr>            
                         `

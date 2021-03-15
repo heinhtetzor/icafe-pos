@@ -96,7 +96,7 @@
                                 {{$order->id}}
                             </a></td>
                             <td>{{$order->created_at->format('d-M-Y')}}</td>
-                            <td>{{$order->created_at->format('h:i')}}</td>                            
+                            <td>{{$order->created_at->format('h:i A')}}</td>                            
                             <td>{{($order->status===0) ? "🟠" : "🟢"}}</td>
                             <td>{{$order->table->name}}</td>
                             @php
