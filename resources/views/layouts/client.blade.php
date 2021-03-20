@@ -78,7 +78,7 @@
             @endif
 
             @if(Auth::guard('admin_account')->check())
-            <a class="topnav-brand" href="/kitchen">Admin </a>
+            <a class="topnav-brand" href="/admin">Admin </a>
           
             @endif
         </div>

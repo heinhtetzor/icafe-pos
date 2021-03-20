@@ -31,6 +31,12 @@ Route::get('/getMenusByMenuGroup', 'Api\Menu\MenuController@getMenusByMenuGroup'
 //submit order
 Route::post('/submitOrder/{tableId}/{waiterId}', 'Api\Order\OrderController@submitOrder');
 
+//make foc
+Route::post('/orderMenus/makeFoc/{orderMenuId}', 'Api\Order\OrderController@makeFoc');
+
+//undo ordermenu options such as foc
+Route::post('/orderMenus/undoOption/{orderMenuId}', 'Api\Order\OrderController@undoOption');
+
 //pay bill
 Route::get('/payBill/{orderId}/{waiterId}', 'Api\Order\OrderController@payBill');
 

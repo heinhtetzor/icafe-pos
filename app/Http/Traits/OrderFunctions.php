@@ -17,8 +17,8 @@ trait OrderFunctions {
 
     function getOrderMenusGrouped(Order $order) {
         return $order->order_menus()
-                     ->selectRaw("id, menu_id, SUM(quantity) as quantity, price, status, created_at")
-                     ->groupBy('menu_id')                     
+                     ->selectRaw("id, menu_id, SUM(quantity) as quantity, price, is_foc, status, created_at")
+                     ->groupBy('menu_id', 'is_foc')                     
                      ->with('menu') 
                      ->get();
     }
@@ -26,7 +26,8 @@ trait OrderFunctions {
     function getOrderMenusList(Order $order) {
                 
         return OrderMenu::where('order_id', $order->id)
-                        ->with('menu', 'waiter')                    
+                        ->with('menu', 'waiter')  
+                        ->orderBy('created_at', 'DESC')                  
                         ->get();
     }
 

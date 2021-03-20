@@ -17,6 +17,9 @@
                     <td>Menu အမည်</td>
                     <td>Waiter</td>
                     <td>ကျသင့်ငွေ</td>
+                    @if(Auth::guard('admin_account')->check())
+                    <td></td>
+                    @endif
                     <td>အချိန်</td>
                     <td>Status</td>
                 </tr>
@@ -85,14 +88,24 @@
                             <td>
                                 <span class="badge bg-primary">
                                     ${orderedBy}
-                                </span>
+                                    </span>
                             </td>
-                            <td>${orderMenu.menu.price * orderMenu.quantity}</td>
+                            <td>${orderMenu.price * orderMenu.quantity}</td>
+                            @if(Auth::guard('admin_account')->check())
+                            <td>
+                                <select data-id="${orderMenu.id}" class="menu-option">
+                                    <option value="undo">-----</option>
+                                    <option ${orderMenu.is_foc === 1 ? 'selected' : ''} value="foc">
+                                        FOC
+                                    </option>
+                                </select>
+                            </td>
+                            @endif
                             <td>${new Date(orderMenu.created_at).toLocaleString('en-IN')}</td>
                             <td>${orderMenu.status===0 ? "🟠" : "🟢"}</td>
                         </tr>            
                         `
-                })
+                })                                
                 table.innerHTML+=`
                     <tfoot>
                         <tr>
@@ -101,7 +114,56 @@
                             <th colspan="2"></th>
                         </tr>
                     </tfoot>
-                `                
+                `;
+                
+                const menuOptionSelects=document.querySelectorAll('.menu-option');
+                for (menuOptionSelect of menuOptionSelects) {                    
+                    menuOptionSelect.addEventListener('change', menuOptionSelectorHandler);
+                }
+
+                function menuOptionSelectorHandler (e)
+                {
+                    const id = e.target.dataset.id;
+                    const token=document.querySelector('#_token').value;
+                    if (e.target.value === 'foc') {
+                        fetch(`/api/orderMenus/makeFoc/${id}`, {
+                            method: 'POST',
+                            headers: {
+                            "Content-Type": "application/json",
+                            "Accept": "application/json",
+                            "X-Requested-With": "XMLHttpRequest",
+                            "X-CSRF-Token": token
+                            },
+                            credentials: "same-origin",
+                        })
+                        .then(res => res.json())
+                        .then(res => {                    
+                            if (res.isOk) {                                
+                                fetchOrderMenus();
+                            }
+                        })
+                        .catch(err => console.log(err));
+                    }
+                    else if (e.target.value === 'undo') {
+                        fetch(`/api/orderMenus/undoOption/${id}`, {
+                            method: 'POST',
+                            headers: {
+                            "Content-Type": "application/json",
+                            "Accept": "application/json",
+                            "X-Requested-With": "XMLHttpRequest",
+                            "X-CSRF-Token": token
+                            },
+                            credentials: "same-origin",
+                        })
+                        .then(res => res.json())
+                        .then(res => {
+                            if (res.isOk) {
+                                fetchOrderMenus();
+                            }
+                        })
+                        .catch(err => console.log(err));
+                    }            
+                }
             })            
         }
 

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class OrderMenu extends Model
 {
-    protected $fillable = ['waiter_id', 'order_id', 'menu_id', 'quantity', 'status', 'price'];
+    protected $fillable = ['waiter_id', 'order_id', 'menu_id', 'quantity', 'is_foc', 'status', 'price'];
     
     function getStatus () {
         //0 : sent to kitchen

@@ -74,6 +74,32 @@ class OrderController extends Controller
         return ["isOk"=>TRUE, "orderMenus"=>$request->get('orderMenus')];
     }
 
+    function makeFoc($orderMenuId)
+    {
+        OrderMenu::findorfail($orderMenuId)
+        ->update([
+                'is_foc' => 1,
+                'price' => 0
+                ]);
+        return ["isOk" => TRUE];
+    }
+
+    function undoOption($orderMenuId)
+    {
+        $om = OrderMenu::findorfail($orderMenuId);
+        $originalPrice = $om->menu->price;
+        if ($om->is_foc === 1) {
+            $om->update([
+                'is_foc' => 0,
+                'price' => $originalPrice
+            ]);
+            return ["isOk" => TRUE];
+        }
+        else {
+            return ["isOk" => FALSE, "message" => "NOT FOC"];
+        }
+    }
+
     function payBill($orderId, $waiterId) {
         
         //string null set by javascript
@@ -124,6 +150,8 @@ class OrderController extends Controller
         return ["isOk"=>TRUE];        
     }
 
+    //for waiter and admin pos views
+    //details order view
     function show($id) {        
         $order=Order::findorfail($id);
         $orderMenus=$this->getOrderMenusList($order);        

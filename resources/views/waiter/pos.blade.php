@@ -35,6 +35,8 @@
         grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
         grid-row-gap: 2rem;
         grid-column-gap: 4px;
+        max-height: var(--panel-height);
+        overflow-y: scroll;
         /* padding-bottom: 3rem; */
     }
     .menus-grid-item {
@@ -240,17 +242,23 @@
                             <tr>
                                 <th>Qty</th>
                                 <th></th>
-                                <th>Menu</th>
+                                <th>Menu</th>                                
                                 <th>Price</th>
                                 <th>Total</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($order_menus as $order_menu)
-                            <tr class="cartRowsToBeSaved" data-id="{{$order_menu->menu_id}}" data-price="{{$order_menu->price}}">
+                            <tr class="cartRowsToBeSaved" 
+                            data-id="{{$order_menu->menu_id}}" 
+                            data-price="{{$order_menu->price}}"
+                            data-is-foc="{{$order_menu->is_foc === 1 ? 'true' : 'false'}}">
                                 <td id="qty">{{$order_menu->quantity}}</td>
                                 <td>x</td>
                                 <td>{{$order_menu->menu->name}}</td>
+                                @if(Auth::guard('admin_account'))
+
+                                @endif
                                 <td>
                                     {{$order_menu->price}}
                                 </td>
@@ -316,6 +324,8 @@
         const payBtn=document.querySelector('#payBtn');
         const rollbackBtn=document.querySelector('#rollbackBtn');
         const cartModalButton=document.querySelector('#cart-modal-button');
+        const menuOptionSelects=document.querySelectorAll('.menu-option');
+
         //for mobile
         const counter=document.querySelector('#counter');
         
@@ -327,13 +337,13 @@
         for(menuItem of menuItems) {
             menuItem.addEventListener('click', menuItemClickHandler);
         }
+       
         //attching event listener to orderBtn         
         orderBtn.addEventListener('click', orderBtnClickHandler);        
         //attaching event listener to payBtn
         payBtn.addEventListener('click', payBtnClickHandler);
         //attching event listener to rollbackBtn
         rollbackBtn.addEventListener('click', rollbackBtnClickHandler);
-
         //modal open listener
         const cartModal=document.querySelector('#cart-modal');
         const modalBody=document.querySelector('.cart-modal-body');
@@ -341,9 +351,9 @@
             const clonedCart=cartPanel.cloneNode(true);
             modalBody.innerHTML=clonedCart.outerHTML;
             //select orderBtn inside modal
-            const orderBtn=document.querySelector('.cart-modal-body > .cart-panel > .card-body > .sticky > #orderBtn');
-            const payBtn=document.querySelector('.cart-modal-body > .cart-panel > .card-body > .sticky > #payBtn');
-            const rollbackBtn=document.querySelector('.cart-modal-body > .cart-panel > .card-body > .sticky > #rollbackBtn');
+            const orderBtn=document.querySelector('.cart-modal-body > .cart-panel > .card-footer > #orderBtn');
+            const payBtn=document.querySelector('.cart-modal-body > .cart-panel > .card-footer > #payBtn');
+            const rollbackBtn=document.querySelector('.cart-modal-body > .cart-panel > .card-footer > #rollbackBtn');
             //attach event listener inside modal
             //attching event listener to orderBtn         
             orderBtn.addEventListener('click', orderBtnClickHandler);        
@@ -393,7 +403,6 @@
         }
         function menuItemClickHandler(e) {
             
-            const subtotal=document.querySelector('.subtotal');
             let isNew=true;
             // current cart Row clicked
             let cartRow;
@@ -402,12 +411,15 @@
 
             //existing old cart item
             //check if item already exists
-            for(let i of cartTableBody.children) {
-                if(i.dataset['id']===e.target.dataset['menuId']) {
+            for(let i of cartTableBody.children) {                
+                if (i.dataset['isFoc'] === 'true') {
+                    continue;
+                }
+                if(i.dataset['id']===e.target.dataset['menuId']) {                    
                     isNew=false;
                     cartRow=i;
                     break;
-                }                
+                }                                
             }
             // console.warn('existing ends')
 
@@ -420,12 +432,12 @@
                 menu={
                     id: e.target.dataset['menuId'],
                     name: e.target.dataset['menuName'],
-                    price: e.target.dataset['menuPrice'],
+                    price: e.target.dataset['menuPrice'],                    
                     quantity: 1
                 }
                 
                 cartTableBody.innerHTML+= `
-                    <tr class="cartRowsToBeSaved" data-id="${menu.id}" data-price="${menu.price}">
+                    <tr class="cartRowsToBeSaved" data-id="${menu.id}" data-price="${menu.price}" data-is-foc="false">
                         <td id="qty">${1}</td>
                         <td>x</td>
                         <td>${menu.name}</td>
@@ -457,15 +469,23 @@
                 const total=(price*quantity);
                 lastCol.innerHTML=total;
             }            
+            calculateCartTotal(); 
+            counter.innerHTML=`${menu.name} x ${menu.quantity}`;
+        }
+
+        function calculateCartTotal() {
+            const subTotalEles=document.querySelectorAll('.subtotal');
             //recalculate subtotal
             let subTotal=0;
             for(let row of cartTableBody.children) {
                 subTotal+=parseInt(row.children[row.children.length-1].innerHTML);
             }
-            subtotal.innerHTML=subTotal + " ကျပ်";            
-
-            counter.innerHTML=`${menu.name} x ${menu.quantity}`;
+            //becuase subtotal appears twice including in modal
+            for (let subTotalEle of subTotalEles) {
+                subTotalEle.innerHTML=subTotal + " ကျပ်";
+            }
         }
+        
         function orderBtnClickHandler(e) {
             //TODO:: Reduce the orderMenus arr to become 
             //groupby id and sum(quantity)
@@ -537,7 +557,7 @@
                 waiterId=selectedWaiter;
             } 
 
-            const token=document.querySelector('#_token').value;      
+            const token=document.querySelector('#_token').value;
             fetch(`/api/payBill/${orderId}/${waiterId}`, {
                 headers: {
                     "Content-Type": "application/json",
@@ -559,6 +579,7 @@
             })
             // .catch(err=>console.log(err))
         }
+
         function rollbackBtnClickHandler(e) {
             //remove last action in orderMenus array
             const popedOrderMenu=orderMenus.pop();
@@ -570,7 +591,8 @@
 
             //search cart row in display
             for(let i of cartTableBody.children) {
-                if(i.dataset['id']===popedOrderMenu.menu_id) {                    
+                if(i.dataset['id']===popedOrderMenu.menu_id && i.dataset['isFoc'] === 'false') {                    
+                    //ignore FOC items
                     cartRowToBeUpdated=i;
                     break;
                 }                
@@ -581,11 +603,16 @@
             if(parseInt(cartRowToBeUpdated.children[0].innerHTML)===1) 
                 cartRowToBeUpdated.parentNode.removeChild(cartRowToBeUpdated);
             
-            cartRowToBeUpdated.children[0].innerHTML=parseInt(cartRowToBeUpdated.children[0].innerHTML)-1;
+            let existingQty = parseInt(cartRowToBeUpdated.children[0].innerHTML);
+            let existingPrice = parseInt(cartRowToBeUpdated.children[3].innerHTML);
             
+            let rowTotal = cartRowToBeUpdated.children[cartRowToBeUpdated.children.length - 1];
+            cartRowToBeUpdated.children[0].innerHTML = existingQty - 1;
+            rowTotal.innerHTML = parseInt(rowTotal.innerHTML) - existingPrice;
+            calculateCartTotal();
             //TODO: update cart display in modal too
             //check if the user is clicking from modal
-            if(e.target.parentNode.parentNode.parentNode.parentNode.classList.contains('cart-modal-body')) {
+            if(e.target.parentNode.parentNode.parentNode.classList.contains('cart-modal-body')) {
                 let c=document.querySelector('.cart-modal-body > .cart-panel > .card-body > .cart-table > tbody');
                 let cartRowToBeUpdatedModal;
                 
@@ -601,8 +628,14 @@
                 //remove the current row if quantity becomes  0
                 if(parseInt(cartRowToBeUpdatedModal.children[0].innerHTML)===1) 
                     cartRowToBeUpdatedModal.parentNode.removeChild(cartRowToBeUpdatedModal);
-                
-                cartRowToBeUpdatedModal.children[0].innerHTML=parseInt(cartRowToBeUpdatedModal.children[0].innerHTML)-1;
+                    
+                let existingQty = parseInt(cartRowToBeUpdatedModal.children[0].innerHTML);
+                let existingPrice = parseInt(cartRowToBeUpdatedModal.children[3].innerHTML);
+            
+                let rowTotal = cartRowToBeUpdatedModal.children[cartRowToBeUpdatedModal.children.length - 1];
+                cartRowToBeUpdatedModal.children[0].innerHTML = existingQty - 1;
+                rowTotal.innerHTML = parseInt(rowTotal.innerHTML) - existingPrice; 
+                calculateCartTotal();
             }
         }
         
