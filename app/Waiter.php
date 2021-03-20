@@ -18,6 +18,9 @@ class Waiter extends Authenticatable
         $this->attributes['password'] = Hash::make($value);
     }
     public static function getCurrentWaiter() {
+    	if(Auth()->guard('admin_account')->check()) {
+    		return 'admin';
+    	}
         return Auth()->guard('waiter')->user()->id;
     }
 

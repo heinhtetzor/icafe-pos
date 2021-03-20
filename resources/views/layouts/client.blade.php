@@ -76,6 +76,11 @@
             <a class="topnav-brand" href="/kitchen">မင်္ဂလာပါ </a>
           
             @endif
+
+            @if(Auth::guard('admin_account')->check())
+            <a class="topnav-brand" href="/kitchen">Admin </a>
+          
+            @endif
         </div>
         <div class="topnav-right">
             @if(Auth::guard('waiter')->check())
@@ -106,6 +111,21 @@
                     ⎋
                 </a>
                 <form id="logout-form" action="{{ route('kitchen.logout') }}" method="POST" style="display: none;">
+                    @csrf
+                </form>
+            </div>
+            @endif
+
+            @if(Auth::guard('admin_account')->check())
+            
+            {{-- <div class="topnav-item">                
+                <span class="badge rounded-pill bg-success"> Logged in as {{Auth()->guard('admin_account')->user()->name}}</span>
+            </div> --}}
+            <div class="topnav-item">
+                <a class="logout-button" href="#" onclick="event.preventDefault();document.querySelector('#logout-form').submit();">
+                    ⎋
+                </a>
+                <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: none;">
                     @csrf
                 </form>
             </div>

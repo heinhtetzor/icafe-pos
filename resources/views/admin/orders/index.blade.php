@@ -24,7 +24,7 @@
     <h3 class="header">
         <a href="{{route('admin.home')}}">🔙 </a>
         <span class="title">{{date("d-m-Y")}}</span>
-        <button>REFRESH</button>
+        
     </h3>
     <div class="flex">
         <a href="{{route('orders.today')}}" style="background-size:contain;background-repeat:no-repeat;background-image: url('https://cdn4.iconfinder.com/data/icons/small-n-flat/24/calendar-512.png')">

@@ -124,7 +124,7 @@ class OrderController extends Controller
         return ["isOk"=>TRUE];        
     }
 
-    function show($id) {
+    function show($id) {        
         $order=Order::findorfail($id);
         $orderMenus=$this->getOrderMenusList($order);        
         $total=$orderMenus->sum(function($t) {

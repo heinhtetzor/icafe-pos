@@ -88,7 +88,11 @@
         border-radius: 10px;
         padding: 8px;
         height: var(--panel-height);
-        overflow-y: scroll;
+        overflow-y: scroll;        
+    }
+    .card-footer {
+        display: flex;
+        justify-content: space-around;
     }
     
     .menugroups-flex-container {        
@@ -150,21 +154,44 @@
 <div class="container-fluid mt-5">
     {{-- CSRF token --}}
     <input type="hidden" name="_token" id="_token" value="{{csrf_token()}}">
-    <h3>
-            <a href="{{route('waiter.home')}}">🔙</a>
+    <h3>    
+
+            @if(Auth::guard('admin_account')->check())
+            <a href="{{route('admin.tables')}}">🔙</a>            
+            @endif
+
+            @if(Auth::guard('waiter')->check())
+            <a href="{{route('waiter.home')}}">🔙</a>            
+            @endif
+
             Table - {{$table->name}}
             @if($current_order)
-            <a href="{{route('waiter.orders', $current_order->id)}}">အသေးစိတ်</a>
+                @if(Auth::guard('admin_account')->check())
+                <a href="{{route('admin.pos.orders', $current_order->id)}}">အသေးစိတ်</a>
+                @endif 
+
+                @if(Auth::guard('waiter')->check())
+                <a href="{{route('waiter.orders', $current_order->id)}}">အသေးစိတ်</a>
+                @endif
             @endif
         
         <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#cart-modal" id="cart-modal-button">
           မှာမည့် Menu များ
         </button> 
 
+        @if(Auth::guard('admin_account')->check())
+        <select name="waiterId" id="waiterId" style="float: right">
+            <option value="">Waiter ရွေးပါ</option>
+            @foreach($waiters as $waiter)
+            <option value="{{$waiter->id}}">{{$waiter->name}}</option>
+            @endforeach
+        </select>
+        @endif
+
     </h3>
 
     <div class="row">
-        <div class="col-sm-8 menus-panel">
+        <div class="col-sm-6 menus-panel">
             {{-- <h3>MENU ရွေးရန်</h3> --}}
             {{-- menu group selector - scroll snap --}}
             <div class="menugroups-flex-container">
@@ -200,14 +227,14 @@
             </div>
  
         </div>
-        <div class="col-sm-4 cart-panel-container">
+        <div class="col-sm-6 cart-panel-container">
   
             {{-- panel for larger screens --}}
             <div class="cart-panel card text-warning bg-success" id="cart-panel">
                 {{-- <div class="card-header">
                     <h3>မှာမည့် Menu များ</h3>
                 </div> --}}
-                <div class="card-body">
+                <div class="card-body" style="overflow-y: scroll;">
                     <table class="table table-hovered cart-table text-white">
                         <thead>
                             <tr>
@@ -233,13 +260,19 @@
                             @endforeach
                         </tbody>
                     </table>
-                    <div class="sticky">
+                    {{-- <div class="sticky">
                         <i>Total </i> : <b class="subtotal">{{$total}} ကျပ်</b><br>
                         <button class="btn btn-success" id="orderBtn">မှာမည်</button>
                         <button class="btn btn-primary" id="payBtn">ရှင်းမည်</button>
                         <button class="btn btn-danger" id="rollbackBtn"><<<</button>
-                    </div>
+                    </div> --}}
            
+                </div>
+                <div class="card-footer">
+                    <i>Total </i> : <b class="subtotal">{{$total}} ကျပ်</b><br>
+                    <button class="btn btn-success" id="orderBtn">မှာမည်</button>
+                    <button class="btn btn-primary" id="payBtn">ရှင်းမည်</button>
+                    <button class="btn btn-danger" id="rollbackBtn"><<<</button>
                 </div>
             </div>
      
@@ -272,10 +305,7 @@
         socket.emit('join-room', {
             roomId: 1
         })
-
         
-
-
         const menuGroupItems=document.querySelectorAll('.menugroups-flex-item');
         const menuItems=document.querySelectorAll('.menus-grid-item');
         const originalMenuItems=[...document.querySelector('.menus-grid').children];
@@ -445,7 +475,15 @@
             //only select cart rows inside panel 
             const cartRows=document.querySelectorAll('.cart-panel-container > #cart-panel .cart-table > tbody > .cartRowsToBeSaved');
             // console.log({{$currentWaiter}})
-            let waiterId={{$currentWaiter}};
+            let waiterId="{{$currentWaiter}}";            
+
+            //for admin pos 
+            //only when admin chooses waiter from dropdown
+            const selectedWaiter=document.querySelector('#waiterId').value;
+            if(selectedWaiter) {
+                waiterId=selectedWaiter;
+            }
+
             let tableId={{$tableId}};
             const token=document.querySelector('#_token').value;            
    
@@ -483,23 +521,8 @@
                         roomId: 1,
                         data: orderMenus
                     })
-                    // fetch(`http://localhost:5000`, {
-                    //     mode: 'cors',
-                    //     headers: {
-                    //     "Content-Type": "application/json",
-                    //     "Accept": "application/json",
-                    //     "X-Requested-With": "XMLHttpRequest",
-                    //     "X-CSRF-Token": token
-                    //     },
-                    //     credentials: "same-origin",
-                    //     method: 'GET',                        
-                    // })
-                    // .then(res=> res.json())
-                    // .then(res=> {
-                    //     console.log(res)
-                    // })
 
-                    location.reload();
+                    // location.reload();
                 }
             });
         }
@@ -507,7 +530,13 @@
             let waiterId={{$currentWaiter}};
             let orderId={{$current_order->id ?? "null"}};
             
-            
+            //for admin pos 
+            //only when admin chooses waiter from dropdown
+            const selectedWaiter=document.querySelector('#waiterId').value;
+            if(selectedWaiter) {
+                waiterId=selectedWaiter;
+            } 
+
             const token=document.querySelector('#_token').value;      
             fetch(`/api/payBill/${orderId}/${waiterId}`, {
                 headers: {

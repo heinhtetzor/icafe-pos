@@ -40,11 +40,28 @@
     <div class="row">
         {{-- tables --}}
         <div class="col-md-12">
-            <h3>Table ရွေးပါ</h3>            
+
+            @if(Auth::guard('admin_account')->check())
+            <h3>
+            <a href="{{route('admin.home')}}">🔙</a>
+            Table ရွေးပါ         
+            </h3>   
+            @endif
+
+            @if(Auth::guard('waiter')->check())
+            <h3>
+            Table ရွေးပါ         
+            </h3> 
+            @endif
             
             <div class="tables-grid">
-                @foreach($tables as $table)                    
+                @foreach($tables as $table)        
+                @if(Auth::guard('admin_account')->check())
+                <a href="{{route('admin.pos', $table->id)}}" class="tables-grid-item @if(!$table->table_status->isTableFree()) tables-grid-item-occupied @endif">
+                @else 
                 <a href="{{route('waiter.pos', $table->id)}}" class="tables-grid-item @if(!$table->table_status->isTableFree()) tables-grid-item-occupied @endif">                                  
+
+                @endif         
                     <span>{{$table->name}}</span>
                 </a>
                 @endforeach                

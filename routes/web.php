@@ -27,10 +27,21 @@ Route::group(['prefix' => 'admin'], function () {
     Route::group(['middleware' => 'adminAccountAuth'], function () {
         Route::get('/', 'AdminHomeController@admin')->name('admin.home');
         
+        Route::get('/tables', 'WaiterHomeController@home')->name('waiter.home');
+        //go to POS instance
+        //id=tableId
+
+
+        Route::get('/tables', 'Waiter\WaiterController@tables')->name('client.waiter.tables');
+        Route::get('/tables/{id}', 'Waiter\WaiterController@menus')->name('client.waiter.menus');
 
         Route::get('/accountmanagement', 'AdminHomeController@accountmanagement')->name('admin.accountmanagement');
         Route::get('/masterdatamanagement', 'AdminHomeController@masterdatamanagement')->name('admin.masterdatamanagement');
         
+
+        Route::get('/pos/tables', 'AdminHomeController@tables')->name('admin.tables');
+        Route::get('/pos/tables/{id}', 'AdminHomeController@pos')->name('admin.pos');
+        Route::get('/pos/tables/{id}/orders', 'AdminHomeController@orders')->name('admin.pos.orders');
 
         // extra order routes
         //for today orders

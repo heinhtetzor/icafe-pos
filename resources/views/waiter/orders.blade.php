@@ -42,7 +42,19 @@
         })
 
         const token=document.querySelector('#_token').value;
-        const id=window.location.pathname.split('/')[2];
+        
+        let id;
+
+        console.log(window.location.pathname.split('/'))
+        if(window.location.pathname.split('/').length===6) {
+            id=window.location.pathname.split('/')[4];
+        }
+        else {
+            id=window.location.pathname.split('/')[2];
+        }        
+
+
+
         const table=document.querySelector('#ordersTable > tbody');
         const orderNumber=document.querySelector('#orderNumber');
 
@@ -65,12 +77,14 @@
                 table.innerHTML="";
                 orderNumber.innerHTML="Order No. " + res.order.id;
                 res.orderMenus.forEach(orderMenu=> {
+                    //if waiter is null, it is ordered by admin
+                    let orderedBy=orderMenu.waiter ? orderMenu.waiter.name : "Admin";
                     table.innerHTML+=`
                         <tr>                            
                             <td>${orderMenu.menu.name} x ${orderMenu.quantity}</td>
                             <td>
                                 <span class="badge bg-primary">
-                                    ${orderMenu.waiter.name}
+                                    ${orderedBy}
                                 </span>
                             </td>
                             <td>${orderMenu.menu.price * orderMenu.quantity}</td>
