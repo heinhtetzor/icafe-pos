@@ -34,13 +34,14 @@ class OrderController extends Controller
         if(count($request->get('orderMenus'))===0) {
             return ["isOk"=>FALSE];
         }
-        $table = Table::findorfail($tableId);
+        $table = Table::lockForUpdate()->findorfail($tableId);
         $orderId=null;
         if($table->table_status->isTableFree()) {
             //create new order
             $orderData = [
                 'status'=>0,
-                'table_id'=>$tableId
+                'table_id'=>$tableId,
+                'invoice_no'=>Order::generateInvoiceNumber()
             ];
         
             $order = Order::create($orderData);
@@ -109,7 +110,7 @@ class OrderController extends Controller
         }
 
         //TODO::check of all orders are served to customers 
-        $order=Order::findorfail($orderId);
+        $order=Order::lockForUpdate()->findorfail($orderId);
         foreach($order->order_menus as $om) {
             if($om->status===0) {
                 return ["isOK"=>FALSE];                
@@ -135,6 +136,16 @@ class OrderController extends Controller
         OrderMenu::findorfail($orderMenuId)->update([
             "status"=>1
         ]);
+        return ["isOk"=>TRUE];
+    }
+
+    function cancelOrderMenu($orderMenuId) {
+        $orderMenu = OrderMenu::findorfail($orderMenuId);
+        //mot allowed user to cancel if it is already served to customer
+        if ($orderMenu->status === 1) {
+            return ["isOk"=>FALSE];
+        }
+        OrderMenu::findorfail($orderMenuId)->delete();
         return ["isOk"=>TRUE];
     }
 

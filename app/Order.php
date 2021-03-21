@@ -3,10 +3,10 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-
+use Carbon\Carbon;
 class Order extends Model
 {
-    protected $fillable = ['status', 'table_id', 'waiter_id'];
+    protected $fillable = ['status', 'table_id', 'waiter_id', 'invoice_no'];
 
     public function getStatus() {
         //0 is unpaid
@@ -18,5 +18,21 @@ class Order extends Model
     }
     public function table() {
         return $this->belongsTo('App\Table');
+    }
+    public static function generateInvoiceNumber() {
+        //get today datevap
+        $today = Carbon::today();
+        $today_string = $today->format('Y-m-d');
+        $latest_order = Order::whereDate('created_at', $today)->orderby('created_at', 'DESC')->first();
+        if (!empty($latest_order)) {
+            $arr = explode("_", $latest_order->invoice_no);
+            $number = intval($arr[1]) + 1;
+            $invoice_no = $today_string ."_". $number;
+            return $invoice_no;
+        }
+        else {
+            $invoice_no = $today_string ."_". 1;
+            return $invoice_no;
+        }        
     }
 }

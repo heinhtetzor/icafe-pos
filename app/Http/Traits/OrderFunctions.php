@@ -15,6 +15,7 @@ trait OrderFunctions {
         return $table_status->order;
     }
 
+    //used in pos cart view
     function getOrderMenusGrouped(Order $order) {
         return $order->order_menus()
                      ->selectRaw("id, menu_id, SUM(quantity) as quantity, price, is_foc, status, created_at")

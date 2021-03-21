@@ -29,8 +29,8 @@
 </style>
 @endsection 
 @section('content')
-<div class="container-fluid mt-3">
-    <h2>မဂလာပါ {{ Auth()->guard('kitchen')->user()->name }}</h2>
+<div class="container-fluid mt-5">
+    <h2>{{ Auth()->guard('kitchen')->user()->name }}</h2>
     <input type="hidden" id="id" value="{{Auth()->guard('kitchen')->user()->id}}">
     {{-- CSRF token --}}
     <input type="hidden" name="_token" id="_token" value="{{csrf_token()}}">
@@ -130,7 +130,7 @@
 		    	container.innerHTML="";
 		    	res.forEach(x=> {	    			    	
 		    		let orderMenus="";
-		    		x.orderMenus.forEach(y=> {
+		    		x.orderMenus.forEach(y=> {						
 		    			//if havent served to customer
 		    			if(y.status===0) {
 			    			orderMenus+=`
@@ -139,7 +139,7 @@
 			    					<button class="tick-btn btn btn-success" data-id="${y.id}">
 			    						✓ 
 			    					</button><br>
-			    					<span class="badge bg-primary">${y.waiter.name}</span>
+			    					<span class="badge bg-primary">${y.waiter ? y.waiter.name : 'admin' }</span>
 			    				</div>
 			    			`;
 		    			}

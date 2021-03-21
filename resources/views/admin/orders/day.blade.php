@@ -61,7 +61,7 @@
 <div class="container">
     <h3> 
 
-        <a href="{{route('orders.index')}}">🔙 </a>   
+        <a href="{{route('admin.reports')}}">🔙 </a>   
         @if($isToday)
         ယနေ့   ({{$fromTime->format('d-M-Y')}})
         @else
@@ -157,6 +157,7 @@
 @endsection
 @section('js')
 <script src="https://cdn.jsdelivr.net/npm/litepicker/dist/litepicker.js"></script>
+<script src="/litepicker/litepicker.js"></script>
 <script type="text/javascript">     
     (()=> {     
         const picker = new Litepicker({

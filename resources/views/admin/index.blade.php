@@ -39,7 +39,7 @@
 
     <div class="flex">
         
-        <a href="{{route('orders.index')}}">
+        <a href="{{route('admin.reports')}}">
             <div class="card bg-success text-white">
                 <div class="card-header">
                     <h2 class="card-title">အော်ဒါစာရင်း</h2>

@@ -43,6 +43,11 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/pos/tables/{id}', 'AdminHomeController@pos')->name('admin.pos');
         Route::get('/pos/tables/{id}/orders', 'AdminHomeController@orders')->name('admin.pos.orders');
 
+        //reporting
+        Route::get('/reports', 'ReportController@index')->name('admin.reports');
+        Route::get('/reports/day', 'OrderController@day')->name('admin.reports.day');
+        Route::get('/reports/menus', 'ReportController@menus')->name('admin.reports.menus');
+
         // extra order routes
         //for today orders
         Route::get('/orders/day/today', 'OrderController@day')->name('orders.today');

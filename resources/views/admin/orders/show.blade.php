@@ -4,7 +4,7 @@
 @section('content')
     <div class="container">
         <h2><a href="javascript:history.back()">🔙</a>
-            {{$order->id}}
+            <span class="badge rounded-pill bg-success">{{$order->invoice_no}}</span>
 
             {{$order->created_at->format('d-M-Y')}} - {{$order->created_at->format('h:i A')}}
 

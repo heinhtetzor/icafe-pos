@@ -11,13 +11,14 @@
             <a href="{{url()->previous()}}">🔙 </a>
             <span id="orderNumber"></span>
         </h3>   
-        <table class="table"  id="ordersTable">
+        <table class="table" id="ordersTable">
             <thead>
                 <tr>                    
                     <td>Menu အမည်</td>
                     <td>Waiter</td>
                     <td>ကျသင့်ငွေ</td>
                     @if(Auth::guard('admin_account')->check())
+                    <td></td>
                     <td></td>
                     @endif
                     <td>အချိန်</td>
@@ -47,16 +48,13 @@
         const token=document.querySelector('#_token').value;
         
         let id;
-
-        console.log(window.location.pathname.split('/'))
+        
         if(window.location.pathname.split('/').length===6) {
             id=window.location.pathname.split('/')[4];
         }
         else {
             id=window.location.pathname.split('/')[2];
         }        
-
-
 
         const table=document.querySelector('#ordersTable > tbody');
         const orderNumber=document.querySelector('#orderNumber');
@@ -75,10 +73,9 @@
                 method: 'GET'
             })
             .then(res=> res.json())
-            .then(res=> {            
-                console.log(res)
+            .then(res=> {                            
                 table.innerHTML="";
-                orderNumber.innerHTML="Order No. " + res.order.id;
+                orderNumber.innerHTML="Order No. " + res.order.invoice_no;
                 res.orderMenus.forEach(orderMenu=> {
                     //if waiter is null, it is ordered by admin
                     let orderedBy=orderMenu.waiter ? orderMenu.waiter.name : "Admin";
@@ -100,6 +97,11 @@
                                     </option>
                                 </select>
                             </td>
+                            <td>
+                                <button class="btn btn-danger cancel-order-menu" data-id="${orderMenu.id}">
+                                    <i style="pointer-events:none;" class="bi bi-x-octagon"></i>
+                                </button>
+                            </td>
                             @endif
                             <td>${new Date(orderMenu.created_at).toLocaleString('en-IN')}</td>
                             <td>${orderMenu.status===0 ? "🟠" : "🟢"}</td>
@@ -119,6 +121,11 @@
                 const menuOptionSelects=document.querySelectorAll('.menu-option');
                 for (menuOptionSelect of menuOptionSelects) {                    
                     menuOptionSelect.addEventListener('change', menuOptionSelectorHandler);
+                }
+
+                const cancelOrderMenuBtns = document.querySelectorAll('.cancel-order-menu');                
+                for (cancelOrderMenuBtn of cancelOrderMenuBtns) {
+                    cancelOrderMenuBtn.addEventListener('click', cancelOrderMenuBtnHandler); 
                 }
 
                 function menuOptionSelectorHandler (e)
@@ -163,6 +170,30 @@
                         })
                         .catch(err => console.log(err));
                     }            
+                }
+
+                function cancelOrderMenuBtnHandler(e) 
+                {
+                    const id = e.target.dataset['id'];
+                    fetch(`/api/orderMenus/cancel/${id}`, {
+                            method: 'POST',
+                            headers: {
+                            "Content-Type": "application/json",
+                            "Accept": "application/json",
+                            "X-Requested-With": "XMLHttpRequest",
+                            "X-CSRF-Token": token
+                            },
+                            credentials: "same-origin",
+                        }) 
+                        .then(res => res.json())
+                        .then(res => {
+                            if (res.isOk) {
+                                fetchOrderMenus();                                
+                                socket.emit('send-order', {
+                                    roomId: 1
+                                })
+                            }
+                        })
                 }
             })            
         }

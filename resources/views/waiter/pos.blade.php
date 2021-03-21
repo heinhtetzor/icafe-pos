@@ -542,12 +542,12 @@
                         data: orderMenus
                     })
 
-                    // location.reload();
+                    location.reload();
                 }
             });
         }
         function payBtnClickHandler() {
-            let waiterId={{$currentWaiter}};
+            let waiterId="{{$currentWaiter}}";
             let orderId={{$current_order->id ?? "null"}};
             
             //for admin pos 

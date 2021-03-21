@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
     <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
-    
+    <link rel="stylesheet" href="/icons/font/bootstrap-icons.css">
     <title>Waiter View</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap');
@@ -82,6 +82,15 @@
           
             @endif
         </div>
+        @if(!Auth::guard('waiter')->check())
+        <div class="topnav-center">
+            <span class="clock" style="padding:8px;background-color: black; color:rgb(158, 245, 158)">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </span>
+        </div>
+        @endif
         <div class="topnav-right">
             @if(Auth::guard('waiter')->check())
             <div class="topnav-item">
@@ -138,7 +147,29 @@
         @yield('content')
     </main>
 
+    @if(!Auth::guard('waiter')->check())
+    <script>
+        time();
+        setInterval(time, 1000);
+        function time() {
+            const now = new Date();
+            let hour = now.getHours();
+            
+            let amPm = hour >= 12 ? "PM" : "AM";
+            hour = hour >= 12 ? hour - 12 : hour; 
+            hour = hour < 10 ? "0" + hour : hour;
+            let minute = now.getMinutes();
+            minute = minute < 10 ? "0" + minute : minute;
+            let second = now.getSeconds();
+            second = second < 10 ? "0" + second : second;
 
+            const clockHtml = document.querySelector('.clock');
+            clockHtml.innerHTML = `
+                ${hour} : ${minute} : ${second} ${amPm}
+            `;
+        }
+    </script>
+    @endif
     @yield('script')
 </body>
 </html>

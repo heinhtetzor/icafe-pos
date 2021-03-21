@@ -31,6 +31,9 @@ Route::get('/getMenusByMenuGroup', 'Api\Menu\MenuController@getMenusByMenuGroup'
 //submit order
 Route::post('/submitOrder/{tableId}/{waiterId}', 'Api\Order\OrderController@submitOrder');
 
+//cancel order menu (triggered from pos detail order view)
+Route::post('/orderMenus/cancel/{orderMenuId}', 'Api\Order\OrderController@cancelOrderMenu');
+
 //make foc
 Route::post('/orderMenus/makeFoc/{orderMenuId}', 'Api\Order\OrderController@makeFoc');
 
