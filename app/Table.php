@@ -8,10 +8,11 @@ class Table extends Model
 {
     public function rules() {
         return [
-            'name' => 'required|unique:tables,name,' . $this->id
+            'name' => 'required|unique:tables,name,' . $this->id,
+            'table_group_id' => 'required'
         ];
     }
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'table_group_id'];
     
     public function table_status () {
         return $this->hasOne('App\TableStatus');

@@ -181,7 +181,7 @@
             let hour = now.getHours();
             
             let amPm = hour >= 12 ? "PM" : "AM";
-            hour = hour >= 12 ? hour - 12 : hour; 
+            hour = hour > 12 ? hour - 12 : hour; 
             hour = hour < 10 ? "0" + hour : hour;
             let minute = now.getMinutes();
             minute = minute < 10 ? "0" + minute : minute;

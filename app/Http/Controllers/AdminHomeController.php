@@ -11,6 +11,7 @@ use App\Order;
 use App\MenuGroup;
 use App\Waiter;
 use App\Http\Traits\OrderFunctions;
+use App\TableGroup;
 
 class AdminHomeController extends Controller
 {
@@ -50,8 +51,10 @@ class AdminHomeController extends Controller
         public function tables()
         {
             $tables=Table::getTablesAsc();
+            $table_groups = TableGroup::orderby('name', 'ASC')->get();
             return view('waiter.index', [
-                "tables"=>$tables
+                "tables"=>$tables,
+                "table_groups" => $table_groups
             ]);
         }
 

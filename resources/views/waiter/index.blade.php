@@ -54,18 +54,23 @@
             </h3> 
             @endif
             
-            <div class="tables-grid">
-                @foreach($tables as $table)        
-                @if(Auth::guard('admin_account')->check())
-                <a href="{{route('admin.pos', $table->id)}}" class="tables-grid-item @if(!$table->table_status->isTableFree()) tables-grid-item-occupied @endif">
-                @else 
-                <a href="{{route('waiter.pos', $table->id)}}" class="tables-grid-item @if(!$table->table_status->isTableFree()) tables-grid-item-occupied @endif">                                  
-
-                @endif         
-                    <span>{{$table->name}}</span>
-                </a>
-                @endforeach                
-            </div>
+            @foreach($table_groups as $table_group)
+                <fieldset>
+                    <legend>{{ $table_group->name }}</legend>
+                    <div class="tables-grid">
+                        @foreach($table_group->tables as $table)        
+                        @if(Auth::guard('admin_account')->check())
+                        <a href="{{route('admin.pos', $table->id)}}" class="tables-grid-item @if(!$table->table_status->isTableFree()) tables-grid-item-occupied @endif">
+                        @else 
+                        <a href="{{route('waiter.pos', $table->id)}}" class="tables-grid-item @if(!$table->table_status->isTableFree()) tables-grid-item-occupied @endif">                                  
+        
+                        @endif         
+                            <span>{{$table->name}}</span>
+                        </a>
+                        @endforeach                
+                    </div>
+                </fieldset>
+            @endforeach
         </div>
     </div>
 </div>

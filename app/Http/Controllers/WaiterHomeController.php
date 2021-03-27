@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Auth;
 use DB;
 use App\Http\Traits\OrderFunctions;
+use App\TableGroup;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use PhpParser\Node\Expr\Cast\Array_;
 
@@ -53,8 +54,10 @@ class WaiterHomeController extends Controller
     //home aka Tables list
     function home() {
         $tables=Table::getTablesAsc();
+        $table_groups = TableGroup::orderby('name', 'ASC')->get();
         return view("waiter.index", [
-            "tables"=>$tables
+            "tables"=>$tables,
+            "table_groups" => $table_groups
         ]);
     }
 

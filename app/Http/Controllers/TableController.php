@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\TableRequest;
 use App\Table;
+use App\TableGroup;
 use App\TableStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -18,8 +19,10 @@ class TableController extends Controller
     public function index()
     {
         $tables = Table::orderBy('name')->get();
+        $tables_groups = TableGroup::orderBy('name')->get();
         return view('admin.tables.index', [
-            'tables' => $tables
+            'tables' => $tables,
+            'table_groups' => $tables_groups
         ]);
     }
 
