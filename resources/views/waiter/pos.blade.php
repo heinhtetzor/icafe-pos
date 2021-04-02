@@ -169,11 +169,11 @@
             Table - {{$table->name}}
             @if($current_order)
                 @if(Auth::guard('admin_account')->check())
-                <a href="{{route('admin.pos.orders', $current_order->id)}}">အသေးစိတ်</a>
+                <a class="btn btn-info" href="{{route('admin.pos.orders', $current_order->id)}}">အသေးစိတ်</a>
                 @endif 
 
                 @if(Auth::guard('waiter')->check())
-                <a href="{{route('waiter.orders', $current_order->id)}}">အသေးစိတ်</a>
+                <a class="btn btn-info" href="{{route('waiter.orders', $current_order->id)}}">အသေးစိတ်</a>
                 @endif
             @endif
         
@@ -276,11 +276,15 @@
                     </div> --}}
            
                 </div>
-                <div class="card-footer">
-                    <i>Total </i> : <b class="subtotal">{{$total}} ကျပ်</b><br>
-                    <button class="btn btn-success" id="orderBtn">မှာမည်</button>
-                    <button class="btn btn-primary" id="payBtn">ရှင်းမည်</button>
-                    <button class="btn btn-danger" id="rollbackBtn"><<<</button>
+                <div class="card-footer" style="display: block">
+                    <div class="card-footer-total" style="display:flex;justify-content:center">
+                        <i>Total </i> :&nbsp; <b class="subtotal">{{$total}} ကျပ်</b>
+                    </div><hr>
+                    <div class="card-footer-btns" style="display:flex;justify-content:space-between;">
+                        <button class="btn btn-success" id="orderBtn">မှာမည်</button>
+                        <button class="btn btn-primary" id="payBtn">ရှင်းမည်</button>
+                        <button class="btn btn-danger" id="rollbackBtn"><<<</button>
+                    </div>
                 </div>
             </div>
      
@@ -289,7 +293,10 @@
                 <div class="modal-dialog">
                   <div class="modal-content">
                     <div class="modal-header">
-                      <h5 class="modal-title" id="exampleModalLabel">{{date("d-m-Y")}}</h5>
+                      <h5 style="width:100%" class="modal-title" id="exampleModalLabel">
+                        <span>Table - {{$table->name}}</span>  
+                        <span style="float:right;">{{date("d-m-Y")}}</span>
+                        </h5>
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="cart-modal-body">
@@ -351,9 +358,9 @@
             const clonedCart=cartPanel.cloneNode(true);
             modalBody.innerHTML=clonedCart.outerHTML;
             //select orderBtn inside modal
-            const orderBtn=document.querySelector('.cart-modal-body > .cart-panel > .card-footer > #orderBtn');
-            const payBtn=document.querySelector('.cart-modal-body > .cart-panel > .card-footer > #payBtn');
-            const rollbackBtn=document.querySelector('.cart-modal-body > .cart-panel > .card-footer > #rollbackBtn');
+            const orderBtn=document.querySelector('.cart-modal-body > .cart-panel > .card-footer > .card-footer-btns > #orderBtn');
+            const payBtn=document.querySelector('.cart-modal-body > .cart-panel > .card-footer > .card-footer.btns > #payBtn');
+            const rollbackBtn=document.querySelector('.cart-modal-body > .cart-panel > .card-footer > .card-footer.btns > #rollbackBtn');
             //attach event listener inside modal
             //attching event listener to orderBtn         
             orderBtn.addEventListener('click', orderBtnClickHandler);        
@@ -552,6 +559,10 @@
             });
         }
         function payBtnClickHandler() {
+            if (!confirm("သေချာပါသလား?")) {
+                return;
+            }
+
             let waiterId="{{$currentWaiter}}";
             let orderId={{$current_order->id ?? "null"}};
             
@@ -582,7 +593,7 @@
                     location.reload();
                 }
                 else {
-                    
+                   alert('ရှင်းလို့မရသေးပါ');
                 }
             })
             // .catch(err=>console.log(err))

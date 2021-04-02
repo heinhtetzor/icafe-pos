@@ -32,15 +32,28 @@ trait OrderFunctions {
                         ->get();
     }
 
+    //used by kithen home view
     function getOrderMenusByMenuGroup($id) {
         // $orderMenus=OrderMenu::where('order_id', 7)->get();
         $orderMenus=OrderMenu::whereHas('menu', function($q) use ($id) {
             $q->where('menu_group_id', $id);
         })
-        ->with('menu', 'waiter', 'order', 'order.table')
-        ->orderBy('created_at', 'DESC')
-        ->get();
-        // dd($orderMenus);
+        ->join('menus', 'menus.id', '=', 'order_menus.menu_id')
+        ->join('waiters', 'waiters.id', '=', 'order_menus.waiter_id')
+        ->join('orders', 'orders.id', '=', 'order_menus.order_id')
+        ->join('tables', 'tables.id', '=', 'orders.table_id')
+        ->selectRaw('order_menus.id as id, 
+                     order_menus.status as status,
+                     menus.name as menu,
+                     orders.id as `order`,
+                     tables.name as `table`,
+                     waiters.name as waiter,
+                     SUM(order_menus.quantity) as quantity')
+        // ->with('menu', 'waiter', 'order', 'order.table')
+        ->orderBy('order_menus.status', 'ASC')
+        ->orderBy('order_menus.created_at', 'DESC')
+        ->groupBy('order_menus.menu_id', 'order_menus.order_id', 'order_menus.status')        
+        ->get();        
         return $orderMenus;
     }
 }

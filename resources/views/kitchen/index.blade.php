@@ -26,11 +26,23 @@
     .tick-btn {
     	float: right;
     }
+
+	.order-item {
+		border: 1px solid #bcbcbc;
+		padding: 1rem;
+		user-select: none;
+	}
+
+	.order-item-disabled {
+		color: #b3b3b3;
+		cursor:not-allowed;
+		user-select: none;
+	}
 </style>
 @endsection 
 @section('content')
 <div class="container-fluid mt-5">
-    <h2>{{ Auth()->guard('kitchen')->user()->name }}</h2>
+    <h2 id="name">{{ Auth()->guard('kitchen')->user()->name }}</h2>
     <input type="hidden" id="id" value="{{Auth()->guard('kitchen')->user()->id}}">
     {{-- CSRF token --}}
     <input type="hidden" name="_token" id="_token" value="{{csrf_token()}}">
@@ -43,6 +55,20 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js" integrity="sha512-aMGMvNYu8Ue4G+fHa359jcPb1u+ytAF+P2SCb+PxrjCdO3n3ZTxJ30zuH39rimUggmTwmh2u7wvQsDTHESnmfQ==" crossorigin="anonymous"></script>
 <script>
 	(()=> {
+		const kitchenColor = "{{Auth()->guard('kitchen')->user()->color}}";
+		const name = document.querySelector('#name');
+		name.style.color = getContrastYIQ(kitchenColor);
+
+		// https://stackoverflow.com/a/11868398/11156865
+		function getContrastYIQ(hexcolor){
+			hexcolor = hexcolor.replace("#", "");
+			var r = parseInt(hexcolor.substr(0,2),16);
+			var g = parseInt(hexcolor.substr(2,2),16);
+			var b = parseInt(hexcolor.substr(4,2),16);
+			var yiq = ((r*299)+(g*587)+(b*114))/1000;
+			return (yiq >= 128) ? 'black' : 'white';
+		}
+
 	    const socket = io('{{config('app.socket_url')}}');
 	    
 	    const id=document.querySelector('#id').value;
@@ -129,30 +155,30 @@
 		    	const container=document.querySelector('.horizontal-container');
 		    	container.innerHTML="";
 		    	res.forEach(x=> {	    			    	
-					console.log(x)
 		    		let orderMenus="";
 		    		x.orderMenus.forEach(y=> {						
 		    			//if havent served to customer
 		    			if(y.status===0) {
 			    			orderMenus+=`	
-			    				<div style="border:1px solid #bcbcbc;padding:1rem;" id="item">
-			    					${y.quantity} x ${y.menu.name}  
+			    				<div class="order-item" id="item">
+			    					${y.quantity} x ${y.menu}  
 			    					<button class="tick-btn btn btn-success" data-id="${y.id}">
 			    						✓ 
 			    					</button><br>
-			    					<span class="badge bg-primary">${y.waiter ? y.waiter.name : 'admin' }</span>
+			    					<span class="badge bg-primary">${y.waiter ? y.waiter : 'admin' }</span>
+									<span class="badge bg-success">${y.table}</span>
 			    				</div>
 			    			`;
 		    			}
 		    			// if already served ( dull color )
 		    			else {
 			    			orderMenus+=`
-			    				<div style="color: #b3b3b3;cursor:not-allowed;" class="alert alert-secondary" id="item">
-			    					${y.quantity} x ${y.menu.name}  			    					
+			    				<div class="order-item-disabled" style="" class="alert alert-secondary" id="item">
+			    					${y.quantity} x ${y.menu}  			    					
 			    				</div>
 			    			`;
 		    			}
-		    		});	    	
+		    		});	    						
 		    		container.innerHTML+=`
 		    			<div class="card">
 		    				<div class="card-header" style="height: auto;">
