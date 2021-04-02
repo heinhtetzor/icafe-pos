@@ -40,13 +40,21 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Date</h5>
+        <h5 class="modal-title" id="exampleModalLabel">ရှာရန်</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <form method="GET" action="">
         <div class="modal-body">
             <div class="form-group">
                 <input placeholder="နေ့စွဲရွေးပါ" autocomplete="off" class="from-control" type="text" name="date" id="datePicker">                    
+            </div>
+            <hr>
+            <input class="form-check-input" type="checkbox" value="" id="searchWithInvoiceRadio">
+            <label class="form-check-label" for="searchWithInvoiceRadio">
+              ဘောင်ချာနံပါတ်ဖြင့်ရှာမည်
+            </label>
+            <div class="form-group">
+                <input disabled placeholder="ဘောင်ချာနံပါတ်ထည့်သွင်းပါ" type="text" autocomplete="off" class="form-control" name="invoiceNo" id="invoiceNo">
             </div>
       </div>
       <div class="modal-footer">
@@ -76,6 +84,11 @@
     <div class="row">
         <div class="col-md-8">
             <div class="list-container">
+                @if (session('msg'))
+                <div class="alert alert-danger">
+                    {{ session('msg') }}
+                </div>
+                @endif
                 <table class="table table-hover bg-white">
                     <thead>
                         <tr>
@@ -91,10 +104,9 @@
                     <tbody>
                         @forelse($orders as $order)
                         <tr>
-                            {{$order->waiter_id}}
                             <td><a href="{{route('orders.show', $order->id)}}">
                                 ⇲
-                                {{$order->id}}
+                                {{$order->invoice_no}}
                             </a></td>
                             <td>{{$order->created_at->format('d-M-Y')}}</td>
                             <td>{{$order->created_at->format('h:i A')}}</td>                            
@@ -115,7 +127,7 @@
                     </tbody>
                 </table>
                               
-                {{$orders->links()}}
+                {{$orders->appends($_GET)->links()}}
             </div>
         </div>
         <div class="col-md-4">
@@ -161,10 +173,25 @@
 <script src="/litepicker/litepicker.js"></script>
 <script type="text/javascript">     
     (()=> {     
+        const datePicker = document.querySelector('#datePicker');
+
         const picker = new Litepicker({
-            element: document.querySelector('#datePicker'),
+            element: datePicker,
             singleMode: false
         });
+        
+        const searchWithInvoiceRadio = document.querySelector('#searchWithInvoiceRadio');
+        const invoiceNo = document.querySelector('#invoiceNo');
+        searchWithInvoiceRadio.addEventListener('click', function () {
+            if (searchWithInvoiceRadio.checked) {
+                datePicker.disabled = true;
+                invoiceNo.disabled = false;
+            }
+            else {                
+                datePicker.disabled = false;
+                invoiceNo.disabled = true;
+            }
+        })
     })()
 </script>
 @endsection

@@ -359,7 +359,7 @@
             modalBody.innerHTML=clonedCart.outerHTML;
             //select orderBtn inside modal
             const orderBtn=document.querySelector('.cart-modal-body > .cart-panel > .card-footer > .card-footer-btns > #orderBtn');
-            const payBtn=document.querySelector('.cart-modal-body > .cart-panel > .card-footer > .card-footer.btns > #payBtn');
+            const payBtn=document.querySelector('.cart-modal-body > .cart-panel > .card-footer > .card-footer-btns > #payBtn');
             const rollbackBtn=document.querySelector('.cart-modal-body > .cart-panel > .card-footer > .card-footer.btns > #rollbackBtn');
             //attach event listener inside modal
             //attching event listener to orderBtn         

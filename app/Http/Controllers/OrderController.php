@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\MenuGroup;
 use App\Order;
-use App\OrderMenu;
 use Illuminate\Http\Request;
 use DB;
 use Carbon\Carbon;
@@ -26,8 +25,17 @@ class OrderController extends Controller
     }
     //$id = orderId
     public function day(Request $request) {
-        $fromDate;
-        $toTime;
+        if ($request->has('invoiceNo')) {
+            $order = Order::where('invoice_no', $request->invoiceNo)->first();  
+            if (is_null($order)) {
+                return redirect()->back()->with('msg', 'မရှိပါ');
+            }
+            return $this->show($order->id);
+        }
+
+
+        $fromTime = null;
+        $toTime = null;
         $isToday=FALSE;
         if($request->has('date')) {
             // $from=date($request->date)->startOfDay(); 
@@ -45,7 +53,7 @@ class OrderController extends Controller
         //get today orders
         $orders=Order::orderBy('created_at', 'DESC')
                 ->whereBetween('created_at', [$fromTime, $toTime])
-                ->simplePaginate(10);
+                ->simplePaginate(20);
         
         //for summary panel
         $orderMenuGroups=DB::table('order_menus')
