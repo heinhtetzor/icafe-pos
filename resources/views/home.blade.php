@@ -7,43 +7,42 @@
     @laravelPWA
     <style>
         body {
-            background-color: orchid;            
+            background-color: rgb(253, 249, 253);            
         }
         .tiles {
-            color: black;
+            width: 90vw;
+            height: 90vh;
             display: flex;
-            width: 100%;
-            height: 100%;
-            justify-content: center;
-            align-content: center;
+            flex-direction: column;
         }
         .tiles-item {
-            border: 1px solid hotpink;
-            border-radius: 10px;
-            width: 200px;
-            height: 200px;
-            background-color: black;
+            height: 100%;
+            width: 100%;
             text-align: center;
-            cursor: pointer;
-        }
-        .tiles-item > a {
-            color: hotpink;
-            padding-top: 40%;display: block;
+            background-color: rgb(138, 217, 236);
+            margin-bottom: 1rem;    
             text-decoration: none;
+        }
+        .tiles-item:hover {
+            background-color: aquamarine;
+        }
+        .tiles-item > span {
+            font-size: 5rem;
+            font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
         }
     </style>
 </head>
 <body>
     <div class="tiles">
-        <div class="tiles-item">
-            <a href="/waiter">Waiter</a>
-        </div>
-        <div class="tiles-item">            
-            <a href="/admin">Admin</a>
-        </div>
-        <div class="tiles-item">            
-            <a href="/kitchen">Kitchen</a>
-        </div>
+        <a class="tiles-item" href="/waiter">
+            <span>Waiter</span>
+        </a>
+        <a class="tiles-item" href="/admin">            
+            <span>Admin</span>
+        </a>
+        <a class="tiles-item" href="/kitchen">            
+            <span>Kitchen</span>
+        </a>
     </div>
 </body>
 </html>

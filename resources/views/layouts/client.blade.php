@@ -66,6 +66,7 @@
 </head>
 <body>
     @if (Auth::guard('waiter')->check() ||
+         Auth::guard('admin_account')->check() ||
          Auth::guard('kitchen')->check())
     <nav class="topnav">
         <div class="topnav-left">

@@ -241,11 +241,11 @@
                     <table class="table table-hovered cart-table text-white">
                         <thead>
                             <tr>
-                                <th>Qty</th>
+                                <th>အရေအတွက်</th>
                                 <th></th>
-                                <th>Menu</th>                                
-                                <th>Price</th>
-                                <th>Total</th>
+                                <th>အမည်</th>                                
+                                <th>နှုန်း</th>
+                                <th>စုစုပေါင်း</th>
                             </tr>
                         </thead>
                         <tbody>
