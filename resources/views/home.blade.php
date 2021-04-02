@@ -34,11 +34,11 @@
 </head>
 <body>
     <div class="tiles">
-        <a class="tiles-item" href="/waiter">
-            <span>Waiter</span>
-        </a>
         <a class="tiles-item" href="/admin">            
             <span>Admin</span>
+        </a>
+        <a class="tiles-item" href="/waiter">
+            <span>Waiter</span>
         </a>
         <a class="tiles-item" href="/kitchen">            
             <span>Kitchen</span>
