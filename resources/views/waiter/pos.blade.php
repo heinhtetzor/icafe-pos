@@ -494,14 +494,19 @@
             //catch the cart rows whenever orderbtn is clicked
             //only select cart rows inside panel 
             const cartRows=document.querySelectorAll('.cart-panel-container > #cart-panel .cart-table > tbody > .cartRowsToBeSaved');
-            // console.log({{$currentWaiter}})
+            
+            //get watier id or "admin"
             let waiterId="{{$currentWaiter}}";            
 
             //for admin pos 
             //only when admin chooses waiter from dropdown
-            const selectedWaiter=document.querySelector('#waiterId').value;
+            const selectedWaiter=document.querySelector('#waiterId');
             if(selectedWaiter) {
-                waiterId=selectedWaiter;
+                if (!selectedWaiter.value) {
+                    alert("Waiter ရွေးပါ");
+                    return;
+                }
+                waiterId=selectedWaiter.value;
             }
 
             let tableId={{$tableId}};
@@ -552,11 +557,14 @@
             
             //for admin pos 
             //only when admin chooses waiter from dropdown
-            const selectedWaiter=document.querySelector('#waiterId').value;
+            const selectedWaiter=document.querySelector('#waiterId');
             if(selectedWaiter) {
-                waiterId=selectedWaiter;
-            } 
-
+                if (!selectedWaiter.value) {
+                    alert("Waiter ရွေးပါ");
+                    return;
+                }
+                waiterId=selectedWaiter.value;
+            }
             const token=document.querySelector('#_token').value;
             fetch(`/api/payBill/${orderId}/${waiterId}`, {
                 headers: {

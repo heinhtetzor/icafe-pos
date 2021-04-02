@@ -139,7 +139,10 @@
 <body>
     <nav class="topnav">
         <div class="topnav-left">
-            <a class="topnav-brand" href="/admin">Admin</a>
+            <a class="topnav-brand" href="/admin">
+                <img src="/logo.png" width="40" height="40" alt="logo">
+                Admin
+            </a>
         </div>
         
         <div class="topnav-center">
@@ -174,6 +177,18 @@
         @yield('content')
     </div>
     <script>
+        if ('serviceWorker' in navigator ) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
+                // Registration was successful
+                console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                }, function(err) {
+                // registration failed :(
+                console.log('ServiceWorker registration failed: ', err);
+                });
+            });
+        }    
+
         time();
         setInterval(time, 1000);
         function time() {

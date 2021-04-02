@@ -46,7 +46,7 @@
       <form method="GET" action="">
         <div class="modal-body">
             <div class="form-group">
-                <input class="from-control" type="date" name="date" id="datePicker">                    
+                <input placeholder="နေ့စွဲရွေးပါ" autocomplete="off" class="from-control" type="text" name="date" id="datePicker">                    
             </div>
       </div>
       <div class="modal-footer">
@@ -91,6 +91,7 @@
                     <tbody>
                         @forelse($orders as $order)
                         <tr>
+                            {{$order->waiter_id}}
                             <td><a href="{{route('orders.show', $order->id)}}">
                                 ⇲
                                 {{$order->id}}

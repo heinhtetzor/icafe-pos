@@ -19,6 +19,9 @@ class Order extends Model
     public function table() {
         return $this->belongsTo('App\Table');
     }
+    public function waiter() {
+        return $this->belongsTo('App\Waiter');
+    }
     public static function generateInvoiceNumber() {
         //get today datevap
         $today = Carbon::today();

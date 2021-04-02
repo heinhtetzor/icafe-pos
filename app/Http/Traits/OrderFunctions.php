@@ -37,7 +37,7 @@ trait OrderFunctions {
         $orderMenus=OrderMenu::whereHas('menu', function($q) use ($id) {
             $q->where('menu_group_id', $id);
         })
-        ->with('menu', 'waiter')
+        ->with('menu', 'waiter', 'order', 'order.table')
         ->orderBy('created_at', 'DESC')
         ->get();
         // dd($orderMenus);

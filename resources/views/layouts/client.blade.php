@@ -68,17 +68,23 @@
     <nav class="topnav">
         <div class="topnav-left">
             @if(Auth::guard('waiter')->check())
-            <a class="topnav-brand" href="/waiter">မင်္ဂလာပါ {{Auth()->guard('waiter')->user()
+            <a class="topnav-brand" href="/waiter">
+            <img src="/logo.png" width="40" height="40" alt="logo">
+            မင်္ဂလာပါ {{Auth()->guard('waiter')->user()
             ->name}}</a>
           
+          @endif
+          @if(Auth::guard('kitchen')->check())
+            <a class="topnav-brand" href="/kitchen">
+                <img src="/logo.png" width="40" height="40" alt="logo">
+                မင်္ဂလာပါ </a>
+            
             @endif
-            @if(Auth::guard('kitchen')->check())
-            <a class="topnav-brand" href="/kitchen">မင်္ဂလာပါ </a>
-          
-            @endif
-
+            
             @if(Auth::guard('admin_account')->check())
-            <a class="topnav-brand" href="/admin">Admin </a>
+            <a class="topnav-brand" href="/admin">
+                <img src="/logo.png" width="40" height="40" alt="logo">                
+                Admin </a>
           
             @endif
         </div>

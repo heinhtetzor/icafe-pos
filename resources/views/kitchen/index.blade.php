@@ -129,12 +129,13 @@
 		    	const container=document.querySelector('.horizontal-container');
 		    	container.innerHTML="";
 		    	res.forEach(x=> {	    			    	
+					console.log(x)
 		    		let orderMenus="";
 		    		x.orderMenus.forEach(y=> {						
 		    			//if havent served to customer
 		    			if(y.status===0) {
-			    			orderMenus+=`
-			    				<div class="alert alert-warning" id="item">
+			    			orderMenus+=`	
+			    				<div style="border:1px solid #bcbcbc;padding:1rem;" id="item">
 			    					${y.quantity} x ${y.menu.name}  
 			    					<button class="tick-btn btn btn-success" data-id="${y.id}">
 			    						✓ 

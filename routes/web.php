@@ -17,7 +17,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('home');
 });
-
+Route::get('/offline', function () {
+    return view('vendor.laravelpwa.offline');
+});
 Route::group(['prefix' => 'admin'], function () {
     
     Route::get('/login', 'AdminHomeController@showAdminLogin')->name('admin.showLogin');
