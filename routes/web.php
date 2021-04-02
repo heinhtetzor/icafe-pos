@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\TableController;
 use Illuminate\Support\Facades\Route;
+use Symfony\Component\Process\Exception\ProcessFailedException;
+use Symfony\Component\Process\Process;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,6 +21,18 @@ Route::get('/', function () {
 });
 Route::get('/offline', function () {
     return view('vendor.laravelpwa.offline');
+});
+Route::get('/upgrade', function () {
+    $git_pull = exec("cd ../ && git pull");
+    $composer = exec("cd ../ && composer install");
+    $migration = exec("cd ../ && php artisan migrate");
+    // $process->run();
+
+    // if (!$process->isSuccessful()) {
+    //     throw new ProcessFailedException($process);
+    // }
+
+    return redirect('/admin')->with('msg', $git_pull);
 });
 Route::group(['prefix' => 'admin'], function () {
     

@@ -28,6 +28,11 @@
 @endsection
 @section('content')
 <div class="container">
+    @if (session('msg'))
+    <div class="alert alert-info">
+        {{ session('msg') }}
+    </div>
+    @endif
     <div class="flex">
         <a href="{{route('admin.tables')}}">
             <div class="card bg-dark text-white">
@@ -83,8 +88,11 @@
     </div>
 
     <hr>
-
-
+    
+    <a href="/upgrade" class="btn btn-dark" onclick="console.log(this.children[0].style.display='inline-block')">
+        <span style="display: none" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        <span>Upgrade</span>
+    </a>
 
     
 </div>
