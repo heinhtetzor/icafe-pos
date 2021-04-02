@@ -10,6 +10,12 @@
         width: 300px;
         height: 200px;
         margin-right: 1rem;        
+        margin-bottom: 1rem;
+    }
+    @media(max-width:700px) {
+        .flex > * {
+            width: 100%;
+        }
     }
     .flex a {
         text-decoration: none;

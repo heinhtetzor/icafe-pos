@@ -61,6 +61,11 @@
             border-radius: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
+        @media(max-width: 580px) {
+            .topnav-center {
+                display: none;
+            }
+        }
     </style>
     @yield('style')
 </head>
@@ -73,7 +78,7 @@
             @if(Auth::guard('waiter')->check())
             <a class="topnav-brand" href="/waiter">
             <img src="/logo.png" width="40" height="40" alt="logo">
-            မင်္ဂလာပါ {{Auth()->guard('waiter')->user()
+            {{Auth()->guard('waiter')->user()
             ->name}}</a>
           
           @endif
