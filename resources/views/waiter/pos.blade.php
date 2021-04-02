@@ -113,14 +113,15 @@
         /* border: 1px solid black; */
         border-radius: 10%;
         width: 100px;
-        background-color: rgb(251, 255, 202); 
+        background-color: rgb(180, 247, 202); 
         height: 90%;        
         cursor: pointer;            
-        position: relative;
+        position: relative;        
     }
     .menugroups-flex-item  span {
         position: absolute;
         bottom: 0;
+        font-weight: 900;
     }
     /* hack for hover to work on mobile (touch) */
     .menugroups-flex-item:hover, .menugroups-flex-item:active {

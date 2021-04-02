@@ -65,6 +65,8 @@
     @yield('style')
 </head>
 <body>
+    @if (Auth::guard('waiter')->check() ||
+         Auth::guard('kitchen')->check())
     <nav class="topnav">
         <div class="topnav-left">
             @if(Auth::guard('waiter')->check())
@@ -149,6 +151,7 @@
             
         </div>
     </nav>
+    @endif
     <main class="main-container">
         @yield('content')
     </main>

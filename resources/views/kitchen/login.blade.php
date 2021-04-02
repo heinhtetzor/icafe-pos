@@ -7,8 +7,8 @@
 </style>
 @endsection
 @section('content')
-<div class="container mt-5">
-    <div class="card bg-primary text-whit col-md-4">
+<div class="container mt-5" style="display: flex;justify-content:center;">
+    <div class="card bg-primary text-white col-md-4">
         <form action="{{route('kitchen.login')}}" method="POST">
             @csrf 
             <div class="card-header">

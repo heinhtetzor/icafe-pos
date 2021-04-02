@@ -137,6 +137,7 @@
     @yield('css')
 </head>
 <body>
+    @if(Auth::guard('admin_account')->check())
     <nav class="topnav">
         <div class="topnav-left">
             <a class="topnav-brand" href="/admin">
@@ -173,6 +174,7 @@
             
         </div>
     </nav>
+    @endif
     <div class="container-fluid">
         @yield('content')
     </div>

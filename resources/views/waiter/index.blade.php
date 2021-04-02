@@ -19,6 +19,7 @@
         background-blend-mode: overlay;
         background-repeat: no-repeat;
         cursor: pointer;
+        border: 0.8px solid #bcbcbc;
     }
     .tables-grid-item-occupied {
         filter: blur(3px);
@@ -29,9 +30,16 @@
         font-weight: 900;
         /* position: absolute;
         top: 40%; */
-        font-size: 4rem;
+        font-size: 2rem;
         color: black;        
-        text-shadow: 4px 4px 5px rgb(228, 4, 4);
+        text-shadow: 4px 4px 5px rgb(144, 172, 250);
+    }
+    .table-group {
+        border: 1px solid #bcbcbc;
+        margin-bottom: 1rem;
+    }
+    .table-group-name {
+        font-size: 0.8rem;
     }
 </style>
 @endsection 
@@ -55,8 +63,8 @@
             @endif
             
             @foreach($table_groups as $table_group)
-                <fieldset>
-                    <legend>{{ $table_group->name }}</legend>
+                <fieldset class="table-group">
+                    <legend class="table-group-name">{{ $table_group->name }}</legend>
                     <div class="tables-grid">
                         @foreach($table_group->tables as $table)        
                         @if(Auth::guard('admin_account')->check())

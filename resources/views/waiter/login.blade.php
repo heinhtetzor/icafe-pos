@@ -7,7 +7,7 @@
 </style>
 @endsection
 @section('content')
-<div class="container mt-5">
+<div class="container mt-5" style="display:flex;justify-content:center;">
     <div class="card bg-success text-white col-md-4">
         <form action="{{route('waiter.login')}}" method="POST">
             @csrf 

@@ -5,7 +5,7 @@
 </style>
 @endsection
 @section('content')
-    <div class="container">
+    <div class="container" style="display: flex;justify-content:center;">        
         <div class="card col-md-4">
             <form action="{{route('admin.login')}}" method="POST">
                 @csrf
