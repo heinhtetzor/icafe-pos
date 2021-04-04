@@ -49,7 +49,7 @@
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <input class="form-control" required type="text" id="datePicker" placeholder="နေ့စွဲရွေးပါ" name="date">                     
+                            <input autocomplete="off" class="form-control" required type="text" id="datePicker" placeholder="နေ့စွဲရွေးပါ" name="date">                     
                         </div>                
                     </div>
                 </div>                
