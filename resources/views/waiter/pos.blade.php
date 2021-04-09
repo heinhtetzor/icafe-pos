@@ -200,17 +200,18 @@
             <div class="menugroups-flex-container">
                 <div class="menugroups-flex">
                     <div data-id="all" class="menugroups-flex-item">
-                        <span>အားလုံး</span>
+                        အားလုံး
                     </div>
                     @forelse($menu_groups as $menu_group)
                     <div data-id="{{$menu_group->id}}" class="menugroups-flex-item">
-                        <span>{{$menu_group->name}}</span>
+                        {{$menu_group->name}}
                     </div>
                     @empty
                     NO MENU GROUP
                     @endforelse
                 </div>
             </div>
+            <input type="text" id="menuSearchInput" class="form-control" placeholder="ရှာပါ">
             <div class="menus-grid">                
                 @forelse($menus as $menu)                
                 <div 
@@ -218,6 +219,7 @@
                     data-menu-id="{{$menu->id}}"
                     data-menu-name="{{$menu->name}}"                
                     data-menu-price="{{$menu->price}}"                
+                    data-menu-code="{{$menu->code}}"
                     class="menus-grid-item"
                     style="background-size:cover;background-image: url('/storage/menu_images/{{$menu->image ?? 'default.png'}}')">
                     <span class="price">{{$menu->price}}</span>
@@ -333,6 +335,7 @@
         const rollbackBtn=document.querySelector('#rollbackBtn');
         const cartModalButton=document.querySelector('#cart-modal-button');
         const menuOptionSelects=document.querySelectorAll('.menu-option');
+        const menuSearchInput=document.querySelector('#menuSearchInput');
 
         //for mobile
         const counter=document.querySelector('#counter');
@@ -345,7 +348,8 @@
         for(menuItem of menuItems) {
             menuItem.addEventListener('click', menuItemClickHandler);
         }
-       
+
+        menuSearchInput.addEventListener('input', menuSearchInputHandler);
         //attching event listener to orderBtn         
         orderBtn.addEventListener('click', orderBtnClickHandler);        
         //attaching event listener to payBtn
@@ -378,11 +382,25 @@
                 x.style.display='block';
             })
             if(menuGroupId==="all") {
-                return originalMenuItems;
+                return;
             }
             originalMenuItems.forEach(x=>{
                 if(x.dataset['menugroupId']!==menuGroupId) {
                     x.style.display='none';
+                }
+            })            
+        }
+
+        function filterByTextSearch(originalMenuItems, text) {
+            originalMenuItems.forEach(x=>{
+                x.style.display='block';
+            }) 
+            if (!text) {
+                return;
+            }
+            originalMenuItems.forEach (x => {                
+                if (!x.dataset['menuName'].includes(text) && !x.dataset['menuCode'].includes(text)) {
+                    x.style.display = 'none';
                 }
             })            
         }
@@ -393,6 +411,11 @@
             filterByMenugroupId(originalMenuItems, e.target.dataset['id']);            
             // redrawMenuList(menus);
         }
+
+        function menuSearchInputHandler (e) {
+            filterByTextSearch(originalMenuItems, e.target.value);
+        }
+
         var orderMenus=[];
         function updateOrderMenusArr(e) {
             const foundIndex=orderMenus.findIndex(x=>x.id==e.target.dataset['menuId']);

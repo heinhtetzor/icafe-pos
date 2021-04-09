@@ -72,7 +72,8 @@
                     <div class="badge bg-success">{{$m->name}}</div>
                 @endforeach
             @endif
-            <span class="badge rounded-pill bg-dark" style="float: right;">{{$total}} - ကျပ်</span>            
+            <span style="float:right;font-weight:bolder">{{$total}} ကျပ်</span>
+
         </span>
     </div>
     <table class="table table-hover">
