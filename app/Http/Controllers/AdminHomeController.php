@@ -50,10 +50,8 @@ class AdminHomeController extends Controller
         //reusing waiter views
         public function tables()
         {
-            $tables=Table::getTablesAsc();
-            $table_groups = TableGroup::orderby('name', 'ASC')->get();
+            $table_groups = TableGroup::all();
             return view('waiter.index', [
-                "tables"=>$tables,
                 "table_groups" => $table_groups
             ]);
         }

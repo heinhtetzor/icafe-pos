@@ -19,7 +19,7 @@ class TableController extends Controller
     public function index()
     {
         $tables = Table::orderBy('name')->get();
-        $tables_groups = TableGroup::orderBy('name')->get();
+        $tables_groups = TableGroup::all();
         return view('admin.tables.index', [
             'tables' => $tables,
             'table_groups' => $tables_groups

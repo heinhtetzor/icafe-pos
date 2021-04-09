@@ -52,11 +52,9 @@ class WaiterHomeController extends Controller
     }
 
     //home aka Tables list
-    function home() {
-        $tables=Table::getTablesAsc();
-        $table_groups = TableGroup::orderby('name', 'ASC')->get();
-        return view("waiter.index", [
-            "tables"=>$tables,
+    function home() {        
+        $table_groups = TableGroup::all();
+        return view("waiter.index", [            
             "table_groups" => $table_groups
         ]);
     }
