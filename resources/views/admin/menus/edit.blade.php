@@ -9,7 +9,7 @@
             @csrf
             @method('put')
             <div class="form-group">
-                <label for="name">Menu Name</label>
+                <label for="name">အမျိုးအမည်</label>
                 <input value="{{$menu->name}}" name="name" type="text" class="form-control" placeholder="Enter Table Name" required>
                 <p style="color:red">{{ $errors->first('name') }}</p>
             </div>
@@ -26,9 +26,14 @@
                 </select>
                 <p style="color:red">{{ $errors->first('menu_group_id') }}</p>
             </div>
+            <div class="form-group">
+                <label for="code">Code</label>
+                <input type="text" value="{{$menu->code}}" type="number" class="form-control" name="code">
+                <p style="color:red">{{ $errors->first('code') }}</p>
+            </div>
             {{-- menu price --}}
             <div class="form-group">
-                <label for="name">Price</label>
+                <label for="price">Price</label>
                 <input value="{{$menu->price}}" name="price" type="number" class="form-control" placeholder="Enter Price" required>
                 <p style="color:red">{{ $errors->first('price') }}</p>
             </div>

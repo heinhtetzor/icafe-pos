@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Menu extends Model
 {
     protected $fillable = [
-        'name', 'price', 'image', 'status', 'created_at', 'updated_at', 'menu_group_id'
+        'name', 'code', 'price', 'image', 'status', 'created_at', 'updated_at', 'menu_group_id'
     ];
     public function menu_group () {
         return $this->belongsTo('App\MenuGroup');
