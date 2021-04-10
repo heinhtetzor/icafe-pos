@@ -41,7 +41,7 @@
 </style>
 @endsection 
 @section('content')
-<div class="container-fluid mt-5">
+<div class="container-fluid mt-5">	
 	<!-- Modal -->
 	<div class="modal" id="settingModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
@@ -91,6 +91,8 @@
 <script>
 	(()=> {
 		const kitchenColor = "{{Auth()->guard('kitchen')->user()->color}}";
+		const kitchenAlert = new Audio('/sounds/kitchen-alert.wav');
+		
 		const name = document.querySelector('#name');
 		name.style.color = getContrastYIQ(kitchenColor);
 
@@ -119,6 +121,8 @@
 	    	console.log(data);
 	    	// location.reload()
 	    	fetchOrderMenus();
+
+			kitchenAlert.play();
 	    })
 
 	   
