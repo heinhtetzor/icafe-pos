@@ -141,11 +141,22 @@ class OrderController extends Controller
 
     function cancelOrderMenu($orderMenuId) {
         $orderMenu = OrderMenu::findorfail($orderMenuId);
+        $orderId = $orderMenu->order_id;
         //mot allowed user to cancel if it is already served to customer
         if ($orderMenu->status === 1) {
             return ["isOk"=>FALSE];
         }
+        $order = Order::findorfail($orderId);
         OrderMenu::findorfail($orderMenuId)->delete();
+        if (count($order->order_menus) < 1) {            
+            TableStatus::where('order_id', $orderId)->update([
+                "status"=>0,
+                "order_id"=>null
+            ]);
+            $order->delete();
+            return ["returnToTables" => TRUE];
+        }
+
         return ["isOk"=>TRUE];
     }
 

@@ -187,6 +187,12 @@
                         }) 
                         .then(res => res.json())
                         .then(res => {
+                            if (res.returnToTables) {
+                                socket.emit('send-order', {
+                                    roomId: 1
+                                }) 
+                                location.href="/admin/pos/tables";
+                            }
                             if (res.isOk) {
                                 fetchOrderMenus();                                
                                 socket.emit('send-order', {
