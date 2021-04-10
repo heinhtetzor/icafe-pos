@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Kitchen;
 use Illuminate\Http\Request;
 use Auth;
 
@@ -12,6 +13,13 @@ class KitchenHomeController extends Controller
     }
     function home() {
     	return view('kitchen.index');
+    }
+    function adjustPanelSize (Request $request) {               
+        Kitchen::findorfail($request->id)->update([
+            "font_size" => $request->font_size,
+            "panel_size" => $request->panel_size
+        ]);
+        return redirect(route('kitchen.home'));
     }
     function kitchenLogin(Request $request) {                  
         if(Auth::guard('kitchen')->attempt($request->only('username', 'password'))) {

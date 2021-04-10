@@ -108,6 +108,7 @@ Route::group(['prefix' => 'kitchen'], function() {
     Route::post('/logout', 'KitchenHomeController@kitchenLogout')->name('kitchen.logout');
 
     Route::group(['middleware' => 'kitchenAccountAuth'], function () {
+        Route::post('/adjustPanelSize', 'KitchenHomeController@adjustPanelSize')->name('kitchen.adjustPanelSize');
         Route::get('/', 'KitchenHomeController@home')->name('kitchen.home');
     });
 });

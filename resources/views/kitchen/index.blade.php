@@ -42,7 +42,42 @@
 @endsection 
 @section('content')
 <div class="container-fluid mt-5">
-    <h2 id="name">{{ Auth()->guard('kitchen')->user()->name }}</h2>
+	<!-- Modal -->
+	<div class="modal" id="settingModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+			<h5 class="modal-title" id="exampleModalLabel">Adjust Size</h5>
+			<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<form action="{{ route('kitchen.adjustPanelSize') }}" method="POST">
+				@csrf
+				<div class="modal-body">
+					<input type="hidden" value="{{Auth()->guard('kitchen')->user()->id}}" name="id">	
+					<div class="form-group">
+						<label for="panel_size">Panel Size</label>
+						<input class="form-range" type="range" name="panel_size" min="300" max="1000" step="50" value="{{Auth()->guard('kitchen')->user()->panel_size}}">				
+					</div>
+					<div class="form-group">
+						<label for="font_size">Font Size</label>
+						<input class="form-range" type="range" name="font_size" min="16" max="50" step="5" value="{{Auth()->guard('kitchen')->user()->font_size}}">
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+					<button type="submit" class="btn btn-primary">Save changes</button>
+				</div>
+			</form>
+		</div>
+		</div>
+	</div>
+
+
+    <h2 id="name">{{ Auth()->guard('kitchen')->user()->name }}
+		<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#settingModal">
+			Setting
+		</button>
+	</h2>	
     <input type="hidden" id="id" value="{{Auth()->guard('kitchen')->user()->id}}">
     {{-- CSRF token --}}
     <input type="hidden" name="_token" id="_token" value="{{csrf_token()}}">
@@ -180,10 +215,11 @@
 		    			}
 		    		});	    						
 		    		container.innerHTML+=`
-		    			<div class="card">
+		    			<div class="card" 
+						style="width: {{Auth()->guard('kitchen')->user()->panel_size}}; font-size: {{Auth()->guard('kitchen')->user()->font_size}};">
 		    				<div class="card-header" style="height: auto;">
 		    					<span>${x.menuGroup.name}</span>		    					
-	    						<button  style='float:right' class='tick-all-btn btn btn-success' data-id="${x.menuGroup.id}">
+	    						<button  style='float:right' class='tick-all-btn btn btn-success btn-sm' data-id="${x.menuGroup.id}">
 	    							✓✓✓
 	    						</button>		    					
 		    				</div>
