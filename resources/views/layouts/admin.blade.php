@@ -7,6 +7,7 @@
     
     <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/chartcss/dist/charts.min.css">
     <script defer src="/bootstrap/js/bootstrap.min.js"></script>
     
     <style>

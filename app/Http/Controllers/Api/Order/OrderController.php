@@ -111,11 +111,11 @@ class OrderController extends Controller
 
         //TODO::check of all orders are served to customers 
         $order=Order::lockForUpdate()->findorfail($orderId);
-        foreach($order->order_menus as $om) {
-            if($om->status===0) {
-                return ["isOK"=>FALSE];                
-            }
-        }
+        // foreach($order->order_menus as $om) {
+        //     if($om->status===0) {
+        //         return ["isOK"=>FALSE];                
+        //     }
+        // }
 
 
         //change status and add waiterId

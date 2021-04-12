@@ -50,9 +50,10 @@ trait OrderFunctions {
                      waiters.name as waiter,
                      SUM(order_menus.quantity) as quantity')
         // ->with('menu', 'waiter', 'order', 'order.table')
+        ->where('order_menus.status', 0)
         ->orderBy('order_menus.status', 'ASC')
         ->orderBy('order_menus.created_at', 'DESC')
-        ->groupBy('order_menus.menu_id', 'order_menus.order_id', 'order_menus.status')        
+        ->groupBy('order_menus.menu_id', 'order_menus.order_id', 'order_menus.status')                
         ->get();        
         return $orderMenus;
     }
