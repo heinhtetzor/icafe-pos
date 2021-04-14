@@ -14,8 +14,8 @@ class AddUsernameAndPasswordToKitchensTable extends Migration
     public function up()
     {
         Schema::table('kitchens', function (Blueprint $table) {
-            $table->string('username')->unique();
-            $table->string('password', 255);
+            $table->string('username')->nullable()->unique();
+            $table->string('password', 255)->nullable();
         });
     }
 

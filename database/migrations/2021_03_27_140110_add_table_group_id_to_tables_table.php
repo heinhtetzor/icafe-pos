@@ -14,7 +14,7 @@ class AddTableGroupIdToTablesTable extends Migration
     public function up()
     {
         Schema::table('tables', function (Blueprint $table) {
-            $table->foreignId('table_group_id')->constrained();
+            $table->foreignId('table_group_id')->nullable()->constrained();
         });
     }
 

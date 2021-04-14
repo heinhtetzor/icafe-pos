@@ -14,7 +14,7 @@ class AddColumnToOrdersTable extends Migration
     public function up()
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->string('invoice_no')->after('id');
+            $table->string('invoice_no')->nullable()->after('id');
         });
     }
 

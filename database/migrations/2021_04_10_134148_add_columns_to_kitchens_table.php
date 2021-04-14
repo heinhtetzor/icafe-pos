@@ -14,8 +14,8 @@ class AddColumnsToKitchensTable extends Migration
     public function up()
     {
         Schema::table('kitchens', function (Blueprint $table) {
-            $table->integer('panel_size')->after('color');
-            $table->integer('font_size')->after('panel_size');
+            $table->integer('panel_size')->nullable()->after('color');
+            $table->integer('font_size')->nullable()->after('panel_size');
         });
     }
 
