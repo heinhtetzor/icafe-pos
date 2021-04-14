@@ -42,7 +42,10 @@ Route::group(['prefix' => 'admin'], function () {
     
     Route::group(['middleware' => 'adminAccountAuth'], function () {
         Route::get('/', 'AdminHomeController@admin')->name('admin.home');
-        
+
+        // express pos
+        Route::get('/express', 'ExpressHomeController@home')->name('express.home');
+
         Route::get('/tables', 'WaiterHomeController@home')->name('waiter.home');
         //go to POS instance
         //id=tableId

@@ -111,6 +111,8 @@ class OrderController extends Controller
 
         //TODO::check of all orders are served to customers 
         $order=Order::lockForUpdate()->findorfail($orderId);
+        //disabled to pay bill without kitchen confirmation
+        
         // foreach($order->order_menus as $om) {
         //     if($om->status===0) {
         //         return ["isOK"=>FALSE];                

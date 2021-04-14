@@ -36,5 +36,28 @@
                 </tr>
             </tbody>   
         </table>
+
+        <form id="delete-form" class="hidden" action="{{ route('orders.destroy', $order->id) }}" method="post">
+            @method('DELETE')
+            @csrf
+            <input type="hidden" name="id" value="{{ $order->id }}">
+        </form>
+        <button class="btn btn-danger" id="delete" onclick="deleteHandler()">
+            Delete
+        </button>
     </div>
+@endsection
+
+@section('js')
+<script>
+    function deleteHandler () {
+        if (confirm("Are you sure?")) {
+            document.querySelector('#delete-form').submit();
+            return true;   
+        }
+        else {
+            return false;
+        }
+    }
+</script>
 @endsection

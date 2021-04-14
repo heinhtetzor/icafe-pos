@@ -44,6 +44,16 @@
                 </div>
             </div>
         </a>
+        <a href="{{route('express.home')}}">
+            <div class="card bg-dark text-white">
+                <div class="card-header">
+                    <h2 class="card-title"><i>Express</i></h2>
+                </div>
+                <div class="card-body">
+                     
+                </div>
+            </div>
+        </a>
     </div>
 
     <hr>

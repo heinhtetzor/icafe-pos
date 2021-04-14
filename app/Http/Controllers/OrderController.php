@@ -151,8 +151,10 @@ class OrderController extends Controller
      * @param  \App\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Order $order)
+    public function destroy($id)
     {
-        //
+        $order = Order::findorfail($id);
+        $order->delete();
+        return redirect("/admin/reports/day");
     }
 }
