@@ -111,7 +111,7 @@
                             <td>{{$order->created_at->format('d-M-Y')}}</td>
                             <td>{{$order->created_at->format('h:i A')}}</td>                            
                             <td>{{($order->status===0) ? "🟠" : "🟢"}}</td>
-                            <td>{{$order->table->name}}</td>
+                            <td>{{$order->table->name ?? "DELETED" }}</td>
                             @php
                             $total=0; 
                             foreach($order->order_menus as $or) {

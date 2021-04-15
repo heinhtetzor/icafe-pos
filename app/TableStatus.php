@@ -9,7 +9,7 @@ class TableStatus extends Model
     protected $fillable = ['status', 'table_id', 'order_id'];
 
     public function isTableFree() {
-        if($this->status === 0) return TRUE;
+        if($this->status == 0) return TRUE;
 
         return FALSE;
     }    

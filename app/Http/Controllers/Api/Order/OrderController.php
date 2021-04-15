@@ -36,6 +36,7 @@ class OrderController extends Controller
         }
         $table = Table::lockForUpdate()->findorfail($tableId);
         $orderId=null;
+        
         if($table->table_status->isTableFree()) {
             //create new order
             $orderData = [
@@ -45,6 +46,7 @@ class OrderController extends Controller
             ];
         
             $order = Order::create($orderData);
+            
             $tableStatus = TableStatus::where('table_id', $tableId)->update([
                 'status'=>1,
                 'order_id'=>$order->id
@@ -57,8 +59,7 @@ class OrderController extends Controller
             $orderId = $table->table_status->order_id;
         }
 
-        //for loop order_menus
-
+        //for loop order_menus        
         foreach($request->get('orderMenus') as $orderMenu) {
             if ($orderMenu["quantity"] < 1) {
                 continue;
