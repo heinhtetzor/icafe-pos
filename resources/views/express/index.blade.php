@@ -22,10 +22,14 @@
 <div class="container">
     <div class="menus-grid">
         @foreach ($menus as $menu)
-        <div class="menus-grid-item">
+        <div class="menus-grid-item"
+        style="background-size:cover;background-image: url('/storage/menu_images/{{$menu->image ?? 'default.png'}}')">
          {{ $menu->name }}
         </div>        
         @endforeach
     </div>
 </div>
+@endsection
+@section('js')
+
 @endsection

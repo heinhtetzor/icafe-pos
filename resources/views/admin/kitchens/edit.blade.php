@@ -26,7 +26,7 @@
                    @foreach($menu_groups as $menu_group)
                    <option 
                         @foreach($kitchen->menu_groups as $mgk)
-                            @if($mgk->id===$menu_group->id)
+                            @if($mgk->id==$menu_group->id)
                             selected
                             @endif
                         @endforeach

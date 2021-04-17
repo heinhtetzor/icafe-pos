@@ -16,6 +16,8 @@
         <section>
             <form action="{{ route('kitchens.store') }}" method="post">
                 @csrf
+                <input type="hidden" name="panel_size" value="300">
+                <input type="hidden" name="font_size" value=16>
                 <div class="form-group">
                     <label for="name">Kitchen Name</label>
                     <input autofocus name="name" type="text" class="form-control" placeholder="Enter Kitchen Name" required>

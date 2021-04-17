@@ -197,7 +197,7 @@
 		    		let orderMenus="";
 		    		x.orderMenus.forEach(y=> {						
 		    			//if havent served to customer
-		    			if(y.status===0) {
+		    			if(y.status==0) {
 			    			orderMenus+=`	
 			    				<div class="order-item" id="item">
 			    					${y.quantity} x ${y.menu}  

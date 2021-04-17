@@ -20,7 +20,7 @@
                     <option>====================</option>
                     @foreach ($menu_groups as $menu_group)
                     <option
-                    @if($menu_group->id === $menu->menu_group_id) selected @endif
+                    @if($menu_group->id == $menu->menu_group_id) selected @endif
                     value="{{$menu_group->id}}">{{$menu_group->name}}</option>
                     @endforeach
                 </select>

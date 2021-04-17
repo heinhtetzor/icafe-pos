@@ -255,7 +255,7 @@
                             <tr class="cartRowsToBeSaved" 
                             data-id="{{$order_menu->menu_id}}" 
                             data-price="{{$order_menu->price}}"
-                            data-is-foc="{{$order_menu->is_foc === 1 ? 'true' : 'false'}}">
+                            data-is-foc="{{$order_menu->is_foc == 1 ? 'true' : 'false'}}">
                                 <td id="qty">{{$order_menu->quantity}}</td>
                                 <td>x</td>
                                 <td>{{$order_menu->menu->name}}</td>
