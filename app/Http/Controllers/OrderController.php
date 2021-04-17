@@ -154,6 +154,10 @@ class OrderController extends Controller
     public function destroy($id)
     {
         $order = Order::findorfail($id);
+        //temporary solution to delete related         
+        foreach ($order->order_menus as $om) {
+            $om->delete();
+        }
         $order->delete();
         return redirect("/admin/reports/day");
     }
