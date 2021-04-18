@@ -3,6 +3,8 @@ namespace App\Http\Traits;
 use App\Order;
 use App\TableStatus;
 use App\OrderMenu;
+use Illuminate\Support\Facades\DB;
+
 trait OrderFunctions {
     
     function getActiveOrder($tableId) {
@@ -13,6 +15,20 @@ trait OrderFunctions {
         $table_status=$table_statuses[0];
   
         return $table_status->order;
+    }
+
+    function getSummaryByOrder ($id)
+    {
+        //for summary panel
+        $orderMenuGroups=DB::table('order_menus')
+        ->join('menus', 'order_menus.menu_id', '=', 'menus.id')
+        ->join('menu_groups', 'menus.menu_group_id', '=', 'menu_groups.id')
+        ->join('orders', 'orders.id', '=', 'order_menus.order_id')                      
+        ->selectRaw('menu_groups.id as id, menu_groups.name as name, SUM(order_menus.quantity) as quantity, SUM(order_menus.quantity*order_menus.price) as total')
+        ->where('orders.id', '=', $id)                              
+        ->groupBy('menu_groups.id')
+        ->get();  
+        return $orderMenuGroups;    
     }
 
     //used in pos cart view
@@ -29,7 +45,7 @@ trait OrderFunctions {
         return OrderMenu::where('order_id', $order->id)
                         ->with('menu', 'waiter')  
                         ->orderBy('created_at', 'DESC')                  
-                        ->get();
+                        ->simplePaginate(30);
     }
 
     //used by kithen home view

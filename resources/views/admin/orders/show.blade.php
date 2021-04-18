@@ -1,5 +1,23 @@
 @extends('layouts.admin')
 @section('css')
+<style>
+    body {
+        background-color: rgb(233, 232, 232);
+    }
+    .details {
+        /* border: 2px solid #a7a5a5; */
+        border-radius: 10px;
+        background-color: #fff;
+        position: fixed;
+        /*width: 30%;*/
+        min-height: 80vh;
+        padding: 1rem;
+    }
+    .invoice-table {
+        background-color: #fff; 
+        border-radius: 10px;
+    }
+</style>
 @endsection
 @section('content')
     <div class="container">
@@ -10,33 +28,73 @@
 
         </h2>
 
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Qty</th>
-                    <th></th>
-                    <th>အမျိုးအမည်</th>
-                    <th>နှုန်း</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($orderMenus as $orderMenu)
-                <tr>
-                    <td>{{$orderMenu->quantity}}</td>
-                    <td>x</td>
-                    <td>{{$orderMenu->menu->name}}</td>
-                    <td>{{$orderMenu->price}}</td>
-                    <td>{{$orderMenu->price*$orderMenu->quantity}} ကျပ်</td>
-                </tr>
-                @endforeach
-                <tr style="font-weight: 900">
-                    <td align="center" colspan="4">စုစုပေါင်း</td>
-                    <td>{{$total}} ကျပ်</td>
-                </tr>
-            </tbody>   
-        </table>
+        <div class="row">
+            <div class="col-md-8">
+                <table class="table invoice-table">
+                    <thead>
+                        <tr>
+                            <th>Qty</th>
+                            <th></th>
+                            <th>အမျိုးအမည်</th>
+                            <th>နှုန်း</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($orderMenus as $orderMenu)
+                        <tr>
+                            <td>{{$orderMenu->quantity}}</td>
+                            <td>x</td>
+                            <td>{{$orderMenu->menu->name}}</td>
+                            <td>{{$orderMenu->price}}</td>
+                            <td>{{$orderMenu->price*$orderMenu->quantity}} ကျပ်</td>
+                        </tr>
+                        @endforeach
+                        <tr style="font-weight: 900">
+                            <td align="center" colspan="4">စုစုပေါင်း</td>
+                            <td>{{$total}} ကျပ်</td>
+                        </tr>
+                    </tbody>   
+                </table>
+            </div>
+            <div class="col-md-4">
+                <section class="details">
+                    <h4>အကျဉ်းချုပ်</h4>
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Menu အုပ်စုအမည်</th>
+                                <th>အရေအတွက်</th>
+                                <th>စုစုပေါင်းကျသင့်ငွေ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php $grandTotal=0; @endphp
+                            @forelse($orderMenuGroups as $mg)
+                            <tr>
+                                <td>{{$mg->name}}</td>
+                                <td>{{$mg->quantity}}</td>
+                                <td>{{$mg->total}} ကျပ်</td>
+                                @php $grandTotal+=$mg->total; @endphp
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="3">မရှိသေးပါ</td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                        <tfoot>
+                            <tr style="font-weight: 900">
+                                <td colspan="2">စုစုပေါင်း</td>                        
+                                <td>{{$grandTotal}} ကျပ်</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </section>
+            </div>
+        </div>
 
+        <br>
         <form id="delete-form" class="hidden" action="{{ route('orders.destroy', $order->id) }}" method="post">
             @method('DELETE')
             @csrf

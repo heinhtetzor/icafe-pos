@@ -22,6 +22,14 @@ class Order extends Model
     public function waiter() {
         return $this->belongsTo('App\Waiter');
     }
+    public static function getExpressOrders ()
+    {
+        $express_orders = Order::where('table_id', 'express')
+        ->orderby('created_at', 'DESC')
+        ->simplePaginate(10);
+        return $express_orders;
+    }
+
     public static function generateInvoiceNumber() {
         //get today datevap
         $today = Carbon::today();

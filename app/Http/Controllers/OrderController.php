@@ -112,12 +112,14 @@ class OrderController extends Controller
     {        
         $order=Order::findorfail($id);
         $orderMenus=$this->getOrderMenusGrouped($order);
+        $orderMenuGroups = $this->getSummaryByOrder($order->id);
         $total=$orderMenus->sum(function($t) {
             return $t->quantity*$t->price;
         });
         return view('admin.orders.show', [
             'order'=>$order,
             'orderMenus'=>$orderMenus,
+            'orderMenuGroups'=>$orderMenuGroups,
             'total'=>$total
         ]);
     }
@@ -151,14 +153,24 @@ class OrderController extends Controller
      * @param  \App\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
+    public function destroy($id, Request $request)
+    {                
+        $section = explode("/", $request->getRequestUri());
+        
         $order = Order::findorfail($id);
         //temporary solution to delete related         
         foreach ($order->order_menus as $om) {
             $om->delete();
         }
         $order->delete();
-        return redirect("/admin/reports/day");
+        
+        if ($section[2] === "orders") 
+        {
+            return redirect("/admin/reports/day");
+        }
+        if ($section[2] === "express") 
+        {
+            return redirect()->back();
+        }
     }
 }

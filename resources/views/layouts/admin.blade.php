@@ -87,7 +87,7 @@
         bottom: 10px;
         background-color: #fff;
         color: blueviolet;
-        z-index: 1000;
+        z-index: 1;
     }
 
     /* for sidebar */

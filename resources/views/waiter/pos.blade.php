@@ -35,7 +35,7 @@
         grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
         grid-row-gap: 2rem;
         grid-column-gap: 4px;
-        max-height: var(--panel-height);
+        max-height: 60vh;
         overflow-y: scroll;
         /* padding-bottom: 3rem; */
     }
@@ -89,7 +89,7 @@
         border: 1px solid #aca9a9;
         border-radius: 10px;
         padding: 8px;
-        height: var(--panel-height);
+        height: 80vh;
         overflow-y: scroll;        
     }
     .card-footer {
@@ -243,7 +243,7 @@
                     <table class="table table-hovered cart-table text-white">
                         <thead>
                             <tr>
-                                <th>အရေအတွက်</th>
+                                <th>Qty</th>
                                 <th></th>
                                 <th>အမည်</th>                                
                                 <th>နှုန်း</th>

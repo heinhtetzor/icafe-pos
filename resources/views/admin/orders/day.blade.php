@@ -111,7 +111,13 @@
                             <td>{{$order->created_at->format('d-M-Y')}}</td>
                             <td>{{$order->created_at->format('h:i A')}}</td>                            
                             <td>{{($order->status==0) ? "🟠" : "🟢"}}</td>
-                            <td>{{$order->table->name ?? "DELETED" }}</td>
+                            @if ($order->table)
+                            <td>{{$order->table->name}}</td>
+                            @elseif ($order->table_id == "express")
+                            <td>{{$order->table_id}}</td>
+                            @else 
+                            <td>"DELETED"</td>
+                            @endif
                             @php
                             $total=0; 
                             foreach($order->order_menus as $or) {

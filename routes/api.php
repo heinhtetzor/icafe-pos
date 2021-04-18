@@ -31,6 +31,9 @@ Route::get('/getMenusByMenuGroup', 'Api\Menu\MenuController@getMenusByMenuGroup'
 //submit order
 Route::post('/submitOrder/{tableId}/{waiterId}', 'Api\Order\OrderController@submitOrder');
 
+//add order for express 
+Route::post('/addOrderMenu', 'Api\Order\OrderController@addOrderMenu');
+
 //cancel order menu (triggered from pos detail order view)
 Route::post('/orderMenus/cancel/{orderMenuId}', 'Api\Order\OrderController@cancelOrderMenu');
 

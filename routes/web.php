@@ -45,6 +45,10 @@ Route::group(['prefix' => 'admin'], function () {
 
         // express pos
         Route::get('/express', 'ExpressHomeController@home')->name('express.home');
+        Route::get('/express/create', 'ExpressHomeController@create')->name('express.create');
+        Route::get('/express/show/{id}', 'OrderController@show')->name('express.show');
+        Route::post('/express/store', 'ExpressHomeController@store')->name('express.store');
+        Route::delete('/express/destroy/{id}', 'OrderController@destroy')->name('express.destroy');
 
         Route::get('/tables', 'WaiterHomeController@home')->name('waiter.home');
         //go to POS instance

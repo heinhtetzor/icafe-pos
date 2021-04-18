@@ -76,7 +76,7 @@
             .then(res=> {                            
                 table.innerHTML="";
                 orderNumber.innerHTML="Order No. " + res.order.invoice_no;
-                res.orderMenus.forEach(orderMenu=> {
+                res.orderMenus.data.forEach(orderMenu=> {
                     //if waiter is null, it is ordered by admin
                     let orderedBy=orderMenu.waiter ? orderMenu.waiter.name : "Admin";
                     table.innerHTML+=`
@@ -92,14 +92,14 @@
                             <td>
                                 <select data-id="${orderMenu.id}" class="menu-option">
                                     <option value="undo">-----</option>
-                                    <option ${orderMenu.is_foc === 1 ? 'selected' : ''} value="foc">
+                                    <option ${orderMenu.is_foc == 1 ? 'selected' : ''} value="foc">
                                         FOC
                                     </option>
                                 </select>
                             </td>
                             <td>
-                                <button class="btn btn-danger cancel-order-menu" data-id="${orderMenu.id}">
-                                    <i style="pointer-events:none;" class="bi bi-x-octagon"></i>
+                                <button class="btn cancel-order-menu" data-id="${orderMenu.id}">
+                                ❌
                                 </button>
                             </td>
                             @endif
@@ -108,15 +108,15 @@
                         </tr>            
                         `
                 })                                
-                table.innerHTML+=`
-                    <tfoot>
-                        <tr>
-                            <th style="text-align:right" colspan="2">စုစုပေါင်း</th>
-                            <th>${res.total}</th>
-                            <th colspan="2"></th>
-                        </tr>
-                    </tfoot>
-                `;
+                // table.innerHTML+=`
+                //     <tfoot>
+                //         <tr>
+                //             <th style="text-align:right" colspan="2">စုစုပေါင်း</th>
+                //             <th>${res.total}</th>
+                //             <th colspan="2"></th>
+                //         </tr>
+                //     </tfoot>
+                // `;
                 
                 const menuOptionSelects=document.querySelectorAll('.menu-option');
                 for (menuOptionSelect of menuOptionSelects) {                    
@@ -151,7 +151,7 @@
                         })
                         .catch(err => console.log(err));
                     }
-                    else if (e.target.value === 'undo') {
+                    else if (e.target.value == 'undo') {
                         fetch(`/api/orderMenus/undoOption/${id}`, {
                             method: 'POST',
                             headers: {

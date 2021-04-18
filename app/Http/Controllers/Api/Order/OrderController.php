@@ -11,6 +11,8 @@ use App\MenuGroup;
 use App\TableStatus;
 use Illuminate\Http\Request;
 use App\Http\Traits\OrderFunctions;
+use Exception;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
@@ -76,6 +78,29 @@ class OrderController extends Controller
         return ["isOk"=>TRUE, "orderMenus"=>$request->get('orderMenus')];
     }
 
+    function addOrderMenu (Request $request)
+    {
+        try {            
+            $orderMenu = OrderMenu::create([
+                'waiter_id' => $request->waiterId,
+                'menu_id' => $request->menuId,
+                'price' => $request->menuPrice, 
+                'order_id' => $request->orderId,
+                'quantity' => 1,
+                'status' => 0,
+                'is_foc' => 0
+            ]);
+            return response()->json([
+                "orderMenu" => $orderMenu
+            ]);
+        }
+        catch (Exception $e) {            
+            return response()->json([
+                "message" => $e->getMessage()
+            ], 500);
+        }
+    }
+
     function makeFoc($orderMenuId)
     {
         OrderMenu::findorfail($orderMenuId)
@@ -90,7 +115,7 @@ class OrderController extends Controller
     {
         $om = OrderMenu::findorfail($orderMenuId);
         $originalPrice = $om->menu->price;
-        if ($om->is_foc === 1) {
+        if ($om->is_foc == 1) {
             $om->update([
                 'is_foc' => 0,
                 'price' => $originalPrice
@@ -115,7 +140,7 @@ class OrderController extends Controller
         //disabled to pay bill without kitchen confirmation
         
         // foreach($order->order_menus as $om) {
-        //     if($om->status===0) {
+        //     if($om->status==0) {
         //         return ["isOK"=>FALSE];                
         //     }
         // }
