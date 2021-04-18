@@ -10,7 +10,8 @@
         background-color: #fff;
         position: fixed;
         /*width: 30%;*/
-        min-height: 80vh;
+        max-height: 80vh;
+        overflow-y: scroll;
         padding: 1rem;
     }
     .list-container table {

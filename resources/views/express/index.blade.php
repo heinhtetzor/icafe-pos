@@ -106,6 +106,27 @@
 @section('content')
 <div class="container">
     <input type="hidden" name="_token" id="_token" value="{{csrf_token()}}">
+    {{-- bulk insert modal --}}
+    <div class="modal fade" id="bulkInsertModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Choose Waiter</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>                
+                <button id="payBill" class="btn btn-primary">
+                  ရှင်းမည်
+              </button>
+            </div>
+          </div>
+        </div>
+      </div> 
+
     {{-- paybill modal --}}
     <div class="modal fade" id="payBillModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -202,6 +223,10 @@
 @endsection
 @section('script')
 <script>    
+    document.onreadystatechange = function () {
+        const bulkInsertModal = new bootstrap.Modal(document.getElementById('bulkInsertModal'), {}); 
+        console.log(bulkInsertModal)
+    };
 
     const token=document.querySelector('#_token').value;            
 
@@ -220,9 +245,18 @@
     menuGridItems.forEach (x => {
         x.addEventListener('click', menuGridItemHandler);
     })
+    menuGridItems.forEach (x => {
+        x.addEventListener('contextmenu', menuGridItemRightClickHandler);
+    })
     //attaching event listeners for menu groups
     for(menuGroupItem of menuGroupItems) {
         menuGroupItem.addEventListener('click', menuGroupItemClickHandler);
+    }
+
+    function menuGridItemRightClickHandler (e) {
+        e.preventDefault();
+        bulkInsertModal.show();
+        
     }
 
     function payBillBtnHandler () {        

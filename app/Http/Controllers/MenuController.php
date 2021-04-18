@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\MenuRequest;
 use App\Menu;
 use App\MenuGroup;
+use App\OrderMenu;
+use Exception;
 use Illuminate\Http\Request;
 
 class MenuController extends Controller
@@ -110,7 +112,16 @@ class MenuController extends Controller
      */
     public function destroy($id)
     {
-        Menu::findorfail(intval($id))->delete();
-        return redirect('/admin/menus');
+        try {
+            $oms = OrderMenu::where('order_id', 3434)->take(10);
+            if ($oms) {
+                throw new Exception("ဖျက်လို့မရပါ");
+            }
+            Menu::findorfail(intval($id))->delete();
+            return redirect('/admin/menus');
+        }
+        catch (Exception $e) {
+            return redirect()->back()->with("error", $e->getMessage());
+        }
     }
 }

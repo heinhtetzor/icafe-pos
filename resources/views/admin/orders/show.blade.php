@@ -9,13 +9,16 @@
         border-radius: 10px;
         background-color: #fff;
         position: fixed;
-        /*width: 30%;*/
-        min-height: 80vh;
+        /*width: 30%;*/        
+        max-height: 80vh;
+        overflow-y: scroll;
         padding: 1rem;
     }
-    .invoice-table {
+    .list-container {
+        /* max-height: 80vh; */
         background-color: #fff; 
-        border-radius: 10px;
+        border-radius: 10px;        
+        /* overflow-y: scroll; */
     }
 </style>
 @endsection
@@ -29,7 +32,7 @@
         </h2>
 
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-8 list-container">
                 <table class="table invoice-table">
                     <thead>
                         <tr>

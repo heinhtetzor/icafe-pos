@@ -4,6 +4,11 @@
     <h2>
     <a href="{{route('menugroups.index')}}">🔙</a>
     Editing {{ $menu->name}}</h2>  
+    @if (session('error'))
+    <div class="alert alert-danger">
+        {{session('error')}}
+    </div>
+    @endif
     <section>
         <form action="{{ route('menus.update', $menu->id) }}" method="post" enctype="multipart/form-data">
             @csrf
@@ -50,7 +55,7 @@
         </form>
         <hr>
         <button 
-            onclick="document.querySelector('#delete-form').submit();" 
+            onclick="if(!confirm('Are you sure?')) return; document.querySelector('#delete-form').submit();" 
             class="btn btn-danger">
                 Delete	
             </button>
