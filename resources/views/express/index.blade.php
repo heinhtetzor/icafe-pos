@@ -119,9 +119,9 @@
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>                
-                <button id="payBill" class="btn btn-primary">
+                <!-- <button id="payBill" class="btn btn-primary">
                   ရှင်းမည်
-              </button>
+              </button> -->
             </div>
           </div>
         </div>
@@ -223,11 +223,6 @@
 @endsection
 @section('script')
 <script>    
-    document.onreadystatechange = function () {
-        const bulkInsertModal = new bootstrap.Modal(document.getElementById('bulkInsertModal'), {}); 
-        console.log(bulkInsertModal)
-    };
-
     const token=document.querySelector('#_token').value;            
 
     const ticker = document.querySelector('#ticker');    
@@ -255,7 +250,11 @@
 
     function menuGridItemRightClickHandler (e) {
         e.preventDefault();
-        bulkInsertModal.show();
+        const myModal = new bootstrap.Modal(document.getElementById('bulkInsertModal'), {
+            backdrop: true
+            })
+        myModal.show();
+        // bulkInsertModal.show();
         
     }
 
