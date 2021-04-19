@@ -115,13 +115,34 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                <input type="hidden" id="modal-menu-id">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="modal-menu-name">Menu အမည်</label>
+                            <input disabled type="text" class="form-control" id="modal-menu-name">
+                        </div>  
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="modal-menu-price">နှုန်း</label>
+                            <input type="text" disabled class="form-control" id="modal-menu-price">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="modal-menu-quantity">အရေအတွက်</label>
+                            <input type="number" class="form-control" id="modal-menu-quantity">
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>                
-                <!-- <button id="payBill" class="btn btn-primary">
-                  ရှင်းမည်
-              </button> -->
+                <button id="modal-menu-order-btn" class="btn btn-primary">
+                    မှာမည်
+              </button>
             </div>
           </div>
         </div>
@@ -223,6 +244,12 @@
 @endsection
 @section('script')
 <script>    
+    let bulkInsertModal;
+    window.addEventListener('load', () => {        
+        bulkInsertModal = new bootstrap.Modal(document.getElementById('bulkInsertModal'), {
+            backdrop: true
+        })
+    })
     const token=document.querySelector('#_token').value;            
 
     const ticker = document.querySelector('#ticker');    
@@ -248,15 +275,35 @@
         menuGroupItem.addEventListener('click', menuGroupItemClickHandler);
     }
 
-    function menuGridItemRightClickHandler (e) {
+    const modalMenuOrderBtn = document.querySelector('#modal-menu-order-btn');
+    const modalMenuName = document.querySelector('#modal-menu-name');
+    const modalMenuQuantity = document.querySelector('#modal-menu-quantity');
+    const modalMenuId = document.querySelector('#modal-menu-id');
+    const modalMenuPrice = document.querySelector('#modal-menu-price');
+
+    modalMenuOrderBtn.addEventListener('click', modalMenuOrderBtnHandler);
+
+    function menuGridItemRightClickHandler (e) {        
         e.preventDefault();
-        const myModal = new bootstrap.Modal(document.getElementById('bulkInsertModal'), {
-            backdrop: true
-            })
-        myModal.show();
-        // bulkInsertModal.show();
-        
+        modalMenuName.value = e.target.dataset['menuName'];
+        modalMenuId.value = e.target.dataset['menuId'];
+        modalMenuPrice.value = e.target.dataset['menuPrice'];
+        modalMenuQuantity.value = e.target.dataset['menuQuantity'];
+        bulkInsertModal.show();
     }
+
+    function modalMenuOrderBtnHandler () {        
+        const menuId = modalMenuId.value;
+        const menuName = modalMenuName.value;
+        const menuQuantity = modalMenuQuantity.value;        
+        const menuPrice = modalMenuPrice.value;
+        
+        addOrderMenuApiCall(menuId, menuName, menuPrice, menuQuantity);
+
+        bulkInsertModal.hide();
+    }
+
+
 
     function payBillBtnHandler () {        
         const waiterId = waiterIdSelect.value;
@@ -290,12 +337,15 @@
     }
 
     function menuGridItemHandler (e) {
-        const menuId = e.target.dataset['menuId'];
-        const menuName = e.target.dataset['menuName'];
-        const menuPrice = e.target.dataset['menuPrice'];
-        const menuCode = e.target.dataset['menuCode'];
-        const waiterId = 1;
-        const tableId = 1;
+        const menuId = e.target.dataset['menuId'];        
+        const menuName = e.target.dataset['menuName'];        
+        const menuPrice = e.target.dataset['menuPrice'];        
+
+        addOrderMenuApiCall (menuId, menuName, menuPrice, 1);
+    }
+
+    function addOrderMenuApiCall (menuId, menuName, menuPrice, menuQuantity) {
+        const waiterId = 1;        
         const orderId = {{$order->id}};        
 
         fetch(`/api/addOrderMenu`, {
@@ -311,13 +361,14 @@
                 waiterId,
                 menuId,
                 menuPrice,
-                orderId
+                orderId,
+                quantity: menuQuantity
             })
         })
         .then (res => res.json())
         .then (res => {            
             ticker.classList.add('badge', 'bg-success');
-            ticker.innerHTML = `${menuName} x 1`;
+            ticker.innerHTML = `${menuName} x ${menuQuantity}`;
         })
         .catch (err => {
             alert("Error");

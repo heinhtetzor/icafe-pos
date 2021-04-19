@@ -61,7 +61,7 @@ class OrderController extends Controller
             $orderId = $table->table_status->order_id;
         }
 
-        //for loop order_menus        
+        //for loop order_menus
         foreach($request->get('orderMenus') as $orderMenu) {
             if ($orderMenu["quantity"] < 1) {
                 continue;
@@ -86,7 +86,7 @@ class OrderController extends Controller
                 'menu_id' => $request->menuId,
                 'price' => $request->menuPrice, 
                 'order_id' => $request->orderId,
-                'quantity' => 1,
+                'quantity' => $request->quantity,
                 'status' => 0,
                 'is_foc' => 0
             ]);
