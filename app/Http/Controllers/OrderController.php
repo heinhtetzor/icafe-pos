@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use DB;
 use Carbon\Carbon;
 use App\Http\Traits\OrderFunctions;
+use App\OrderMenu;
 
 class OrderController extends Controller
 {
@@ -154,14 +155,13 @@ class OrderController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id, Request $request)
-    {                
+    {
         $section = explode("/", $request->getRequestUri());
-        
+
         $order = Order::findorfail($id);
-        //temporary solution to delete related         
-        foreach ($order->order_menus as $om) {
-            $om->delete();
-        }
+        
+        OrderMenu::where('order_id', $id)->delete();
+        
         $order->delete();
         
         if ($section[2] === "orders") 

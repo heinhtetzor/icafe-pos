@@ -59,7 +59,7 @@ class AdminHomeController extends Controller
         public function pos($id)
         {
             // $menus=Menu::getActiveMenus();
-            $menus=Menu::getActiveMenusOrderByPopularity();
+            $menus=Menu::getActiveMenus();
             $menu_groups=MenuGroup::getMenuGroups();
             $waiters=Waiter::all();
             $table=Table::findorfail($id);

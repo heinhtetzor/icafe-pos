@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Table extends Model
 {
+    const EXPRESS = 0;
+
     public function rules() {
         return [
             'name' => 'required|unique:tables,name,' . $this->id,

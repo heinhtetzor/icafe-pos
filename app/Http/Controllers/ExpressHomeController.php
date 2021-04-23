@@ -13,7 +13,7 @@ class ExpressHomeController extends Controller
 {
     public function home ()
     {
-        $menus = Menu::getActiveMenusOrderByPopularity();
+        $menus = Menu::getActiveMenus();
         $menu_groups=MenuGroup::getMenuGroups();
         $expressOrders = Order::getExpressOrders();
         $waiters = Waiter::all();

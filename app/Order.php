@@ -24,7 +24,7 @@ class Order extends Model
     }
     public static function getExpressOrders ()
     {
-        $express_orders = Order::where('table_id', 'express')
+        $express_orders = Order::where('table_id', Table::EXPRESS)
         ->orderby('created_at', 'DESC')
         ->simplePaginate(10);
         return $express_orders;

@@ -48,7 +48,7 @@
                         <tr>
                             <td>{{$orderMenu->quantity}}</td>
                             <td>x</td>
-                            <td>{{$orderMenu->menu->name}}</td>
+                            <td>{{$orderMenu->menu->name ?? ""}}</td>
                             <td>{{$orderMenu->price}}</td>
                             <td>{{$orderMenu->price*$orderMenu->quantity}} ကျပ်</td>
                         </tr>
