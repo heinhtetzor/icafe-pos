@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 class Order extends Model
 {
-    protected $fillable = ['status', 'table_id', 'waiter_id', 'invoice_no'];
+    protected $fillable = ['status', 'table_id', 'waiter_id', 'invoice_no', 'total'];
 
     public function getStatus() {
         //0 is unpaid

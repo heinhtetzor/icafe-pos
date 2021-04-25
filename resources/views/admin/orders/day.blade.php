@@ -13,6 +13,7 @@
         max-height: 80vh;
         overflow-y: scroll;
         padding: 1rem;
+        min-width: 300px;
     }
     .list-container table {
         border-radius: 10px;
@@ -116,7 +117,7 @@
                                 @if($order->table_id == 0)
                                 Express
                                 @elseif ($order->table)
-                                $order->table->name
+                                {{$order->table->name}}
                                 @else                             
                                 DELETED
                                 @endif                            
@@ -124,8 +125,13 @@
                             <td>{{$order->waiter->name ?? ""}}</td>                            
                             @php
                             $total=0; 
-                            foreach($order->order_menus as $or) {
-                                $total+=$or->quantity*$or->price;
+                            if ($order->total > 0) {
+                                $total = $order->total;
+                            }
+                            else {
+                                foreach($order->order_menus as $or) {
+                                    $total+=$or->quantity*$or->price;
+                                }                                
                             }
                             @endphp 
                             <td>{{$total}} ကျပ်</td>                                                        
@@ -141,37 +147,7 @@
         </div>
         <div class="col-md-4">
             <section class="details">
-                <h4>အကျဉ်းချုပ်</h4>
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>Menu အုပ်စုအမည်</th>
-                            <th>အရေအတွက်</th>
-                            <th>စုစုပေါင်းကျသင့်ငွေ</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @php $grandTotal=0; @endphp
-                        @forelse($orderMenuGroups as $mg)
-                        <tr>
-                            <td>{{$mg->name}}</td>
-                            <td>{{$mg->quantity}}</td>
-                            <td>{{$mg->total}} ကျပ်</td>
-                            @php $grandTotal+=$mg->total; @endphp
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="3">မရှိသေးပါ</td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                    <tfoot>
-                        <tr style="font-weight: 900">
-                            <td colspan="2">စုစုပေါင်း</td>                        
-                            <td>{{$grandTotal}} ကျပ်</td>
-                        </tr>
-                    </tfoot>
-                </table>
+                <img style="margin-left:50px;" src="/loading.gif" alt="loading" width="100">            
             </section>
         </div>
     </div>
@@ -183,6 +159,8 @@
 <script type="text/javascript">     
     (()=> {     
         const datePicker = document.querySelector('#datePicker');
+
+        const detailsSection = document.querySelector('.details');
 
         const picker = new Litepicker({
             element: datePicker,
@@ -201,6 +179,58 @@
                 invoiceNo.disabled = true;
             }
         })
+
+        // get order summary
+        const params = new URLSearchParams(location.search);
+        const date = params.get('date');
+
+        let url;
+        if (date) {
+            url = `/api/orders/getSummary/${date}`;
+        }
+        else {
+            url = `/api/orders/getSummary`;
+        }
+
+        fetch (url)
+        .then (res => res.json())
+        .then (res => {
+            let grandtotal = 0;
+            let mgs = res.orderMenuGroups.map (mg => {
+                if (!res.orderMenuGroups) {
+                    return "မရှိသေးပါ";
+                }
+                grandtotal += +mg.total;
+                return `<tr>
+                    <td>${mg.name}</td>
+                    <td>${mg.quantity}</td>
+                    <td>${mg.total} ကျပ်</td>
+                </tr>`;
+            })
+            detailsSection.innerHTML=`
+            <h4>အကျဉ်းချုပ်</h4>
+
+            <table class="table table-hover" id="summaryTable">
+                <thead>
+                    <tr>
+                        <th>Menu အုပ်စု</th>
+                        <th>အရေအတွက်</th>
+                        <th>စုစုပေါင်းကျသင့်ငွေ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${mgs}
+                    <tr style="font-weight:900">
+                        <td colspan="2">စုစုပေါင်း</td>
+                        <td>${grandtotal} ကျပ်</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                </tfoot>
+            </table>
+            `;
+        })            
+        .catch (err => console.log(err));
     })()
 </script>
 @endsection

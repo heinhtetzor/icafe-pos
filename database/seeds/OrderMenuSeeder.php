@@ -17,7 +17,7 @@ class OrderMenuSeeder extends Seeder
     public function run()
     {
         $faker = Faker::create();
-        foreach (range(1, 500000) as $i) {
+        foreach (range(1, 100000) as $i) {
             $date = $faker->dateTimeBetween('-2 years', 'now');                        
 
             $price_arr = [

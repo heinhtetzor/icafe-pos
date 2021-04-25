@@ -50,6 +50,12 @@ Route::get('/payBill/{orderId}/{waiterId}', 'Api\Order\OrderController@payBill')
 Route::get('/serveToCustomer/{orderMenuId}', 'Api\Order\OrderController@serveToCustomer');
 Route::get('/serveAllToCustomer/{menuGroupId}', 'Api\Order\OrderController@serveAllToCustomer');
 
+//get order summary for day
+Route::get('/orders/getSummary/{date}', 'Api\Order\OrderController@getSummary');
+Route::get('/orders/getSummary', 'Api\Order\OrderController@getSummary');
+// get order summary for day by orderId
+Route::get('/orders/getSummaryByOrder/{id}', 'Api\Order\OrderController@getSummaryByOrder');
+
 
 //waiter - get current order
 Route::get('/waiter/{orderId}/orders', 'Api\Order\OrderController@show');

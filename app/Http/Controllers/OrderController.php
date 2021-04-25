@@ -57,18 +57,27 @@ class OrderController extends Controller
                 ->simplePaginate(20);
         
         //for summary panel
-        $orderMenuGroups=DB::table('order_menus')
-                      ->join('menus', 'order_menus.menu_id', '=', 'menus.id')
-                      ->join('menu_groups', 'menus.menu_group_id', '=', 'menu_groups.id')
-                      ->join('orders', 'orders.id', '=', 'order_menus.order_id')                      
-                      ->selectRaw('menu_groups.id as id, menu_groups.name as name, SUM(order_menus.quantity) as quantity, SUM(order_menus.quantity*order_menus.price) as total')
-                      ->where('orders.status', '=', '1')                      
-                      ->whereBetween('orders.created_at', [$fromTime, $toTime])
-                      ->groupBy('menu_groups.id')
-                      ->get();        
+        //bad performance
+        // $orderMenuGroups=DB::table('order_menus')
+        //               ->join('menus', 'order_menus.menu_id', '=', 'menus.id')
+        //               ->join('menu_groups', 'menus.menu_group_id', '=', 'menu_groups.id')
+        //               ->join('orders', 'orders.id', '=', 'order_menus.order_id')                      
+        //               ->selectRaw('menu_groups.id as id, menu_groups.name as name, SUM(order_menus.quantity) as quantity, SUM(order_menus.quantity*order_menus.price) as total')
+        //               ->where('orders.status', '=', '1')                      
+        //               ->whereBetween('orders.created_at', [$fromTime, $toTime])
+        //               ->groupBy('menu_groups.id')
+        //               ->get();        
+        // $orderMenuGroups = MenuGroup::with('menus', 'menus.order_menu', 'menus.order_menu.order')
+        //                     ->whereBetween('menus.order_menu.order.created_at', [$fromTime, $toTime])
+        //                     ->get();
+        // $orderMenuGroups = OrderMenu::with(['menu.menu_group' => function ($q) use ($fromTime, $toTime) {
+        //                     $q->whereBetween('created', [$fromTime, $toTime])->groupBy('menu_group.id');
+        //                 }])->get();
+        // dd($orderMenuGroups);
+
+
         return view('admin.orders.day', [
             'orders'=>$orders,
-            'orderMenuGroups'=>$orderMenuGroups,
             'fromTime'=>$fromTime,
             'toTime'=>$toTime,
             'isToday'=>$isToday
@@ -114,9 +123,16 @@ class OrderController extends Controller
         $order=Order::findorfail($id);
         $orderMenus=$this->getOrderMenusGrouped($order);
         $orderMenuGroups = $this->getSummaryByOrder($order->id);
-        $total=$orderMenus->sum(function($t) {
-            return $t->quantity*$t->price;
-        });
+
+        if ($order->total > 0) {
+            $total = $order->total;
+        }
+        else {
+            $total=$orderMenus->sum(function($t) {
+                return $t->quantity*$t->price;
+            });
+        }
+        
         return view('admin.orders.show', [
             'order'=>$order,
             'orderMenus'=>$orderMenus,

@@ -11,6 +11,7 @@ use App\MenuGroup;
 use App\TableStatus;
 use Illuminate\Http\Request;
 use App\Http\Traits\OrderFunctions;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
 
@@ -101,6 +102,43 @@ class OrderController extends Controller
         }
     }
 
+    function getSummary (Request $request)
+    {
+        $fromTime = null;
+        $toTime = null;
+
+        $isToday = false;
+
+        // dd($request->date);
+
+        if($request->date) {
+            // $from=date($request->date)->startOfDay(); 
+            $from=explode(" - ", $request->date)[0];
+            $to=explode(" - ", $request->date)[1];
+            $fromTime=Carbon::parse($from)->startOfDay();
+            $toTime=Carbon::parse($to)->endOfDay();
+        }
+        else {
+            $fromTime=now()->startOfDay();
+            $toTime=now()->endOfDay();
+            $isToday=TRUE;
+        }        
+
+        $orderMenuGroups=DB::table('order_menus')
+                      ->join('menus', 'order_menus.menu_id', '=', 'menus.id')
+                      ->join('menu_groups', 'menus.menu_group_id', '=', 'menu_groups.id')
+                      ->join('orders', 'orders.id', '=', 'order_menus.order_id')                      
+                      ->selectRaw('menu_groups.id as id, menu_groups.name as name, SUM(order_menus.quantity) as quantity, SUM(order_menus.quantity*order_menus.price) as total')
+                      ->where('orders.status', '=', '1')                      
+                      ->whereBetween('orders.created_at', [$fromTime, $toTime])
+                      ->groupBy('menu_groups.id')
+                      ->get();  
+
+        return response()->json([
+            "orderMenuGroups" => $orderMenuGroups
+        ]);
+    }
+
     function makeFoc($orderMenuId)
     {
         OrderMenu::findorfail($orderMenuId)
@@ -144,12 +182,16 @@ class OrderController extends Controller
         //         return ["isOK"=>FALSE];                
         //     }
         // }
+        $order_menu_total = $order->order_menus->sum(function ($q) {
+            return $q->quantity * $q->price;
+        });
 
 
         //change status and add waiterId
         Order::findorfail($orderId)->update([
             "status"=>1,
-            "waiter_id"=>$waiterId
+            "waiter_id"=>$waiterId,
+            "total"=>$order_menu_total
         ]);
         //change table status
         TableStatus::where('order_id', $orderId)->update([

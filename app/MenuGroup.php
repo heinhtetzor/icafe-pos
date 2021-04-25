@@ -20,4 +20,7 @@ class MenuGroup extends Model
     public function menu_group_kitchens() {
         return $this->hasMany('App\MenuGroupKitchen');
     }
+    public function items () {
+        return $this->hasMany('App\Item');
+    }
 }

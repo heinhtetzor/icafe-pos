@@ -28,7 +28,7 @@
                 <th>No</th>
                 <th>Invoice No</th>
                 <th>အချိန်</th>
-                <th>စုစုပေါင်း</th>
+                {{-- <th>စုစုပေါင်း</th> --}}
             </tr>
         </thead>
         <tbody>
@@ -40,13 +40,18 @@
                     {{$order->invoice_no}}
                 </a></td>
                 <td>{{ $order->created_at->format('h:i a') }} {{ $order->created_at->format('d-M-Y') }}</td>
-                @php
+                {{-- @php
                 $total=0; 
-                foreach($order->order_menus as $or) {
-                    $total+=$or->quantity*$or->price;
+                if ($order->total > 0) {
+                    $total = $order->total;
+                }
+                else {
+                    foreach($order->order_menus as $or) {
+                        $total+=$or->quantity*$or->price;
+                    }
                 }
                 @endphp 
-                <td>{{ $total }}</td>
+                <td>{{ $total }}</td> --}}
             </tr>
             @endforeach
         </tbody>
