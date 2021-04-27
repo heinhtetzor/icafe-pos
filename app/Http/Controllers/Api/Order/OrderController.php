@@ -209,25 +209,46 @@ class OrderController extends Controller
         return ["isOk"=>TRUE];
     }
 
-    function cancelOrderMenu($orderMenuId) {
-        $orderMenu = OrderMenu::findorfail($orderMenuId);
-        $orderId = $orderMenu->order_id;
-        //mot allowed user to cancel if it is already served to customer
-        if ($orderMenu->status === 1) {
-            return ["isOk"=>FALSE];
-        }
-        $order = Order::findorfail($orderId);
-        OrderMenu::findorfail($orderMenuId)->delete();
-        if (count($order->order_menus) < 1) {            
-            TableStatus::where('order_id', $orderId)->update([
-                "status"=>0,
-                "order_id"=>null
-            ]);
-            $order->delete();
-            return ["returnToTables" => TRUE];
-        }
+    function cancelOrderMenu($orderMenuId, $cancelQuantity) {
+        try {
+            $orderMenu = OrderMenu::findorfail($orderMenuId);
+            $orderId = $orderMenu->order_id;
+            //mot allowed user to cancel if it is already served to customer
+            if ($orderMenu->status === 1) {
+                return ["isOk"=>FALSE];
+            }
+            
+            if ((int) $cancelQuantity > $orderMenu->quantity) {
+                throw new Exception("Cancel quantity is more than orders");
+            }
 
-        return ["isOk"=>TRUE];
+            $newQuantity = $orderMenu->quantity - $cancelQuantity;
+            
+            $orderMenu->quantity = $newQuantity;
+            $orderMenu->save();
+            // dd($orderMenu->quantity, $orderMenu->quantity - $cancelQuantity);
+            if ($orderMenu->quantity === 0) {
+                $orderMenu->delete();    
+            }
+            
+            $order = Order::findorfail($orderId);
+            
+            if (count($order->order_menus) < 1) {            
+                TableStatus::where('order_id', $orderId)->update([
+                    "status"=>0,
+                    "order_id"=>null
+                ]);
+                $order->delete();
+                return ["returnToTables" => TRUE];
+            }
+    
+            return ["isOk"=>TRUE];
+        }
+        catch (Exception $e) {
+            return response()->json([
+                "message" => $e->getMessage()
+            ], 500);
+        }
     }
 
     function serveAllToCustomer($menuGroupId) {

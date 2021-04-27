@@ -75,6 +75,9 @@ Route::group(['prefix' => 'admin'], function () {
         //for today orders
         Route::get('/orders/day/today', 'OrderController@day')->name('orders.today');
         Route::get('/orders/calendar', 'OrderController@calendar')->name('orders.calendar');
+
+        Route::get('/settings', 'SettingController@index')->name('settings.index');
+        Route::post('/settings/save', 'SettingController@save')->name('settings.save');
         
         Route::resource('/orders', 'OrderController');
 

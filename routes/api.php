@@ -35,7 +35,7 @@ Route::post('/submitOrder/{tableId}/{waiterId}', 'Api\Order\OrderController@subm
 Route::post('/addOrderMenu', 'Api\Order\OrderController@addOrderMenu');
 
 //cancel order menu (triggered from pos detail order view)
-Route::post('/orderMenus/cancel/{orderMenuId}', 'Api\Order\OrderController@cancelOrderMenu');
+Route::post('/orderMenus/cancel/{orderMenuId}/{cancelQuantity}', 'Api\Order\OrderController@cancelOrderMenu');
 
 //make foc
 Route::post('/orderMenus/makeFoc/{orderMenuId}', 'Api\Order\OrderController@makeFoc');

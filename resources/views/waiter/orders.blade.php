@@ -3,12 +3,44 @@
 @section('style')
 @endsection
 @section('content')
-    <div class="container mt-5">
+<div class="container mt-5">        
+    <div class="modal fade" id="passcodeModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="cancel-modal-title" id="exampleModalLabel">Cancel </h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="modal-menu-id">
+                <div class="row">                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="quantity">📉 အရေအတွက်</label>
+                            <input type="number" class="form-control" id="cancel-quantity" min="1" step="1" autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label for="passcode">🔐 Passcode</label>
+                            <input type="password" class="form-control" id="passcode-txt" autocomplete=off>
+                        </div>  
+                    </div>                  
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>                
+                <button id="passcode-confirm-btn" class="btn btn-primary">
+                    OK
+              </button>
+            </div>
+          </div>
+        </div>
+      </div> 
 
         {{-- CSRF token --}}
         <input type="hidden" name="_token" id="_token" value="{{csrf_token()}}">
         <h3>
-            <a href="{{url()->previous()}}">🔙 </a>
+            <a href="javascript:history.back()">🔙 </a>
             <span id="orderNumber"></span>
         </h3>   
         <table class="table" id="ordersTable">
@@ -35,6 +67,17 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js" integrity="sha512-aMGMvNYu8Ue4G+fHa359jcPb1u+ytAF+P2SCb+PxrjCdO3n3ZTxJ30zuH39rimUggmTwmh2u7wvQsDTHESnmfQ==" crossorigin="anonymous"></script>
 <script type="text/javascript">
     (()=> {
+        let passcodeModal;
+        
+        let orderMenuId; //for passcode modal
+        let cancelQuantity;
+        let cancelModalTitle;
+
+        window.addEventListener('load', () => {        
+            passcodeModal = new bootstrap.Modal(document.getElementById('passcodeModal'), {
+                backdrop: true
+            })
+        })
         const socket = io('{{config('app.socket_url')}}');
 
         socket.emit('join-room', {
@@ -98,7 +141,7 @@
                                 </select>
                             </td>
                             <td>
-                                <button class="btn cancel-order-menu" data-id="${orderMenu.id}">
+                                <button class="btn cancel-order-menu" data-id="${orderMenu.id}" data-menu-name="${orderMenu.menu.name}" data-menu-quantity="${orderMenu.quantity}">
                                 ❌
                                 </button>
                             </td>
@@ -172,10 +215,22 @@
                     }            
                 }
 
-                function cancelOrderMenuBtnHandler(e) 
-                {
-                    const id = e.target.dataset['id'];
-                    fetch(`/api/orderMenus/cancel/${id}`, {
+                function cancelOrderMenuAction () {
+                    const cancelQuantityValue = document.querySelector('#cancel-quantity').value;
+                    if (!cancelQuantityValue) {
+                        alert("အရေအတွက်ထည့်သွင်းပါ");
+                        return;
+                    }
+                    cancelQuantity = cancelQuantityValue;
+
+                    const passcodeTxtValue = document.querySelector('#passcode-txt').value;
+                    
+                    if (passcodeTxtValue != "{{$passcode}}") {
+                        alert("လျှို့ဝှက်နံပါတ်မှားယွင်းနေပါသည်");
+                        return;
+                    }
+
+                    fetch(`/api/orderMenus/cancel/${orderMenuId}/${cancelQuantity}`, {
                             method: 'POST',
                             headers: {
                             "Content-Type": "application/json",
@@ -194,12 +249,28 @@
                                 location.href="/admin/pos/tables";
                             }
                             if (res.isOk) {
+                                passcodeModal.hide();
                                 fetchOrderMenus();                                
                                 socket.emit('send-order', {
                                     roomId: 1
                                 })
+                                location.reload();
                             }
                         })
+                        .catch (err => {
+                            console("Error" + err);
+                        })
+                }
+
+                function cancelOrderMenuBtnHandler(e) {
+                    orderMenuId = e.target.dataset['id'];
+                    document.querySelector('#cancel-modal-title').innerHTML = `Cancel ${e.target.dataset['menuName']} x ${e.target.dataset['menuQuantity']}`;
+                    document.querySelector('#passcode-txt').value = "";
+                    document.querySelector('#cancel-quantity').value = "";
+                    passcodeModal.show();                    
+                    const passcodeConfirmButton = document.querySelector('#passcode-confirm-btn');
+
+                    passcodeConfirmButton.addEventListener('click', cancelOrderMenuAction);                    
                 }
             })            
         }

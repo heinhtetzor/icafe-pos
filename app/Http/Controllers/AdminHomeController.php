@@ -11,6 +11,7 @@ use App\Order;
 use App\MenuGroup;
 use App\Waiter;
 use App\Http\Traits\OrderFunctions;
+use App\Setting;
 use App\TableGroup;
 
 class AdminHomeController extends Controller
@@ -88,9 +89,11 @@ class AdminHomeController extends Controller
         }
         function orders($orderId) {
             $order=Order::findorfail($orderId);
+            $passcode=Setting::getPasscode();
             $orderMenus=$order->order_menus;
             return view("waiter.orders", [
-                'orderMenus'=>$orderMenus
+                'orderMenus'=>$orderMenus,
+                'passcode'=>$passcode
             ]);
         }
     function admin() {
