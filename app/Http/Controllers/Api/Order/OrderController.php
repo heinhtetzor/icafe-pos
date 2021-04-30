@@ -67,14 +67,28 @@ class OrderController extends Controller
             if ($orderMenu["quantity"] < 1) {
                 continue;
             }
-            OrderMenu::create([
-                "menu_id"=> $orderMenu["menu_id"],
-                "price"=>$orderMenu["price"],
-                "status"=>0,
-                "order_id"=>$orderId,
-                "quantity"=>$orderMenu["quantity"],
-                "waiter_id"=>$waiterId
-            ]);
+            //if menu id already existed in order
+            //increment existing ordermenu            
+            $order = Order::findorfail($orderId);
+            $is_old = $order->order_menus()->where('menu_id', $orderMenu["menu_id"])->first();
+            
+            if (is_null($is_old)) { //new
+                //if menu id is new create new ordermenu
+                OrderMenu::create([
+                    "menu_id"=> $orderMenu["menu_id"],
+                    "price"=>$orderMenu["price"],
+                    "status"=>0,
+                    "order_id"=>$orderId,
+                    "quantity"=>$orderMenu["quantity"],
+                    "waiter_id"=>$waiterId
+                ]);
+            }
+            if (!is_null($is_old)) { //old                
+                $is_old->quantity = $is_old->quantity + (int) $orderMenu["quantity"];
+                $is_old->save();
+            }
+
+
         }
         return ["isOk"=>TRUE, "orderMenus"=>$request->get('orderMenus')];
     }

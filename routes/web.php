@@ -43,6 +43,10 @@ Route::group(['prefix' => 'admin'], function () {
     Route::group(['middleware' => 'adminAccountAuth'], function () {
         Route::get('/', 'AdminHomeController@admin')->name('admin.home');
 
+        //expense module
+        Route::get('/expense', 'ExpenseController@index')->name('expenses.index');
+        Route::get('/expense/create', 'ExpenseController@create')->name('expenses.create');
+
         // express pos
         Route::get('/express', 'ExpressHomeController@home')->name('express.home');
         Route::get('/express/create', 'ExpressHomeController@create')->name('express.create');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ItemRequest;
 use App\Item;
 use App\MenuGroup;
 use Exception;
@@ -16,7 +17,7 @@ class ItemController extends Controller
      */
     public function index()
     {
-        $items = Item::orderby('created_at', 'DESC')->paginate(20);
+        $items = Item::orderby('created_at', 'DESC')->paginate(100);
         $menu_groups= MenuGroup::all();
         return view('admin.items.index', [
             "items" => $items,
@@ -40,9 +41,21 @@ class ItemController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ItemRequest $request)
     {        
-        Item::create($request->all());      
+        $item = new Item();
+        $item->name = $request->name;
+        $item->cost = $request->cost;
+        if (!empty($request->is_general_item) && $request->is_general_item == 1)
+        {
+            $item->is_general_item = 1;
+        }
+        if (empty($request->is_general_item))
+        {
+            $item->menu_group_id = $request->menu_group_id;
+        }
+        $item->save();
+                
         return redirect()->back()->with('msg', 'Item Created Successfully.');
     }
 
@@ -80,10 +93,23 @@ class ItemController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ItemRequest $request, $id)
     {
         $item = Item::findorfail($id);
-        $item->update($request->all());
+        $item->name = $request->name;
+        $item->cost = $request->cost;
+
+        if (!empty($request->is_general_item) && $request->is_general_item == 1)
+        {
+            $item->is_general_item = 1;
+            $item->menu_group_id = null;
+        }
+        if (empty($request->is_general_item))
+        {
+            $item->is_general_item = 0;
+            $item->menu_group_id = $request->menu_group_id;
+        }
+        $item->save();        
         return redirect()->back()->with('msg', 'Updated Successfully.');
     }
 
@@ -95,7 +121,7 @@ class ItemController extends Controller
      */
     public function destroy($id)
     {
-        Item::findorfail(intval($id))->delte();
+        Item::findorfail(intval($id))->delete();
         return redirect('/admin/items');
     }
 }

@@ -40,7 +40,7 @@
 
         </div>
     </div>
-    {{-- <hr>
+    <hr>
     <h4>Expense</h4>
     <div class="row">
         <div class="col-md-3 icon">
@@ -56,6 +56,6 @@
             </a>
         </div>
 
-    </div> --}}
+    </div>
 </div>
 @endsection

@@ -42,8 +42,10 @@ class ReportController extends Controller
             $results = OrderMenu::whereHas('menu', function($q) use ($mgs) {
                 $q->whereIn('menu_group_id', $mgs);
             })
+            ->whereHas('order', function ($t) use ($fromTime, $toTime) {
+                $t->whereBetween('created_at', [$fromTime, $toTime]);
+            })
             ->selectRaw('*, SUM(quantity) as total')
-            ->whereBetween('created_at', [$fromTime, $toTime])
             ->groupby('menu_id', 'price')
             ->with('menu')
             ->orderby('total', 'desc')
@@ -67,14 +69,15 @@ class ReportController extends Controller
         
         if ($request->has('menu')) {
             $results = OrderMenu::whereIn('menu_id', $ms)
-            ->selectRaw('*, SUM(quantity) as total')
-            ->whereBetween('created_at', [$fromTime, $toTime])
+            ->whereHas('order', function ($q) use ($fromTime,$toTime) {
+                $q->whereBetween('created_at', [$fromTime, $toTime]);
+            })
+            ->selectRaw('*, SUM(quantity) as total')            
             ->groupby('menu_id', 'price')
             ->with('menu')
             ->orderby('total', 'desc')
             ->get();                
             $filtered_menus = Menu::whereIn('id', $ms)->get();
-            // dd($filtered_menus);
             $total = $results->sum(function($t) {
                 return $t->price * $t->total;
             });
