@@ -234,7 +234,11 @@
         data-menu-price="{{$menu->price}}"                
         data-menu-code="{{$menu->code}}"
         class="menus-grid-item"
-        style="background-size:cover;background-image: url('/storage/menu_images/{{$menu->image ?? 'default.png'}}')">
+        @if ($menu->image)
+        style="background-size:cover;background-image: url('/storage/menu_images/{{$menu->image}}')">        
+        @else 
+        style="background-size:cover;background-image: url('/images/default.png')">                
+        @endif
         <span class="price">{{$menu->price}}</span>
         <span class="caption">{{$menu->name}}</span>
         </div>     
@@ -308,7 +312,11 @@
     function payBillBtnHandler () {        
         const waiterId = waiterIdSelect.value;
         if (!waiterId) {
-            alert("Waiter ရွေးပါ");
+            Toastify({
+            text: "Waiter ရွေးပါ",
+            backgroundColor: "red",
+            className: "info",
+            }).showToast();
             return;
         }
         if (!confirm("သေချာပါသလား?")) {

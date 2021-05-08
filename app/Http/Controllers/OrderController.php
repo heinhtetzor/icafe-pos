@@ -56,26 +56,6 @@ class OrderController extends Controller
                 ->whereBetween('created_at', [$fromTime, $toTime])
                 ->simplePaginate(20);
         
-        //for summary panel
-        //bad performance
-        // $orderMenuGroups=DB::table('order_menus')
-        //               ->join('menus', 'order_menus.menu_id', '=', 'menus.id')
-        //               ->join('menu_groups', 'menus.menu_group_id', '=', 'menu_groups.id')
-        //               ->join('orders', 'orders.id', '=', 'order_menus.order_id')                      
-        //               ->selectRaw('menu_groups.id as id, menu_groups.name as name, SUM(order_menus.quantity) as quantity, SUM(order_menus.quantity*order_menus.price) as total')
-        //               ->where('orders.status', '=', '1')                      
-        //               ->whereBetween('orders.created_at', [$fromTime, $toTime])
-        //               ->groupBy('menu_groups.id')
-        //               ->get();        
-        // $orderMenuGroups = MenuGroup::with('menus', 'menus.order_menu', 'menus.order_menu.order')
-        //                     ->whereBetween('menus.order_menu.order.created_at', [$fromTime, $toTime])
-        //                     ->get();
-        // $orderMenuGroups = OrderMenu::with(['menu.menu_group' => function ($q) use ($fromTime, $toTime) {
-        //                     $q->whereBetween('created', [$fromTime, $toTime])->groupBy('menu_group.id');
-        //                 }])->get();
-        // dd($orderMenuGroups);
-
-
         return view('admin.orders.day', [
             'orders'=>$orders,
             'fromTime'=>$fromTime,

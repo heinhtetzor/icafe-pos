@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/icons/font/bootstrap-icons.css">
     <script defer src="/bootstrap/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/toastify/toastify.css">
+    <script defer src="/toastify/toastify.js"></script>
     <title>Waiter View</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap');

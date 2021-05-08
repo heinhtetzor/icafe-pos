@@ -17,6 +17,25 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+// Expense starts
+Route::get('/expenses/{id}/getExpenseItems', 'Api\Expense\ExpenseController@getExpenseItems');
+
+//get expense summary
+Route::get('/expenses/getSummary/{date}', 'Api\Expense\ExpenseController@getSummary');
+Route::get('/expenses/getSummary', 'Api\Expense\ExpenseController@getSummary');
+
+Route::get('/expenses/getItem/{id}', 'Api\Expense\ExpenseController@getItem');
+Route::post('/expenses/addExpenseItem', 'Api\Expense\ExpenseController@addExpenseItem');
+Route::get('/expenses/getExpense/{expenseId}', 'Api\Expense\ExpenseController@getExpense');
+
+Route::post('/expenses/confirm/{expenseId}', 'Api\Expense\ExpenseController@confirmExpense');
+
+
+Route::post('/expenses/deleteExpenseItem', 'Api\Expense\ExpenseController@deleteExpenseItem');
+
+//expense api ends
+
+// Orders starts
 Route::get('/test', 'Api\Waiter\WaiterController@getWaiters');
 
 //get waitersd

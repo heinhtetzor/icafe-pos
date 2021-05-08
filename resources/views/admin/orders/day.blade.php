@@ -4,35 +4,7 @@
     body {
         background-color: rgb(233, 232, 232);
     }
-    .details {
-        /* border: 2px solid #a7a5a5; */
-        border-radius: 10px;
-        background-color: #fff;
-        position: fixed;
-        /*width: 30%;*/
-        max-height: 80vh;
-        overflow-y: scroll;
-        padding: 1rem;
-        min-width: 300px;
-    }
-    .list-container table {
-        border-radius: 10px;
-    }
-    .list-container .order-link {
-
-        border-radius: 10px;    
-        /* padding: 1rem; */
-        height: 3rem;
-        margin-bottom: 1rem;
-        background-color: #fff;
-        cursor: pointer;
-        display: block;
-        text-decoration: none;
-    }
-    .list-container .order-link:hover {
-        background-color: rgb(233, 225, 225);
-        font-weight: 900;
-    }
+    
 </style>
 @endsection 
 @section('content')
@@ -154,7 +126,7 @@
 </div>
 @endsection
 @section('js')
-<script src="https://cdn.jsdelivr.net/npm/litepicker/dist/litepicker.js"></script>
+{{-- <script src="https://cdn.jsdelivr.net/npm/litepicker/dist/litepicker.js"></script> --}}
 <script src="/litepicker/litepicker.js"></script>
 <script type="text/javascript">     
     (()=> {     

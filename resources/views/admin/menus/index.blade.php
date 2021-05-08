@@ -68,7 +68,13 @@
                     @foreach($menus as $menu)
                     <tr>
                         <td>{{$menu->name}}</td>
-                        <td><img class="menu-image" src="/storage/menu_images/{{$menu->image ?? 'default.png'}}"/></td>
+                        <td>
+                            @if ($menu->image)
+                            <img src="/storage/menu_images/{{$menu->image}}"/>
+                            @else 
+                            <img src="/images/default.png"/>
+                            @endif                            
+                        </td>
                         <td>{{$menu->price}}</td>
                         <td>{{$menu->menu_group->name}}</td>
                         <td>{{$menu->status}}</td>

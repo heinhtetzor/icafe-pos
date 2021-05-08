@@ -60,7 +60,11 @@
                             <div class="grid">
                                 @foreach($menus as $menu)
                                 <a class="grid-item" href="{{route('menus.edit', $menu->id)}}">
-                                    <img src="/storage/menu_images/{{$menu->image ?? 'default.png'}}"/>
+                                    @if ($menu->image)
+                                    <img src="/storage/menu_images/{{$menu->image}}"/>
+                                    @else 
+                                    <img src="/images/default.png"/>
+                                    @endif                                    
                                     <span class="menu-text">
                                         {{$menu->name}} <br> 
                                         {{$menu->price}} Ks

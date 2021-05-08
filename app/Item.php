@@ -14,4 +14,10 @@ class Item extends Model
     {
         return $this->belongsTo('App\MenuGroup', 'menu_group_id');
     }
+
+    public function expense_items ()
+    {
+        return $this->hasMany('App\ExpenseItem');
+    }
 }
+

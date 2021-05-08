@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\MenuGroupRequest;
 use App\Menu;
 use App\MenuGroup;
+use Exception;
 use Illuminate\Http\Request;
 
 class MenuGroupController extends Controller
@@ -101,7 +102,12 @@ class MenuGroupController extends Controller
      */
     public function destroy($id)
     {
-        MenuGroup::findorfail(intval($id))->delete();
-        return redirect('/admin/menugroups');
+        try {
+            MenuGroup::findorfail(intval($id))->delete();
+            return redirect('/admin/menugroups');
+        }
+        catch (Exception $e) {
+            return redirect()->back()->with('error', "ဖျက်လို့မရပါ");
+        }
     }
 }

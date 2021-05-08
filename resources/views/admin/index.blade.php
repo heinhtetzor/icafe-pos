@@ -54,6 +54,16 @@
                 </div>
             </div>
         </a>
+        <a href="{{route('expenses.create')}}">
+            <div class="card bg-dark text-white">
+                <div class="card-header">
+                    <h2 class="card-title"><i>အသုံးစာရင်း</i></h2>
+                </div>
+                <div class="card-body">
+                     
+                </div>
+            </div>
+        </a>
     </div>
 
     <hr>
@@ -63,7 +73,7 @@
         <a href="{{route('admin.reports')}}">
             <div class="card bg-success text-white">
                 <div class="card-header">
-                    <h2 class="card-title">အော်ဒါစာရင်း</h2>
+                    <h2 class="card-title">စာရင်းများ</h2>
                 </div>
                 <div class="card-body">
                     နေ့စဉ်စာရင်း ၊​ အသေးစိတ်စာရင်းများ ကြည့်ရန်

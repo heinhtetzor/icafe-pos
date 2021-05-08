@@ -12,7 +12,7 @@
     <section>
         <form action="{{ route('menus.update', $menu->id) }}" method="post" enctype="multipart/form-data">
             @csrf
-            @method('put')
+            @method('put')            
             <div class="form-group">
                 <label for="name">အမျိုးအမည်</label>
                 <input value="{{$menu->name}}" name="name" type="text" class="form-control" placeholder="Enter Table Name" required>

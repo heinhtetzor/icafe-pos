@@ -23,4 +23,7 @@ class MenuGroup extends Model
     public function items () {
         return $this->hasMany('App\Item');
     }
+    public function expense_items () {
+        return $this->hasMany('App\ExpenseItem');
+    }
 }

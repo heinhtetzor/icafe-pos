@@ -44,8 +44,12 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/', 'AdminHomeController@admin')->name('admin.home');
 
         //expense module
-        Route::get('/expense', 'ExpenseController@index')->name('expenses.index');
-        Route::get('/expense/create', 'ExpenseController@create')->name('expenses.create');
+        Route::get('/expenses', 'ExpenseController@index')->name('expenses.index');
+        Route::get('/expenses/create', 'ExpenseController@create')->name('expenses.create');
+        Route::get('/expenses/edit/{id}', 'ExpenseController@edit')->name('expenses.edit');
+        Route::get('/expenses/{id}', 'ExpenseController@show')->name('expenses.show');
+        Route::post('/expenses/store', 'ExpenseController@store')->name('expenses.store');
+        Route::delete('/expenses/destroy/{id}', 'ExpenseController@destroy')->name('expenses.destroy');
 
         // express pos
         Route::get('/express', 'ExpressHomeController@home')->name('express.home');
@@ -74,6 +78,12 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/reports', 'ReportController@index')->name('admin.reports');
         Route::get('/reports/day', 'OrderController@day')->name('admin.reports.day');
         Route::get('/reports/menus', 'ReportController@menus')->name('admin.reports.menus');
+        
+        Route::get('/reports/expenses', 'ExpenseController@index')->name('admin.reports.expenses');
+        Route::get('/reports/items', 'ReportController@items')->name('admin.reports.items');
+
+        Route::get('/reports/profit-loss', 'ReportController@profitLossIndex')->name('admin.reports.profit-loss');
+        
 
         // extra order routes
         //for today orders

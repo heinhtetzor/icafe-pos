@@ -221,7 +221,11 @@
                     data-menu-price="{{$menu->price}}"                
                     data-menu-code="{{$menu->code}}"
                     class="menus-grid-item"
-                    style="background-size:cover;background-image: url('/storage/menu_images/{{$menu->image ?? 'default.png'}}')">
+                    @if ($menu->image)
+                    style="background-size:cover;background-image: url('/storage/menu_images/{{$menu->image}}')">        
+                    @else 
+                    style="background-size:cover;background-image: url('/images/default.png')">                
+                    @endif                    
                     <span class="price">{{$menu->price}}</span>
                     <span class="caption">{{$menu->name}}</span>
                     
@@ -534,7 +538,11 @@
             const selectedWaiter=document.querySelector('#waiterId');
             if(selectedWaiter) {
                 if (!selectedWaiter.value) {
-                    alert("Waiter ရွေးပါ");
+                    Toastify({
+                    text: "Waiter ရွေးပါ",
+                    backgroundColor: "linear-gradient(to right, #A40606, #D98324)",
+                    className: "info",
+                    }).showToast();
                     return;
                 }
                 waiterId=selectedWaiter.value;
@@ -595,7 +603,11 @@
             const selectedWaiter=document.querySelector('#waiterId');
             if(selectedWaiter) {
                 if (!selectedWaiter.value) {
-                    alert("Waiter ရွေးပါ");
+                    Toastify({
+                    text: "Waiter ရွေးပါ",
+                    backgroundColor: "linear-gradient(to right, #A40606, #D98324)",
+                    className: "info",
+                    }).showToast();                                        
                     return;
                 }
                 waiterId=selectedWaiter.value;
@@ -617,7 +629,12 @@
                     location.reload();
                 }
                 else {
-                   alert('ရှင်းလို့မရသေးပါ');
+                    Toastify({
+                    text: "ရှင်းလို့မရသေးပါ",
+                    backgroundColor: "linear-gradient(to right, #A40606, #D98324)",
+                    className: "info",
+                    }).showToast();
+                    return;                   
                 }
             })
             // .catch(err=>console.log(err))

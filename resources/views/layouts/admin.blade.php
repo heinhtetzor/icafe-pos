@@ -3,11 +3,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>iCafe</title>
     
     <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/icons/font/bootstrap-icons.css">
     <link rel="stylesheet" href="/chartcss/dist/charts.min.css">
+    <link rel="stylesheet" href="/toastify/toastify.css">
+    <script defer src="/toastify/toastify.js"></script>
     <script defer src="/bootstrap/js/bootstrap.min.js"></script>
     
     <style>
@@ -133,6 +135,35 @@
     }
     .main {
         flex: 1;
+    }
+    .details {
+        /* border: 2px solid #a7a5a5; */
+        border-radius: 10px;
+        background-color: #fff;
+        position: fixed;
+        /*width: 30%;*/
+        max-height: 80vh;
+        overflow-y: scroll;
+        padding: 1rem;
+        min-width: 300px;
+    }
+    .list-container table {
+        border-radius: 10px;
+    }
+    .list-container .order-link {
+
+        border-radius: 10px;    
+        /* padding: 1rem; */
+        height: 3rem;
+        margin-bottom: 1rem;
+        background-color: #fff;
+        cursor: pointer;
+        display: block;
+        text-decoration: none;
+    }
+    .list-container .order-link:hover {
+        background-color: rgb(233, 225, 225);
+        font-weight: 900;
     }
     </style>
     @yield('css')

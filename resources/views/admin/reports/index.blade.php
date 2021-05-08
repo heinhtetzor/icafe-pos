@@ -39,5 +39,49 @@
             </a>
         </div>
     </div>
+    <hr>
+    <div class="row">
+        <div class="col-md-4">
+            <a href="{{route('admin.reports.expenses')}}">
+                <div class="card bg-primary text-white">
+                    <div class="card-header">
+                        နေ့စဉ်
+                    </div>
+                    <div class="card-body">
+                        နေ့အလိုက် အဝယ်စာရင်း
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="{{route('admin.reports.items')}}">
+                <div class="card bg-info text-white">
+                    <div class="card-header">
+                        အဝယ် ပစ္စည်းများ
+                    </div>
+                    <div class="card-body">
+                        ..
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-md-4">
+            <a href="{{route('admin.reports.profit-loss')}}">
+                <div class="card bg-dark text-white">
+                    <div class="card-header">
+                        အရှုံးအမြတ်စာရင်း
+                    </div>
+                    <div class="card-body">
+                        လအလိုက်ကြည့်ရန်
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    
 </div>
 @endsection
