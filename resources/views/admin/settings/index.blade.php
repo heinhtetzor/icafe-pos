@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 @section('content')
 <div class="container">
-    <h4><a href="{{route('admin.accountmanagement')}}">🔙</a>
+    <h4><a href="{{route('admin.home')}}">🔙</a>
         @if(session('msg'))
         <p class="alert alert-success">{{ session('msg') }}</p>
         @endif
