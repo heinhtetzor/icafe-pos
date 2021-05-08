@@ -89,7 +89,8 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="datetime">အချိန်</label>                                
-                                <input id="datetime" name="datetime" type="datetime-local" class="form-control" required>                                
+                                <input id="datetime" name="datetime" type="text" class="form-control" required>                                
+
                             </div>
                         </div>
                         <div class="col-md-3">
