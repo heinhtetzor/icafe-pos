@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\TableController;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
@@ -22,11 +23,38 @@ Route::get('/', function () {
 Route::get('/offline', function () {
     return view('vendor.laravelpwa.offline');
 });
+Route::get('/backup', function () {
+    try {
+        Artisan::call('backup:data');
+    }
+    catch (Exception $e) {        
+        return response()->json([
+            "message" => "Error"
+        ], 500);
+    }
+    return response()->json([
+        "isOk" => TRUE,
+        "message" => "Backup Completed"
+    ]);
+    
+});
 Route::get('/upgrade', function () {
-    $git_pull = exec("cd ../ && git pull");
-    $composer = exec("cd ../ && composer install");
-    $migration = exec("cd ../ && php artisan migrate");
-    // $process->run();
+    try {
+        $git_pull = exec("cd ../ && git pull");
+        $composer = exec("cd ../ && composer install");
+        $migration = exec("cd ../ && php artisan migrate --force");
+    }
+    catch (Exception $e) {        
+        return response()->json([
+            "message" => "Error upgrading",
+            "details" => $e->getMessage()
+        ], 500);
+    }
+    return response()->json([
+        "isOk" => TRUE,
+        "message" => "Upgrade Completed",        
+    ]);
+    
 
     // if (!$process->isSuccessful()) {
     //     throw new ProcessFailedException($process);
@@ -42,6 +70,7 @@ Route::group(['prefix' => 'admin'], function () {
     
     Route::group(['middleware' => 'adminAccountAuth'], function () {
         Route::get('/', 'AdminHomeController@admin')->name('admin.home');
+        
 
         //expense module
         Route::get('/expenses', 'ExpenseController@index')->name('expenses.index');
@@ -91,6 +120,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/orders/calendar', 'OrderController@calendar')->name('orders.calendar');
 
         Route::get('/settings', 'SettingController@index')->name('settings.index');
+        Route::get('/settings/passcode', 'SettingController@passcode')->name('settings.passcode');
         Route::post('/settings/save', 'SettingController@save')->name('settings.save');
         
         Route::resource('/orders', 'OrderController');

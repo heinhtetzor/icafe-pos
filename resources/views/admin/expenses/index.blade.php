@@ -41,9 +41,9 @@
     <h2 class="top-bar">
         <a href="{{route('admin.reports')}}">🔙 </a>   
         @if($isToday)
-        ယနေ့   ({{$fromTime->format('d-M-Y')}})
+        ယနေ့   ({{$fromTime->format('d-M-Y')}}) <div class="badge bg-primary">အဝယ်စာရင်း</div>
         @else
-        {{$fromTime->format('d-M-Y')}} မှ {{$toTime->format('d-M-Y')}} ထိ
+        {{$fromTime->format('d-M-Y')}} မှ {{$toTime->format('d-M-Y')}} ထိ <div class="badge bg-primary">အဝယ်စာရင်း</div>
         @endif
         <a href="{{ route('expenses.create') }}" class="btn btn-success">🧾 အသစ်</a>
         <span style="float:right;">

@@ -108,12 +108,50 @@
     </div>
 
     <hr>
+
+    <div class="flex">
+        
+        <a href="{{route('settings.index')}}">        
+            <div class="card bg-primary text-white">
+                <div class="card-header">
+                    <h2 class="card-title">Setting</h2>
+                </div>
+                <div class="card-body">
+                  
+                </div>
+             
+            </div>
+        </a>
     
-    <a href="/upgrade" class="btn btn-dark" onclick="console.log(this.children[0].style.display='inline-block')">
-        <span style="display: none" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-        <span>Upgrade</span>
-    </a>
+    
+        
+    </div>
 
     
 </div>
+@endsection
+@section('js')
+    <script>
+        const backupBtn = document.querySelector('#backupBtn');
+        backupBtn.addEventListener('click', function () {
+            fetch (`/backup`)
+            .then (res => res.json())
+            .then (res => {
+                if (res.isOk) {
+                    Toastify({
+                    text: res.message,
+                    backgroundColor: "linear-gradient(to right, green, lightgreen)",
+                    className: "info",
+                    }).showToast();
+                }
+                else {                    
+                    Toastify({
+                    text: res.message,
+                    backgroundColor: "linear-gradient(to right, red, brown)",
+                    className: "info",
+                    }).showToast();
+                }
+            })
+        })
+    </script>
 @endsection

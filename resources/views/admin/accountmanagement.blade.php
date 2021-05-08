@@ -62,18 +62,6 @@
         </div>
     </div>
     <hr>
-    <div class="flex">
-        <div class="card">
-            <div class="card-header">
-                <h4>Other Settings</h4>
-            </div>
-            <div class="card-body">
-                <img src="/assets/lock.png" alt="lock" width="100" class="card-icon">
-            </div>
-            <div class="card-footer">
-                <a class="btn btn-warning" href="{{ route('settings.index') }}">Go</a>
-            </div>
-        </div>
-    </div>
+
 </div>
 @endsection 

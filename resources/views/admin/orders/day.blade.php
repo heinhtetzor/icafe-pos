@@ -45,13 +45,13 @@
 
         <a href="{{route('admin.reports')}}">🔙 </a>   
         @if($isToday)
-        ယနေ့   ({{$fromTime->format('d-M-Y')}})
+        ယနေ့   ({{$fromTime->format('d-M-Y')}}) <div class="badge bg-success">အရောင်းစာရင်း</div>
         @else
-        {{$fromTime->format('d-M-Y')}} မှ {{$toTime->format('d-M-Y')}} ထိ
+        {{$fromTime->format('d-M-Y')}} မှ {{$toTime->format('d-M-Y')}} ထိ <div class="badge bg-success">အရောင်းစာရင်း</div>
         @endif
 
         <span style="float:right;">
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#dateModal">Search</button>            
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#dateModal">Search</button>            
             <a href="{{route('orders.today')}}">ယနေ့</a>
         </span>
     </h3>

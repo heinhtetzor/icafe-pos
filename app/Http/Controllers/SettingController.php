@@ -8,9 +8,14 @@ use Illuminate\Http\Request;
 class SettingController extends Controller
 {
     public function index ()
+    {
+        return view('admin.settings.index');
+    }
+
+    public function passcode ()
     {        
         $passcode = Setting::where('key', 'passcode')->first()->value;
-        return view('admin.settings.index', [
+        return view('admin.settings.passcode', [
             "passcode" => $passcode
         ]);
     }

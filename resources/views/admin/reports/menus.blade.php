@@ -19,7 +19,7 @@
     <div>
         <h3 style="display: inline">
             <a href="{{route('admin.reports')}}">🔙 </a>
-            Menu / Menu အုပ်စုအလိုက် စာရင်း
+            Menu / Menu အုပ်စုအလိုက် <div class="badge bg-danger">အရောင်းစာရင်း</div>
         </h3>
         
 

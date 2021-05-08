@@ -16,7 +16,7 @@
     <div>
         <h3 style="display: inline">
             <a href="{{route('admin.reports')}}">🔙 </a>
-            အဝယ်ပစ္စည်း / Menu အုပ်စုအလိုက် စာရင်း
+            အဝယ်ပစ္စည်း / Menu အုပ်စုအလိုက် <div class="badge bg-info">အဝယ်စာရင်း</div>
         </h3>
         
 
