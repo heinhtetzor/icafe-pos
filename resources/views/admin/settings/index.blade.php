@@ -36,6 +36,8 @@
                 <span id="backupBtnSpinner" style="display: none" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                 Backup Data
             </button>
+            {{-- <a href="/storage/backup/backup-2021-05-08_08:23:56.gz">Download</a> --}}
+            <a href="{{ route('settings.download-backup-file') }}">Download</a>
         </div>
 
     </div>
@@ -58,7 +60,7 @@
                         backgroundColor: "linear-gradient(to right, green, lightgreen)",
                         className: "info",
                     }).showToast();
-                    backupBtnSpinner.style.display = 'none';
+                    backupBtnSpinner.style.display = 'none';                    
                 }
                 else {                    
                     Toastify({

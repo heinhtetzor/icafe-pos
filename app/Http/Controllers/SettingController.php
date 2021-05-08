@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Setting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class SettingController extends Controller
 {
@@ -18,6 +19,12 @@ class SettingController extends Controller
         return view('admin.settings.passcode', [
             "passcode" => $passcode
         ]);
+    }
+
+    public function downloadBackupFile ()
+    {
+        $files = Storage::disk('public')->files('backup');        
+        return redirect('/storage/'.$files[0]);
     }
 
     public function save (Request $request)

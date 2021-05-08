@@ -38,7 +38,7 @@
             <a href="{{ route('admin.home') }}">🔙</a>
             @endif
             {{-- <a href="{{ route('expenses.index') }}">🔙</a> --}}
-            အသုံးစရိတ် အသစ်</h3>
+            အသုံးစာရင်း အသစ်</h3>
         <section class="expense-form">
             <input type="hidden" name="_token" id="_token" value="{{csrf_token()}}">          
             {{-- edit page --}}

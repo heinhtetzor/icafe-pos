@@ -132,26 +132,5 @@
 @endsection
 @section('js')
     <script>
-        const backupBtn = document.querySelector('#backupBtn');
-        backupBtn.addEventListener('click', function () {
-            fetch (`/backup`)
-            .then (res => res.json())
-            .then (res => {
-                if (res.isOk) {
-                    Toastify({
-                    text: res.message,
-                    backgroundColor: "linear-gradient(to right, green, lightgreen)",
-                    className: "info",
-                    }).showToast();
-                }
-                else {                    
-                    Toastify({
-                    text: res.message,
-                    backgroundColor: "linear-gradient(to right, red, brown)",
-                    className: "info",
-                    }).showToast();
-                }
-            })
-        })
     </script>
 @endsection

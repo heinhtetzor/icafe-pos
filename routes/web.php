@@ -54,14 +54,8 @@ Route::get('/upgrade', function () {
         "isOk" => TRUE,
         "message" => "Upgrade Completed",        
     ]);
-    
-
-    // if (!$process->isSuccessful()) {
-    //     throw new ProcessFailedException($process);
-    // }
-
-    return redirect('/admin')->with('msg', $git_pull);
 });
+
 Route::group(['prefix' => 'admin'], function () {
     
     Route::get('/login', 'AdminHomeController@showAdminLogin')->name('admin.showLogin');
@@ -122,6 +116,8 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/settings', 'SettingController@index')->name('settings.index');
         Route::get('/settings/passcode', 'SettingController@passcode')->name('settings.passcode');
         Route::post('/settings/save', 'SettingController@save')->name('settings.save');
+        
+        Route::get('/settings/download-backup-file', 'SettingController@downloadBackupFile')->name('settings.download-backup-file');
         
         Route::resource('/orders', 'OrderController');
 
