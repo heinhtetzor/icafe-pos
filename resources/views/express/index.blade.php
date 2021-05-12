@@ -248,6 +248,8 @@
 @endsection
 @section('script')
 <script>    
+    const orderAlert = new Audio('/sounds/kitchen-alert.wav');
+
     let bulkInsertModal;
     window.addEventListener('load', () => {        
         bulkInsertModal = new bootstrap.Modal(document.getElementById('bulkInsertModal'), {
@@ -375,8 +377,16 @@
         })
         .then (res => res.json())
         .then (res => {            
-            ticker.classList.add('badge', 'bg-success');
-            ticker.innerHTML = `${menuName} x ${menuQuantity}`;
+            ticker.classList.add('badge', 'bg-success');            
+            let menuQuantityDisplay = menuQuantity;
+            if (ticker.innerHTML.split(' x ')[0] === menuName) {
+                menuQuantityDisplay = +ticker.innerHTML.split(' x ')[1] + 1;     
+                console.log(menuQuantityDisplay)                           
+                ticker.innerHTML = `${menuName} x ${menuQuantityDisplay}`;
+            }
+            ticker.innerHTML = `${menuName} x ${menuQuantityDisplay}`;
+
+            orderAlert.play();
         })
         .catch (err => {
             alert("Error");

@@ -183,7 +183,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($expenses as $key => $expense)
+                    @forelse ($expenses as $key => $expense)
                     <tr>
                         <td>{{ $key + 1 }}</td>
                         @if ($expense->status == 0)
@@ -203,7 +203,11 @@
                         </td>
                         <td>{{ $expense->datetime->format('h:i a') }} {{ $expense->datetime->format('d-M-Y') }}</td>
                     </tr>
-                    @endforeach
+                    @empty 
+                    <tr>
+                        <td colspan="4">မရှိသေးပါ</td>
+                    </tr>
+                    @endforelse
                 </tbody>
             </table>
         </section>

@@ -10,6 +10,7 @@ use App\OrderMenu;
 use App\MenuGroup;
 use App\Order;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class ReportController extends Controller
 {
@@ -217,7 +218,34 @@ class ReportController extends Controller
     }
 
     public function profitLossIndex (Request $request)
-    {
+    {        
         return view('admin.reports.profit-loss');
+    }
+    
+    public function getDataForMenuGroupsBarChart (Request $request)
+    {        
+        $fromTime = Carbon::today()->startOfMonth()->startOfDay();
+        $toTime = Carbon::today()->endOfMonth()->endOfDay();
+        
+        
+        if ($request->date) {
+            $from=explode(" - ", $request->date)[0];
+            $to=explode(" - ", $request->date)[1];
+            $fromTime=Carbon::parse($from)->startOfDay();
+            $toTime=Carbon::parse($to)->endOfDay();            
+        }        
+
+
+        //get all menu groups by order name desc
+
+        //loop through menu groups
+            //get total sales by each
+            //construct array
+
+        return response()->json([
+            "menuGroupsWithSales" => $menuGroupsWithSales,
+            "menuGroupsWithExpenses" => $menuGroupsWithExpenses
+        ]);
+
     }
 }

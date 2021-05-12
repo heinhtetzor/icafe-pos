@@ -106,6 +106,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/reports/items', 'ReportController@items')->name('admin.reports.items');
 
         Route::get('/reports/profit-loss', 'ReportController@profitLossIndex')->name('admin.reports.profit-loss');
+        Route::get('/reports/profit-loss/get-data-for-menu-groups-bar-chart', 'ReportController@getDataForMenuGroupsBarChart')->name('admin.reports.profit-loss.get-data-for-menu-groups-bar-chart');
         
 
         // extra order routes

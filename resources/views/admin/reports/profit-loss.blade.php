@@ -37,7 +37,7 @@
 
     <div class="container">
         <h3>
-            <a href="javascript:history.back()">🔙</a>
+            <a href="{{route('admin.reports')}}">🔙</a>
             ယခုလ
 
             <span style="float:right;">
@@ -45,12 +45,20 @@
                 <a href="{{route('admin.reports.profit-loss')}}">ယနေ့</a>
             </span>
         </h3>
+        <section class="charts">
+            <div class="row">
+                <div class="col-md-6">
+                    <div id="barchart"></div>
+                </div>
+            </div>
+        </section>
     </div>
 @endsection
 @section('js')
 <!-- Include Choices JavaScript -->
 <script src="/litepicker/litepicker.js"></script>
 <script src="/choices/scripts/choices.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <script>
     (() => {
 
@@ -59,6 +67,62 @@
             element: datePicker,
             singleMode: false
         });
+
+        const params = new URLSearchParams(location.search);
+        const date = params.get('date');        
+
+
+        //get all menu groups
+
+        //
+        
+        fetch (`/admin/reports/profit-loss/get-data-for-menu-groups-bar-chart?date=${date ? date : ""}`)
+        .then (res => res.json())
+        .then (res => {
+            let sales_total_arr = [];
+            let expenses_total_arr = [];
+            let menugroups_sales_arr = [];
+            let menugroups_expenses_arr = [];
+
+            for (obj of res.menuGroupsWithSales) {
+                sales_total_arr.push(obj.total);
+                menugroups_sales_arr.push(obj.name);
+            }
+            for (obj of res.menuGroupsWithExpenses) {
+                expenses_total_arr.push(obj.total);
+                if (!obj.name && obj.is_general_item == 1) {
+                    menugroups_expenses_arr.push("အထွေထွေ");
+                }
+                else {                    
+                    menugroups_expenses_arr.push(obj.name);
+                }                
+            }
+            var options = {
+            chart: {
+                type: 'bar'
+            },
+            colors: [
+                "#278a58", "#b02139"
+            ],
+            series: [{
+                name: 'ရောင်းရငွေ',
+                data: sales_total_arr
+            }, {
+                name: 'သုံးငွေ',
+                data: expenses_total_arr,
+
+            }
+        ],
+            
+            xaxis: {
+                categories: menugroups_sales_arr
+            }
+            }
+    
+            new ApexCharts(document.querySelector("#barchart"), options).render();            
+        })
+
+
     })();
 </script>
 
