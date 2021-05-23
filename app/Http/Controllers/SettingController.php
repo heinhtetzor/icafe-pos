@@ -46,7 +46,7 @@ class SettingController extends Controller
 
         return view ('admin.settings.shop', [
             "settings" => $settings,
-            "shop_name" => $shop_name,
+            "shop_name" => $shop_name ?? "iCafe",
             "shop_line_1" => $shop_line_1,
             "shop_line_2" => $shop_line_2,
             "printer_connector" => $printer_connector
