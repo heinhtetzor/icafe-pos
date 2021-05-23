@@ -26,6 +26,7 @@ class SettingController extends Controller
         $shop_name = "";
         $shop_line_1 = "";
         $shop_line_2 = "";
+        $printer_connector = "";
 
         foreach ($settings as $setting)
         {
