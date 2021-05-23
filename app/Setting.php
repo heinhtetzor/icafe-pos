@@ -14,4 +14,10 @@ class Setting extends Model
     {
         return self::where('key', 'passcode')->first()->value;
     }
+
+    public static function getPrinterConnector ()
+    {
+    	return self::where('key', 'printer_connector')->first()->value;
+    }
+
 }

@@ -1,8 +1,8 @@
 @extends('layouts.admin')
 @section('content')
 <div class="container">
-    <h4><a href="{{route('admin.accountmanagement')}}">🔙</a>
-    Settings</h4>
+    <h4><a href="{{route('settings.index')}}">🔙</a>
+    Passcode</h4>
     <div class="row">
         @if(session('msg'))
         <p class="alert alert-success">{{ session('msg') }}</p>
@@ -10,7 +10,7 @@
         @if(session('error'))
         <p class="alert alert-danger">{{ session('error') }}</p>
         @endif
-        <form action="{{ route('settings.save') }}" method="post">
+        <form action="{{ route('settings.savePasscode') }}" method="post">
             @csrf
             <div class="col-md-3">
                 <div class="form-group">

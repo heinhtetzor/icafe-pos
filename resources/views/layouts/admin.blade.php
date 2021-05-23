@@ -174,7 +174,7 @@
         <div class="topnav-left">
             <a class="topnav-brand" href="/admin">
                 <img src="/logo.png" width="40" height="40" alt="logo">
-                Admin
+                
             </a>
         </div>
         
@@ -243,6 +243,26 @@
             `;
 
         }
+
+        // get all if no in localstorage        
+        const shopName = localStorage.getItem('shop_name');
+        const topNav = document.querySelector('.topnav-brand');
+        
+        if (!shopName) {
+            fetch (`/admin/settings/getAll`)
+            .then (res => res.json())
+            .then (res => {
+                res.settings.forEach (setting => {
+                    localStorage.setItem(setting.key, setting.value);
+                })
+            })
+            .catch (err => {
+                console.log(err);
+            })    
+        }
+
+        topNav.innerHTML += localStorage.getItem('shop_name');
+        
     </script>
     @yield('js')
 </body>

@@ -29,6 +29,10 @@
 
             {{$order->created_at->format('d-M-Y')}} - {{$order->created_at->format('h:i A')}}
 
+            <a class="btn btn-info" href="{{ route('orders.print', $order->id) }}">
+            🖨
+            Print</a>
+
         </h2>
 
         <div class="row">

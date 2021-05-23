@@ -64,7 +64,8 @@ Route::group(['prefix' => 'admin'], function () {
     
     Route::group(['middleware' => 'adminAccountAuth'], function () {
         Route::get('/', 'AdminHomeController@admin')->name('admin.home');
-        
+
+
 
         //expense module
         Route::get('/expenses', 'ExpenseController@index')->name('expenses.index');
@@ -107,6 +108,7 @@ Route::group(['prefix' => 'admin'], function () {
 
         Route::get('/reports/profit-loss', 'ReportController@profitLossIndex')->name('admin.reports.profit-loss');
         Route::get('/reports/profit-loss/get-data-for-menu-groups-bar-chart', 'ReportController@getDataForMenuGroupsBarChart')->name('admin.reports.profit-loss.get-data-for-menu-groups-bar-chart');
+        Route::get('/reports/profit-loss/get-data-for-daily-line-chart', 'ReportController@getDataForDailyLineChart')->name('admin.reports.profit-loss.get-data-for-daily-line-chart');
         
 
         // extra order routes
@@ -116,10 +118,17 @@ Route::group(['prefix' => 'admin'], function () {
 
         Route::get('/settings', 'SettingController@index')->name('settings.index');
         Route::get('/settings/passcode', 'SettingController@passcode')->name('settings.passcode');
-        Route::post('/settings/save', 'SettingController@save')->name('settings.save');
+        Route::post('/settings/savePasscode', 'SettingController@savePasscode')->name('settings.savePasscode');
+
+        Route::get('/settings/shop', 'SettingController@shop')->name('settings.shop');
+        Route::post('/settings/saveShop', 'SettingController@saveShop')->name('settings.saveShop');
+
+        Route::get('/settings/getAll', 'SettingController@getAll')->name('settings.getAll');
         
         Route::get('/settings/download-backup-file', 'SettingController@downloadBackupFile')->name('settings.download-backup-file');
         
+        //print functions
+        Route::get('/orders/{order}/print', 'PrintController@printOrder')->name('orders.print');
         Route::resource('/orders', 'OrderController');
 
         Route::resource('/tables', 'TableController');

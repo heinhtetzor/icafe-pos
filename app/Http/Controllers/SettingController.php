@@ -20,6 +20,37 @@ class SettingController extends Controller
             "passcode" => $passcode
         ]);
     }
+    public function shop ()
+    {
+        $settings = Setting::all();
+        $shop_name = "";
+        $shop_line_1 = "";
+        $shop_line_2 = "";
+
+        foreach ($settings as $setting)
+        {
+            if ($setting->key === "shop_name") {
+                $shop_name = $setting->value;
+            }
+            if ($setting->key === "shop_line_1") {
+                $shop_line_1 = $setting->value;
+            }
+            if ($setting->key === "shop_line_2") {
+                $shop_line_2 = $setting->value;
+            }
+            if ($setting->key === "printer_connector") {
+                $printer_connector = $setting->value;
+            }
+        }
+
+        return view ('admin.settings.shop', [
+            "settings" => $settings,
+            "shop_name" => $shop_name,
+            "shop_line_1" => $shop_line_1,
+            "shop_line_2" => $shop_line_2,
+            "printer_connector" => $printer_connector
+        ]);
+    }
 
     public function downloadBackupFile ()
     {
@@ -27,7 +58,7 @@ class SettingController extends Controller
         return redirect('/storage/'.$files[0]);
     }
 
-    public function save (Request $request)
+    public function savePasscode (Request $request)
     {
         $old_passcode = Setting::getPasscode();
         if ($request->old_passcode_value !== $old_passcode) {
@@ -43,5 +74,41 @@ class SettingController extends Controller
             ]);
         }
         return redirect()->back()->with('msg', "Succesfully updated passcode.");
+    }
+
+    public function saveShop (Request $request)
+    {
+        Setting::updateOrCreate([
+            "key" => "shop_name"
+        ], [
+        	"value" => $request->shop_name
+        ]);
+
+        Setting::updateOrCreate([
+            "key" => "shop_line_1"
+        ], [
+        	"value" => $request->shop_line_1
+        ]);
+
+        Setting::updateOrCreate([
+            "key" => "shop_line_2"
+        ], [
+        	"value" => $request->shop_line_2
+        ]);
+
+        Setting::updateOrCreate([
+            "key" => "printer_connector"
+        ], [
+            "value" => $request->printer_connector
+        ]);
+
+        return redirect()->back()->with('msg', "Succesfully updated shop info.");
+    }
+
+    public function getAll ()
+    {
+    	return response()->json([
+    		"settings" => Setting::all()
+    	]);
     }
 }

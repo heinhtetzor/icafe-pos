@@ -11,6 +11,8 @@ use App\MenuGroup;
 use App\Order;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use DatePeriod;
+use DateInterval;
 
 class ReportController extends Controller
 {
@@ -221,7 +223,9 @@ class ReportController extends Controller
     {        
         return view('admin.reports.profit-loss');
     }
+
     
+    //to show expenses, sales and profits including general items
     public function getDataForMenuGroupsBarChart (Request $request)
     {        
         $fromTime = Carbon::today()->startOfMonth()->startOfDay();
@@ -237,15 +241,86 @@ class ReportController extends Controller
 
 
         //get all menu groups by order name desc
+        $menu_groups = MenuGroup::orderby('name')->get();
+        $menuGroupsWithSales = [];
+        $menuGroupsWithExpenses = [];
 
-        //loop through menu groups
-            //get total sales by each
-            //construct array
+        $menuGroupsWithSales = DB::table('order_menus')
+        ->join('menus', 'order_menus.menu_id', '=', 'menus.id')
+        ->join('menu_groups', 'menus.menu_group_id', '=', 'menu_groups.id')
+        ->join('orders', 'orders.id', '=', 'order_menus.order_id')                      
+        ->selectRaw('menu_groups.id as id, menu_groups.name as name, SUM(order_menus.quantity) as quantity, SUM(order_menus.quantity*order_menus.price) as total')
+        ->where('orders.status', '=', '1')
+        ->whereBetween('orders.created_at', [$fromTime, $toTime])
+        ->groupBy('menu_groups.id')
+        ->get();  
+
+        $menuGroupsWithExpenses = DB::table('expense_items')
+        ->join('items', 'expense_items.item_id', '=', 'items.id')
+        ->join('menu_groups', 'expense_items.menu_group_id', '=', 'menu_groups.id')
+        ->join('expenses', 'expenses.id', '=', 'expense_items.expense_id')                      
+        ->selectRaw('expense_items.is_general_item, menu_groups.id as id, menu_groups.name as name, SUM(expense_items.quantity) as quantity, SUM(expense_items.quantity*expense_items.cost) as total')
+        ->where('expenses.status', '=', '1')
+        ->whereBetween('expenses.datetime', [$fromTime, $toTime])
+        ->groupBy('expense_items.menu_group_id')
+        ->get();  
+
+        $generalExpenses = ExpenseItem::whereHas('expense', function ($q) use ($fromTime, $toTime) {
+            $q->whereBetween('datetime', [$fromTime, $toTime]);
+            $q->where('status', '1');
+        })
+        ->selectRaw('is_general_item, SUM(quantity) as quantity, SUM(quantity*cost) as total')
+        ->where('is_general_item', '1')
+        ->first();
+        
 
         return response()->json([
             "menuGroupsWithSales" => $menuGroupsWithSales,
-            "menuGroupsWithExpenses" => $menuGroupsWithExpenses
+            "menuGroupsWithExpenses" => $menuGroupsWithExpenses,
+            "generalExpenses" => $generalExpenses,
+            "menuGroups" => $menu_groups
         ]);
 
     }
+
+    public function getDataForDailyLineChart (Request $request)
+    {
+        $fromTime = Carbon::today()->subDays(30)->startOfDay();
+        $toTime = Carbon::today()->endOfDay();
+
+        if ($request->date) {
+            $from=explode(" - ", $request->date)[0];
+            $to=explode(" - ", $request->date)[1];
+            $fromTime=Carbon::parse($from)->startOfDay();
+            $toTime=Carbon::parse($to)->endOfDay();   
+        }
+
+        $period = new DatePeriod($fromTime, new DateInterval('P1D'), $toTime);
+
+        foreach ($period as $day) 
+        {
+            $dailySales[$day->format("d-M-Y")] = 0;
+        }
+
+
+        $orderMenus = DB::table('order_menus')
+        ->join('orders', 'orders.id', '=', 'order_menus.order_id')
+        ->selectRaw('DATE(orders.created_at) as date, SUM(quantity*price) as total')
+        ->whereBetween('orders.created_at', [$fromTime, $toTime])
+        ->where('orders.status', '1')
+        ->groupBy('date')
+        ->get();
+        
+
+        foreach ($orderMenus as $val)
+        {
+            $dailySales[Carbon::parse($val->date)->format("d-M-Y")] = $val->total;            
+        }
+        
+
+        return response()->json([
+            "dailySales" => $dailySales
+        ]);
+    }
+
 }

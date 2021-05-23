@@ -21,6 +21,18 @@
              
             </div>
         </a>
+
+        <a class="col-md-3" href="{{route('settings.shop')}}">        
+            <div class="card bg-success text-white">
+                <div class="card-header">
+                    <h2 class="card-title">ဆိုင်အချက်အလက်</h2>
+                </div>
+                <div class="card-body">
+                  
+                </div>
+             
+            </div>
+        </a>
     </div>
     <hr>
     <div class="row">

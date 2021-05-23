@@ -87,14 +87,14 @@
           @if(Auth::guard('kitchen')->check())
             <a class="topnav-brand" href="/kitchen">
                 <img src="/logo.png" width="40" height="40" alt="logo">
-                မင်္ဂလာပါ </a>
+                 </a>
             
             @endif
             
             @if(Auth::guard('admin_account')->check())
             <a class="topnav-brand" href="/admin">
                 <img src="/logo.png" width="40" height="40" alt="logo">                
-                Admin </a>
+                </a>
           
             @endif
         </div>
@@ -185,7 +185,27 @@
                 ${hour} : ${minute} : ${second} ${amPm}
             `;
         }
+
+              // get all if no in localstorage        
+        const shopName = localStorage.getItem('shop_name');
+        const topNav = document.querySelector('.topnav-brand');
+        
+        if (!shopName) {
+            fetch (`/admin/settings/getAll`)
+            .then (res => res.json())
+            .then (res => {
+                res.settings.forEach (setting => {
+                    localStorage.setItem(setting.key, setting.value);
+                })
+            })
+            .catch (err => {
+                console.log(err);
+            })    
+        }
+
+        topNav.innerHTML += localStorage.getItem('shop_name');
     </script>
+    
     @endif
     @yield('script')
 </body>
