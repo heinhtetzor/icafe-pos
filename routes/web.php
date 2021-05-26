@@ -38,22 +38,60 @@ Route::get('/backup', function () {
     ]);
     
 });
-Route::get('/upgrade', function () {
+
+
+Route::get('/software-upgrade', function () {
     try {
-        $git_pull = exec("cd ../ && git pull");
-        $composer = exec("cd ../ && composer install");
-        $migration = exec("cd ../ && php artisan migrate --force");
+        exec("cd ../ && git pull");
     }
-    catch (Exception $e) {        
+    catch (Exception $e) {
         return response()->json([
             "message" => "Error upgrading",
             "details" => $e->getMessage()
         ], 500);
     }
+
     return response()->json([
         "isOk" => TRUE,
-        "message" => "Upgrade Completed",        
+        "message" => "Software Upgrade Completed",        
     ]);
+
+});
+
+Route::get('/database-upgrade', function () {
+    try {
+        exec("cd ../ && php artisan migrate --force");
+    }
+    catch (Exception $e) {
+        return response()->json([
+            "message" => "Error upgrading",
+            "details" => $e->getMessage()
+        ], 500);
+    }
+
+    return response()->json([
+        "isOk" => TRUE,
+        "message" => "Database Upgrade Completed",        
+    ]);
+
+});
+
+Route::get('/composer-upgrade', function () {
+    try {
+        exec("cd ../ && composer install");
+    }
+    catch (Exception $e) {
+        return response()->json([
+            "message" => "Error upgrading",
+            "details" => $e->getMessage()
+        ], 500);
+    }
+
+    return response()->json([
+        "isOk" => TRUE,
+        "message" => "Dependency Upgrade Completed",        
+    ]);
+
 });
 
 Route::group(['prefix' => 'admin'], function () {

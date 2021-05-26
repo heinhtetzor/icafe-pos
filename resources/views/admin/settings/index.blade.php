@@ -37,13 +37,23 @@
     <hr>
     <div class="row">
         <div class="col-md-3">
-            {{-- <a href="/upgrade" class="btn btn-dark" onclick="console.log(this.children[0].style.display='inline-block')">
-                <span>Upgrade</span>
-            </a> --}}
-            <button class="btn btn-danger" id="upgradeBtn">
-                <span id="upgradeBtnSpinner" style="display: none" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                Upgrade
-            </button>
+                        
+            <div class="btn-group">
+              <button onclick="console.log(this.children[0].style.display='inline-block')" id="upgradeBtn" type="button" class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+
+                 <span id="upgradeBtnSpinner" style="display: none" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+
+                🛠 Upgrade
+              </button>
+              <ul class="dropdown-menu">
+                <li><a id="softwareUpgradeBtn" class="dropdown-item" href="#">💻 Software</a></li>
+                <li><a id="databaseUpgradeBtn" class="dropdown-item" href="#">💾 Database</a></li>
+                <li><a id="composerUpgradeBtn" class="dropdown-item" href="#">📀 Dependencies</a></li>
+                
+              </ul>
+            </div>
+
+
             <button class="btn btn-secondary" id="backupBtn">
                 <span id="backupBtnSpinner" style="display: none" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                 Backup Data
@@ -61,51 +71,104 @@
     const upgradeBtn = document.querySelector('#upgradeBtn');
     const backupBtnSpinner = document.querySelector('#backupBtnSpinner');
     const upgradeBtnSpinner = document.querySelector('#upgradeBtnSpinner');
-        backupBtn.addEventListener('click', function () {
-            backupBtnSpinner.style.display = 'inline-block';
-            fetch (`/backup`)
-            .then (res => res.json())
-            .then (res => {
-                if (res.isOk) {
-                    Toastify({
-                        text: res.message,
-                        backgroundColor: "linear-gradient(to right, green, lightgreen)",
-                        className: "info",
-                    }).showToast();
-                    backupBtnSpinner.style.display = 'none';                    
-                }
-                else {                    
-                    Toastify({
-                    text: res.message,
-                    backgroundColor: "linear-gradient(to right, red, brown)",
-                    className: "info",
-                    }).showToast();
-                }
-            })
-        })
 
-        upgradeBtn.addEventListener('click', function () {
-            upgradeBtnSpinner.style.display = 'inline-block';
-            fetch (`/upgrade`)
-            .then (res => res.json())
-            .then (res => {
-                if (res.isOk) {
-                    Toastify({
-                        text: res.message,
-                        backgroundColor: "linear-gradient(to right, green, lightgreen)",
-                        className: "info",
-                    }).showToast();
-                    upgradeBtnSpinner.style.display = 'none';
-                }
-                else {                    
-                    Toastify({
+    const softwareUpgradeBtn = document.querySelector('#softwareUpgradeBtn');
+    const databaseUpgradeBtn = document.querySelector('#databaseUpgradeBtn');
+    const composerUpgradeBtn = document.querySelector('#composerUpgradeBtn');
+
+    backupBtn.addEventListener('click', function () {
+        backupBtnSpinner.style.display = 'inline-block';
+        fetch (`/backup`)
+        .then (res => res.json())
+        .then (res => {
+            if (res.isOk) {
+                Toastify({
                     text: res.message,
-                    backgroundColor: "linear-gradient(to right, red, brown)",
+                    backgroundColor: "linear-gradient(to right, green, lightgreen)",
                     className: "info",
-                    }).showToast();
-                    console.log(res);
-                }
-            })
+                }).showToast();
+                backupBtnSpinner.style.display = 'none';                    
+            }
+            else {                    
+                Toastify({
+                text: res.message,
+                backgroundColor: "linear-gradient(to right, red, brown)",
+                className: "info",
+                }).showToast();
+            }
         })
+    })
+
+    softwareUpgradeBtn.addEventListener('click', function () {
+        upgradeBtnSpinner.style.display = 'inline-block';
+        fetch (`/software-upgrade`)
+        .then (res => res.json())
+        .then (res => {
+            if (res.isOk) {
+                Toastify({
+                    text: res.message,
+                    backgroundColor: "linear-gradient(to right, green, lightgreen)",
+                    className: "info",
+                }).showToast();
+                upgradeBtnSpinner.style.display = 'none';
+            }
+            else {                    
+                Toastify({
+                text: res.message,
+                backgroundColor: "linear-gradient(to right, red, brown)",
+                className: "info",
+                }).showToast();
+                console.log(res);
+            }
+        })
+    })
+
+    databaseUpgradeBtn.addEventListener('click', function () {
+        upgradeBtnSpinner.style.display = 'inline-block';
+        fetch (`/database-upgrade`)
+        .then (res => res.json())
+        .then (res => {
+            if (res.isOk) {
+                Toastify({
+                    text: res.message,
+                    backgroundColor: "linear-gradient(to right, green, lightgreen)",
+                    className: "info",
+                }).showToast();
+                upgradeBtnSpinner.style.display = 'none';
+            }
+            else {                    
+                Toastify({
+                text: res.message,
+                backgroundColor: "linear-gradient(to right, red, brown)",
+                className: "info",
+                }).showToast();
+                console.log(res);
+            }
+        })
+    })
+
+    composerUpgradeBtn.addEventListener('click', function () {
+        upgradeBtnSpinner.style.display = 'inline-block';
+        fetch (`/composer-upgrade`)
+        .then (res => res.json())
+        .then (res => {
+            if (res.isOk) {
+                Toastify({
+                    text: res.message,
+                    backgroundColor: "linear-gradient(to right, green, lightgreen)",
+                    className: "info",
+                }).showToast();
+                upgradeBtnSpinner.style.display = 'none';
+            }
+            else {                    
+                Toastify({
+                text: res.message,
+                backgroundColor: "linear-gradient(to right, red, brown)",
+                className: "info",
+                }).showToast();
+                console.log(res);
+            }
+        })
+    })
 </script>
 @endsection
