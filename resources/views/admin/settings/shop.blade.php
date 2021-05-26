@@ -28,17 +28,13 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="shop_line_1">Line 1</label>   
-                    <textarea name="shop_line_1" class="form-control">
-                        {{ $shop_line_1 ?? '' }}
-                    </textarea> 
+                    <label for="shop_line_1">Line 1</label>                                               
+                    <input type="text" class="form-control" name="shop_line_1" value="{{ $shop_line_1 ?? '' }}">
                 </div>
 
                 <div class="form-group">
-                    <label for="shop_line_2">Line 2</label>   
-                    <textarea name="shop_line_2" class="form-control">
-                        {{ $shop_line_2 ?? ''}}
-                    </textarea>                     
+                    <label for="shop_line_2">Line 2</label>                       
+                    <input type="text" class="form-control" name="shop_line_2" value="{{ $shop_line_2 ?? '' }}">
                 </div>
                 <hr>
 

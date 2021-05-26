@@ -32,16 +32,9 @@
             <!-- Example single danger button -->
 <!-- Example single danger button -->
 <div class="btn-group">
-  <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-    Action
-  </button>
-  <ul class="dropdown-menu">
-    <li>
-        <a class="dropdown-item" href="{{ route('orders.print', $order->id) }}">All</a>
-    </li>
-    @foreach ($orderMenuGroups as $mg)
-        <li><a class="dropdown-item" href="{{ $mg->id }}">{{ $mg->name }}</a></li>
-    @endforeach
+    <a href="{{ route('orders.print', $order->id) }}" class="btn btn-info">
+        🖨  Print
+    </a>
     
   </ul>
 </div>

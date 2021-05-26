@@ -20,4 +20,9 @@ class Setting extends Model
     	return self::where('key', 'printer_connector')->first()->value;
     }
 
+    public static function getShopInfo ()
+    {
+        return self::where('key', 'shop_name')->orWhere('key', 'shop_line_1')->orWhere('key', 'shop_line_2')->get();
+    }
+
 }
