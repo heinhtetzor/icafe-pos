@@ -56,3 +56,17 @@
     </div>
 </div>
 @endsection
+@section('js')
+<script type="text/javascript">
+    fetch (`/admin/settings/getAll`)
+            .then (res => res.json())
+            .then (res => {
+                res.settings.forEach (setting => {
+                    localStorage.setItem(setting.key, setting.value);
+                })
+            })
+            .catch (err => {
+                console.log(err);
+            })    
+</script>
+@endsection
