@@ -8,7 +8,6 @@ use App\OrderMenu;
 use App\Setting;
 use App\MenuGroup;
 use DB;
-use Mike42\Escpos\CapabilityProfile;
 use Mike42\Escpos\PrintConnectors\FilePrintConnector;
 use Mike42\Escpos\Printer;
 use Carbon\Carbon;
@@ -136,16 +135,16 @@ class PrintController extends Controller
             $printed_at = "စာရွက်ထုတ်ချိန်- ". Carbon::now()->format('h:i A d-M-Y') . "\n";
             imagettftext($im, 14, 0, 10, $Y, $black, $font, MyanFont::uni2zg($printed_at)); 
             
-            imagepng($im, "print.png");            
+            imagepng($im, "print-order.png");            
 
             
-            $img = EscposImage::load("print.png");
+            $img = EscposImage::load("print-order.png");
             $printer -> bitImage($img);
             $printer -> cut();
 
         	
         }
-        File::delete(public_path('print.png'));  
+        File::delete(public_path('print-order.png'));  
         
         	
         $printer -> close();    

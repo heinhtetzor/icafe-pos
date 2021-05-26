@@ -13,6 +13,15 @@
                 <input value="{{$menu_group->name}}" name="name" type="text" class="form-control" placeholder="Enter Table Name" required>
                 <p style="color:red">{{ $errors->first('name') }}</p>
             </div>
+
+            <input @if ($menu_group->print_slip == 1) checked  @endif name="print_slip" value="yes" class="form-check-input" type="checkbox" id="print_slip_radio">
+                        <label class="form-check-label" for="print_slip_radio">
+                        စလစ်ထုတ်မည်
+                        </label>
+
+            <br>
+            <br>
+
             <button type="submit" class="btn btn-primary">Submit</button>
             <a class="btn btn-info" href="{{ route('menugroups.index') }}">Back</a>
         </form>
@@ -29,4 +38,7 @@
                 <input type="hidden" name="id" value="{{ $menu_group->id }}">
             </form>
     </section>
+@endsection
+@section('js')
+
 @endsection

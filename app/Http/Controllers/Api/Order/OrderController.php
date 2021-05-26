@@ -8,12 +8,19 @@ use App\Order;
 use App\OrderMenu;
 use App\Kitchen;
 use App\MenuGroup;
+use App\Setting;
 use App\TableStatus;
 use Illuminate\Http\Request;
 use App\Http\Traits\OrderFunctions;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Mike42\Escpos\PrintConnectors\FilePrintConnector;
+use Mike42\Escpos\Printer;
+use SteveNay\MyanFont\MyanFont;
+use File;
+
+use Mike42\Escpos\EscposImage;
 
 class OrderController extends Controller
 {
@@ -105,6 +112,64 @@ class OrderController extends Controller
                 'status' => 0,
                 'is_foc' => 0
             ]);
+
+            // only if menu grup is slip print enabled
+            if ($orderMenu->menu->menu_group->print_slip == 1)
+            {
+
+                $printer_connector = Setting::getPrinterConnector();        
+                $shop_infos = Setting::getShopInfo()->pluck('value');
+
+                $connector = new FilePrintConnector($printer_connector);
+                $printer = new Printer($connector);
+
+                $width = 570;            
+                $height = 200;
+
+                $im = imagecreatetruecolor($width, $height);
+                $white = imagecolorallocate($im, 255, 255, 255);
+                $grey = imagecolorallocate($im, 128, 128, 128);
+                $black = imagecolorallocate($im, 0, 0, 0);
+
+
+                $font = realpath('fonts/zawgyi.ttf');
+
+                $Y = 30;
+
+                imagefilledrectangle($im, 0, 0, $width, $height, $white);
+                $font_size = 20;
+                
+                imagettftext($im, 17, 0, 10, $Y, $black, $font, MyanFont::uni2zg(Carbon::parse($orderMenu->created_at)->format('h:i A d-M-Y')));
+
+                $Y += 50;            
+
+                imagettftext($im, $font_size, 0, 10, $Y, $black, $font, MyanFont::uni2zg($orderMenu->menu->name));
+                
+                imagettftext($im, $font_size, 0, $width - 130, $Y, $black, $font, MyanFont::uni2zg($orderMenu->quantity));
+                $Y += 50;
+
+                $waiter = null;
+
+                if (is_null($orderMenu->waiterId)) {
+                    $waiter = "Express";
+                }
+                if (!is_null($orderMenu->waiterId)) {
+                    $waiter = $orderMenu->waiter->name;
+                }
+
+                imagettftext($im, 17, 0, 10, $Y, $black, $font, MyanFont::uni2zg($waiter));
+
+                imagepng($im, "print-slip.png");            
+
+                
+                $img = EscposImage::load("print-slip.png");
+                $printer -> bitImage($img);
+                $printer -> cut();
+
+
+                // File::delete(public_path('print-slip.png'));
+            }
+
             return response()->json([
                 "orderMenu" => $orderMenu
             ]);

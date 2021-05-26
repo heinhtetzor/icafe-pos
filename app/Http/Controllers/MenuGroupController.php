@@ -89,8 +89,25 @@ class MenuGroupController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(MenuGroupRequest $request, $id)
-    {
-        MenuGroup::findorfail($id)->update($request->all());
+    {        
+        // dd($request->all());
+
+        if (empty($request->print_slip))
+        {
+            $print_slip = 0;            
+        }
+        if (!empty($request->print_slip))
+        {
+            $print_slip = 1;
+        }
+
+
+        $data = [
+            "name" => $request->name,
+            "print_slip" => $print_slip
+        ];
+
+        MenuGroup::findorfail($id)->update($data);
         return redirect()->back()->with('msg', 'Updated successfully');
     }
 
