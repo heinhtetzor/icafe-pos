@@ -40,7 +40,7 @@
                     <h2 class="card-title">အရောင်း</h2>
                 </div>
                 <div class="card-body">
-                     
+                    <p class="icon" style="font-size: 4rem;">☕️</p>
                 </div>
             </div>
         </a>
@@ -50,7 +50,7 @@
                     <h2 class="card-title"><i>Express</i></h2>
                 </div>
                 <div class="card-body">
-                     
+                    <p class="icon" style="font-size: 4rem;">🖥</p>
                 </div>
             </div>
         </a>
@@ -60,7 +60,7 @@
                     <h2 class="card-title"><i>အသုံးစာရင်း</i></h2>
                 </div>
                 <div class="card-body">
-                     
+                    <p class="icon" style="font-size: 4rem;">🛒</p>
                 </div>
             </div>
         </a>
@@ -117,7 +117,7 @@
                     <h2 class="card-title">Setting</h2>
                 </div>
                 <div class="card-body">
-                  
+                  <p class="icon" style="font-size: 4rem;">⚙️</p>
                 </div>
              
             </div>
@@ -131,6 +131,5 @@
 </div>
 @endsection
 @section('js')
-    <script>
-    </script>
+ 
 @endsection
