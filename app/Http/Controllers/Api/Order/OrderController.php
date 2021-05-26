@@ -167,7 +167,7 @@ class OrderController extends Controller
                 $printer -> cut();
 
 
-                // File::delete(public_path('print-slip.png'));
+                File::delete(public_path('print-slip.png'));
             }
 
             return response()->json([
@@ -305,7 +305,7 @@ class OrderController extends Controller
             
             $orderMenu->quantity = $newQuantity;
             $orderMenu->save();
-            // dd($orderMenu->quantity, $orderMenu->quantity - $cancelQuantity);
+        
             if ($orderMenu->quantity === 0) {
                 $orderMenu->delete();    
             }
