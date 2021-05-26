@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="/chartcss/dist/charts.min.css">
     <link rel="stylesheet" href="/toastify/toastify.css">
     <script defer src="/toastify/toastify.js"></script>
+    <script defer src="/bootstrap/js/popper.min.js"></script>
     <script defer src="/bootstrap/js/bootstrap.min.js"></script>
     
     <style>

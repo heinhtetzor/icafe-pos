@@ -28,10 +28,23 @@
             <span class="badge rounded-pill bg-success">{{$order->invoice_no}}</span>
 
             {{$order->created_at->format('d-M-Y')}} - {{$order->created_at->format('h:i A')}}
-
-            <a class="btn btn-info" href="{{ route('orders.print', $order->id) }}">
-            🖨
-            Print</a>
+            
+            <!-- Example single danger button -->
+<!-- Example single danger button -->
+<div class="btn-group">
+  <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+    Action
+  </button>
+  <ul class="dropdown-menu">
+    <li>
+        <a class="dropdown-item" href="{{ route('orders.print', $order->id) }}">All</a>
+    </li>
+    @foreach ($orderMenuGroups as $mg)
+        <li><a class="dropdown-item" href="{{ $mg->id }}">{{ $mg->name }}</a></li>
+    @endforeach
+    
+  </ul>
+</div>
 
         </h2>
 
@@ -114,7 +127,16 @@
 @endsection
 
 @section('js')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js" integrity="sha512-s/XK4vYVXTGeUSv4bRPOuxSDmDlTedEpMEcAQk0t/FMd9V6ft8iXdwSBxV0eD60c6w/tjotSlKu9J2AAW1ckTA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>        
 <script>
+    const ls = document.querySelector('.list-container');
+    html2canvas(ls, {
+        onrendered: function (canvas) {
+            let image = new Image();
+            image.src = canvas.toDataURL("image/png");
+            console.log(image);
+        }
+    })
     function deleteHandler () {
         if (confirm("Are you sure?")) {
             document.querySelector('#delete-form').submit();
