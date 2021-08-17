@@ -32,11 +32,12 @@ trait OrderFunctions {
     }
 
     //used in pos cart view
-    function getOrderMenusGrouped(Order $order) {
+    //used in print bill
+    static function getOrderMenusGrouped(Order $order) {
         return $order->order_menus()
                      ->selectRaw("id, menu_id, SUM(quantity) as quantity, price, is_foc, status, created_at")
                      ->groupBy('menu_id', 'is_foc')                     
-                     ->with('menu') 
+                     ->with('menu', 'menu.menu_group') 
                      ->get();
     }
 

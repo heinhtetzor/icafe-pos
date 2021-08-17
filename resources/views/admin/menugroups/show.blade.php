@@ -47,6 +47,14 @@
                                     <input name="image" type="file" class="form-control">
                                     <p style="color:red">{{ $errors->first('image') }}</p>
                                 </div>
+
+
+                                <input name="is_stock_menu" value="yes" class="form-check-input" type="checkbox" id="stock_menu_radio">
+                                <label class="form-check-label" for="stock_menu_radio">
+                                    Stock Item
+                                </label>
+
+                                <br>
                                 <button type="submit" class="btn btn-primary">Submit</button>
                             </form>        
                         </section>

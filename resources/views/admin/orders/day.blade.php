@@ -168,12 +168,13 @@
         .then (res => res.json())
         .then (res => {
             let grandtotal = 0;
-            let mgs = res.orderMenuGroups.map (mg => {
+            let mgs = "";
+            res.orderMenuGroups.forEach (mg => {
                 if (!res.orderMenuGroups) {
                     return "မရှိသေးပါ";
                 }
                 grandtotal += +mg.total;
-                return `<tr>
+                mgs += `<tr>
                     <td>${mg.name}</td>
                     <td>${mg.quantity}</td>
                     <td>${mg.total} ကျပ်</td>

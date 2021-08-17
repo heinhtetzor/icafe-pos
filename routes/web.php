@@ -103,7 +103,8 @@ Route::group(['prefix' => 'admin'], function () {
     Route::group(['middleware' => 'adminAccountAuth'], function () {
         Route::get('/', 'AdminHomeController@admin')->name('admin.home');
 
-
+        //inventory
+        Route::get('/stockmenus/index', 'StockMenuController@index')->name('stockmenus.index');
 
         //expense module
         Route::get('/expenses', 'ExpenseController@index')->name('expenses.index');
@@ -166,7 +167,9 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/settings/download-backup-file', 'SettingController@downloadBackupFile')->name('settings.download-backup-file');
         
         //print functions
-        Route::get('/orders/{order}/print', 'PrintController@printOrder')->name('orders.print');
+        Route::get('/orders/{order}/printSummary', 'PrintController@printOrderSummary')->name('orders.printOrderSummary');
+        Route::get('/orders{order}/printBill', 'PrintController@printOrderBill')->name('orders.printOrderBill');
+        Route::post('/reports/menus/printMenuReport', 'PrintController@printMenuReport')->name('reports.printMenuReport');
         Route::resource('/orders', 'OrderController');
 
         Route::resource('/tables', 'TableController');

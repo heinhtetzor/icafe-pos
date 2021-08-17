@@ -16,9 +16,15 @@ class Menu extends Model
     {
         return $this->hasMany('App\OrderMenu');
     }
+    public function stock_menu ()
+    {
+        return $this->hasOne('App\StockMenu');
+    }
     public static function getActiveMenus() {
         return Menu::where('status', 1)->get();
     }
+    
+    //dangerous
     public static function getActiveMenusOrderByPopularity() 
     {
         return Menu::with('order_menu')
@@ -26,5 +32,12 @@ class Menu extends Model
                 ->sortByDesc(function ($q) {
                     return $q->order_menu->sum('quantity');
                 });
+    }
+    public function isStockMenu () 
+    {
+        if (!$this->stock_menu()->exists()) {
+            return false;
+        }
+        return $this->stock_menu->status == StockMenu::STATUS_ACTIVE ? true : false;
     }
 }

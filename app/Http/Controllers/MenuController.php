@@ -6,8 +6,10 @@ use App\Http\Requests\MenuRequest;
 use App\Menu;
 use App\MenuGroup;
 use App\OrderMenu;
+use App\StockMenu;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class MenuController extends Controller
 {
@@ -44,16 +46,31 @@ class MenuController extends Controller
      */
     public function store(MenuRequest $request)
     {
-        $data = $request->all();
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image');
-            $imageName = $imagePath->getClientOriginalName();
-            $fileNameToStore = time(). '-menu-' .$imageName;
-            $request->file('image')->storeAs('public/menu_images', $fileNameToStore);
-            $data['image'] = $fileNameToStore;
+        try {
+            DB::beginTransaction();
+    
+            $data = $request->all();
+            if ($request->hasFile('image')) {
+                $imagePath = $request->file('image');
+                $imageName = $imagePath->getClientOriginalName();
+                $fileNameToStore = time(). '-menu-' .$imageName;
+                $request->file('image')->storeAs('public/menu_images', $fileNameToStore);
+                $data['image'] = $fileNameToStore;
+            }
+            
+            $menu = Menu::create($data);
+            
+            if (!empty($request->is_stock_menu)) {
+                StockMenu::createStockMenu($menu);
+            }
+    
+            DB::commit();
+            return redirect()->back()->with('msg', 'Menu successfully created');
         }
-        Menu::create($data);
-        return redirect()->back()->with('msg', 'Menu successfully created');
+        catch (Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with("error", $e->getMessage());
+        }
     }
 
     /**
@@ -92,16 +109,33 @@ class MenuController extends Controller
      */
     public function update(MenuRequest $request, $id)
     {
-        $data = $request->all();
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image');
-            $imageName = $imagePath->getClientOriginalName();
-            $fileNameToStore = time(). '-menu-' .$imageName;
-            $request->file('image')->storeAs('public/menu_images', $fileNameToStore);
-            $data['image'] = $fileNameToStore;
+        try {
+            DB::beginTransaction();
+            $data = $request->all();
+            if ($request->hasFile('image')) {
+                $imagePath = $request->file('image');
+                $imageName = $imagePath->getClientOriginalName();
+                $fileNameToStore = time(). '-menu-' .$imageName;
+                $request->file('image')->storeAs('public/menu_images', $fileNameToStore);
+                $data['image'] = $fileNameToStore;
+            }
+            $menu = Menu::findorfail($id);
+            $menu->update($data);
+            
+            if (!empty($request->is_stock_menu)) {            
+                StockMenu::createStockMenu($menu);
+            }
+            else {
+                StockMenu::disableStockMenu($menu);
+            }
+            DB::commit();
+            return redirect()->back()->with('msg', 'Menu successfully updated');
+
         }
-        Menu::findorfail($id)->update($data);
-        return redirect()->back()->with('msg', 'Menu successfully updated');
+        catch (Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with("error", $e->getMessage());
+        }
     }
 
     /**

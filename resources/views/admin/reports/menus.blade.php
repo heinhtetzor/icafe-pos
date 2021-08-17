@@ -20,7 +20,13 @@
         <h3 style="display: inline">
             <a href="{{route('admin.reports')}}">🔙 </a>
             Menu / Menu အုပ်စုအလိုက် <div class="badge bg-danger">အရောင်းစာရင်း</div>
+            @if (count($results) > 0)
+
+            <a href="#" id="print" class="btn btn-info">🖨 Print</a>
+            @endif
         </h3>
+        {{-- CSRF token --}}
+        <input type="hidden" name="_token" id="_token" value="{{csrf_token()}}">
         
 
         <div>
@@ -76,7 +82,7 @@
 
         </span>
     </div>
-    <table class="table table-hover">
+    <table class="table table-hover" id="results-table">
         <thead class="bg-success text-white">
             <th>Menu အမည်</th>
             <th>နှုန်း</th>
@@ -113,6 +119,43 @@
     const menuSelect = document.querySelector('#menu');
     const menuGroupChoices = new Choices(menuGroupSelect);
     const menuChoices = new Choices(menuSelect);
+
+    const printBtn = document.querySelector('#print');
+    const resultTable = document.querySelector('#results-table tbody');
+    printBtn.addEventListener('click', printHandler);
+
+    function printHandler () {
+        const token=document.querySelector('#_token').value;
+
+        let lines = [];
+        for (let item of resultTable.children) {
+             const line = {
+                 menuName : item.children[0].innerHTML,
+                 menuPrice : item.children[1].innerHTML,
+                 menuQuantity : item.children[2].innerHTML,
+                 total : item.children[3].innerHTML,               
+             }
+             lines.push(line);            
+        }                
+            
+        fetch(`/admin/reports/menus/printMenuReport`, {
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "X-Requested-With": "XMLHttpRequest",
+                "X-CSRF-Token": token
+            },
+            credentials: "same-origin",
+            method: 'POST',
+            body: JSON.stringify({
+                lines
+            })
+        })
+        .then(res=>res.json())
+        .then(res => {
+            console.log(res);
+        })
+    }
 })()
 </script>
 @endsection

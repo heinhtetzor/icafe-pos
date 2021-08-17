@@ -64,6 +64,17 @@
                 </div>
             </div>
         </a>
+        {{-- stock menus --}}
+        <a href="{{route('stockmenus.index')}}">
+            <div class="card bg-info text-white">
+                <div class="card-header">
+                    <h2 class="card-title"><i>အဝယ်စာရင်း Stock</i></h2>
+                </div>
+                <div class="card-body">
+                    <p class="icon" style="font-size: 4rem;">🛒</p>
+                </div>
+            </div>
+        </a>
     </div>
 
     <hr>

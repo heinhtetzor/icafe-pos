@@ -151,12 +151,13 @@
         .then (res => res.json())
         .then (res => {
             let grandtotal = 0;
-            let mgs = res.expenseItemMenuGroups.map (mg => {
+            let mgs = "";
+            res.expenseItemMenuGroups.forEach (mg => {
                 if (!res.expenseItemMenuGroups) {
                     return "မရှိသေးပါ";
                 }
                 grandtotal += +mg.total;
-                return `<tr>                    
+                mgs += `<tr>                    
                     <td>${mg.is_general_item == 1 ? "အထွေထွေ" : mg.name}</td>
                     <td>${mg.quantity}</td>
                     <td>${mg.total} ကျပ်</td>

@@ -30,16 +30,28 @@
             {{$order->created_at->format('d-M-Y')}} - {{$order->created_at->format('h:i A')}}
             
             <!-- Example single danger button -->
-<!-- Example single danger button -->
-<div class="btn-group">
-    <a href="{{ route('orders.print', $order->id) }}" class="btn btn-info">
-        🖨  Print
-    </a>
-    
-  </ul>
-</div>
+            <div class="btn-group">
+                @if ($order->isExpressOrder())
+                <a href="{{ route('orders.printOrderSummary', $order->id) }}" class="btn btn-info">
+                    🖨  Print
+                </a>
+                @endif
+
+                @if (!$order->isExpressOrder())
+                <a href="{{ route('orders.printOrderBill', $order->id) }}" class="btn btn-info">
+                    🖨  Print Bill
+                </a>
+                @endif 
+              </ul>
+            </div>
+
 
         </h2>
+        @if(session('error'))
+        <div class="alert alert-danger">
+            <span>{{session('error')}}</span>
+        </div>
+        @enderror
 
         <div class="row">
             <div class="col-md-8 list-container">

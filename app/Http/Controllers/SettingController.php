@@ -27,6 +27,7 @@ class SettingController extends Controller
         $shop_line_1 = "";
         $shop_line_2 = "";
         $printer_connector = "";
+        $bill_footer_text = "";
 
         foreach ($settings as $setting)
         {
@@ -42,6 +43,10 @@ class SettingController extends Controller
             if ($setting->key === "printer_connector") {
                 $printer_connector = $setting->value;
             }
+            if ($setting->key === "bill_footer_text") {
+                $bill_footer_text = $setting->value;
+            }
+
         }
 
         return view ('admin.settings.shop', [
@@ -49,7 +54,8 @@ class SettingController extends Controller
             "shop_name" => $shop_name,
             "shop_line_1" => $shop_line_1,
             "shop_line_2" => $shop_line_2,
-            "printer_connector" => $printer_connector
+            "printer_connector" => $printer_connector,
+            "bill_footer_text" => $bill_footer_text
         ]);
     }
 
@@ -101,6 +107,12 @@ class SettingController extends Controller
             "key" => "printer_connector"
         ], [
             "value" => $request->printer_connector
+        ]);
+
+        Setting::updateOrCreate([
+            "key" => "bill_footer_text"
+        ], [
+            "value" => $request->bill_footer_text
         ]);
 
         return redirect()->back()->with('msg', "Succesfully updated shop info.");

@@ -17,7 +17,12 @@ class Setting extends Model
 
     public static function getPrinterConnector ()
     {
-    	return self::where('key', 'printer_connector')->first()->value;
+    	return self::where('key', 'printer_connector')->first()->value ;
+    }
+
+    public static function getBillFooterText ()
+    {
+        return self::where('key', 'bill_footer_text')->first()->value ?? null;
     }
 
     public static function getShopInfo ()

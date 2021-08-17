@@ -225,6 +225,7 @@
             @endforelse
         </div>
     </div>
+    <input type="text" id="menuSearchInput" class="form-control" placeholder="ရှာပါ" role="search">
     <div class="menus-grid">
         @foreach ($menus as $menu)
         <div 
@@ -234,6 +235,7 @@
         data-menu-price="{{$menu->price}}"                
         data-menu-code="{{$menu->code}}"
         class="menus-grid-item"
+        title="{{$menu->name}} ({{$menu->code}})" 
         @if ($menu->image)
         style="background-size:cover;background-image: url('/storage/menu_images/{{$menu->image}}')">        
         @else 
@@ -259,6 +261,10 @@
     const token=document.querySelector('#_token').value;            
 
     const ticker = document.querySelector('#ticker');    
+
+    const menuSearchInput=document.querySelector('#menuSearchInput');
+    
+    menuSearchInput.addEventListener('input', menuSearchInputHandler);
 
     const orderId = {{$order->id}};
     const waiterIdSelect = document.querySelector('#waiter-id');
@@ -288,6 +294,24 @@
     const modalMenuPrice = document.querySelector('#modal-menu-price');
 
     modalMenuOrderBtn.addEventListener('click', modalMenuOrderBtnHandler);
+
+    function filterByTextSearch(originalMenuItems, text) {
+        originalMenuItems.forEach(x=>{
+            x.style.display='block';
+        }) 
+        if (!text) {
+            return;
+        }
+        originalMenuItems.forEach (x => {                
+            if (!x.dataset['menuName'].includes(text) && !x.dataset['menuCode'].includes(text)) {
+                x.style.display = 'none';
+            }
+        })            
+    }
+
+    function menuSearchInputHandler (e) {
+        filterByTextSearch(originalMenuItems, e.target.value);
+    }
 
     function menuGridItemRightClickHandler (e) {        
         e.preventDefault();

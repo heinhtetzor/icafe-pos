@@ -9,6 +9,8 @@
     <script defer src="/bootstrap/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="/toastify/toastify.css">
     <script defer src="/toastify/toastify.js"></script>
+    <script defer src="/js/vue.js"></script>
+    
     <title>Waiter View</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap');

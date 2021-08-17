@@ -46,4 +46,14 @@ class Order extends Model
             return $invoice_no;
         }        
     }
+
+    public function isExpressOrder ()
+    {
+        if ($this->table_id === 0)
+        {
+            return true;
+        }
+        return false;
+    }
+
 }

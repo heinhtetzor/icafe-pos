@@ -211,7 +211,9 @@
                     @endforelse
                 </div>
             </div>
-            <input type="text" id="menuSearchInput" class="form-control" placeholder="ရှာပါ">
+
+            <input type="text" id="menuSearchInput" class="form-control" placeholder="ရှာပါ" role="search">
+            
             <div class="menus-grid">                
                 @forelse($menus as $menu)                
                 <div 
@@ -220,6 +222,7 @@
                     data-menu-name="{{$menu->name}}"                
                     data-menu-price="{{$menu->price}}"                
                     data-menu-code="{{$menu->code}}"
+                    data-print-slip="{{$menu->menu_group->print_slip}}"                    
                     class="menus-grid-item"
                     @if ($menu->image)
                     style="background-size:cover;background-image: url('/storage/menu_images/{{$menu->image}}')">        
@@ -240,9 +243,6 @@
   
             {{-- panel for larger screens --}}
             <div class="cart-panel card text-warning bg-success" id="cart-panel">
-                {{-- <div class="card-header">
-                    <h3>မှာမည့် Menu များ</h3>
-                </div> --}}
                 <div class="card-body" style="overflow-y: scroll;">
                     <table class="table table-hovered cart-table text-white">
                         <thead>
@@ -255,10 +255,12 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($order_menus as $order_menu)
+                            @foreach($order_menus as $order_menu)                            
                             <tr class="cartRowsToBeSaved" 
                             data-id="{{$order_menu->menu_id}}" 
                             data-price="{{$order_menu->price}}"
+                            data-print-slip="{{$order_menu->menu->menu_group->print_slip}}"
+                            data-menugroup_id="{{$order_menu->menu->menu_group_id}}"
                             data-is-foc="{{$order_menu->is_foc == 1 ? 'true' : 'false'}}">
                                 <td id="qty">{{$order_menu->quantity}}</td>
                                 <td>x</td>
@@ -284,8 +286,17 @@
            
                 </div>
                 <div class="card-footer" style="display: block">
-                    <div class="card-footer-total" style="display:flex;justify-content:center">
-                        <i>Total </i> :&nbsp; <b class="subtotal">{{$total}} ကျပ်</b>
+                    <div class="card-footer-total" style="display:flex;justify-content:space-between">
+                        <div></div>
+                        <div>
+                            <i>Total </i> :&nbsp; <b class="subtotal">{{$total}} ကျပ်</b>                            
+                        </div>
+                        <div>
+                            <input name="print_bill" value="0" class="form-check-input" type="checkbox" id="print_bill">
+                            <label class="form-check-label" for="print_bill">
+                            Bill ထုတ်မည်
+                            </label>                            
+                        </div>
                     </div><hr>
                     <div class="card-footer-btns" style="display:flex;justify-content:space-between;">
                         <button class="btn btn-success" id="orderBtn">မှာမည်</button>
@@ -422,6 +433,7 @@
 
         var orderMenus=[];
         function updateOrderMenusArr(e) {
+            console.log(e.target.dataset);
             const foundIndex=orderMenus.findIndex(x=>x.id==e.target.dataset['menuId']);
             if(foundIndex>-1) {
                 orderMenus[foundIndex].quantity++;
@@ -431,6 +443,8 @@
                     menu_id:e.target.dataset['menuId'],                
                     name:e.target.dataset['menuName'],
                     price:e.target.dataset['menuPrice'],
+                    printSlip:e.target.dataset['printSlip'],
+                    menugroupId:e.target.dataset['menugroupId'],
                     quantity:1
                 }
                 orderMenus.push(menu);
@@ -467,12 +481,14 @@
                 menu={
                     id: e.target.dataset['menuId'],
                     name: e.target.dataset['menuName'],
-                    price: e.target.dataset['menuPrice'],                    
+                    price: e.target.dataset['menuPrice'],             
+                    print_slip: e.target.dataset['printSlip'],       
+                    menugroup_id: e.target.dataset['menugroupId'],
                     quantity: 1
                 }
                 
                 cartTableBody.innerHTML+= `
-                    <tr class="cartRowsToBeSaved" data-id="${menu.id}" data-price="${menu.price}" data-is-foc="false">
+                    <tr class="cartRowsToBeSaved" data-id="${menu.id}" data-price="${menu.price}" data-is-foc="false" data-menugroup-id="${menu.menugroup_id}" data-print-slip="${menu.print_slip}">
                         <td id="qty">${1}</td>
                         <td>x</td>
                         <td>${menu.name}</td>
@@ -551,9 +567,43 @@
             let tableId={{$tableId}};
             const token=document.querySelector('#_token').value;            
    
-            console.warn("======saving======");
+                
             // api post call to Api ordercontroller             
             // e.target.textContent="Loading"
+
+            //prepare for print array
+            let map = {};
+
+            for (let om of orderMenus)
+            {
+                if (om.printSlip != 1) continue;
+
+                let m = om.menu_id;
+                if (map[om.menugroupId]) {
+
+                    let found = map[om.menugroupId].findIndex(x => x.menu_id == om.menu_id);
+                    if (found != -1) {                        
+                        map[om.menugroupId][found]['qty']++;
+                    }
+                    else {
+                        let s = {};
+                        s["menu_id"] = m;
+                        s["qty"] = 1;
+                        map[om.menugroupId].push(s);                        
+                    }
+
+                }
+                else {
+                    map[om.menugroupId] = [];
+                    let s = {};
+                    s["menu_id"] = m;
+                    s["qty"] = 1;
+                    map[om.menugroupId].push(s);                    
+                }
+                
+            }                
+            
+
 
             fetch(`/api/submitOrder/${tableId}/${waiterId}`, {
                 headers: {
@@ -565,7 +615,8 @@
                 credentials: "same-origin",
                 method: 'POST',
                 body: JSON.stringify({
-                    orderMenus
+                    orderMenus,
+                    printOrderMenus: map
                 })
             })
             .then(res=>res.json())
@@ -596,7 +647,8 @@
             }
 
             let waiterId="{{$currentWaiter}}";
-            let orderId={{$current_order->id ?? "null"}};
+            let orderId={{$current_order->id ?? "null"}};            
+            let printBill = document.querySelector('#print_bill').checked;
             
             //for admin pos 
             //only when admin chooses waiter from dropdown
@@ -613,7 +665,7 @@
                 waiterId=selectedWaiter.value;
             }
             const token=document.querySelector('#_token').value;
-            fetch(`/api/payBill/${orderId}/${waiterId}`, {
+            fetch(`/api/payBill/${orderId}/${waiterId}/${printBill}`, {
                 headers: {
                     "Content-Type": "application/json",
                     "Accept": "application/json",

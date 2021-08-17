@@ -39,9 +39,15 @@
                 <hr>
 
                 <div class="form-group">
+                    <label for="bill_footer_text">Bill Footer Text</label>   
+                    <input type="text" name="bill_footer_text" class="form-control" value="{{ $bill_footer_text ?? '' }}">                    
+                </div>
+                
+                <div class="form-group">
                     <label for="printer_connector">Printer Connector</label>   
                     <input type="text" name="printer_connector" class="form-control" value="{{ $printer_connector ?? '' }}">                    
                 </div>
+
 
                 <br>
                 <button class="btn btn-success">Save</button>

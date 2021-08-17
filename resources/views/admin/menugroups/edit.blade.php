@@ -15,9 +15,9 @@
             </div>
 
             <input @if ($menu_group->print_slip == 1) checked  @endif name="print_slip" value="yes" class="form-check-input" type="checkbox" id="print_slip_radio">
-                        <label class="form-check-label" for="print_slip_radio">
-                        စလစ်ထုတ်မည်
-                        </label>
+            <label class="form-check-label" for="print_slip_radio">
+            စလစ်ထုတ်မည်
+            </label>
 
             <br>
             <br>

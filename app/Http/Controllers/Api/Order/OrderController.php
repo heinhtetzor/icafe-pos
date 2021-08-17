@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers\Api\Order;
-
 use App\Http\Controllers\Controller;
 use App\Table;
 use App\Order;
@@ -12,6 +11,7 @@ use App\Setting;
 use App\TableStatus;
 use Illuminate\Http\Request;
 use App\Http\Traits\OrderFunctions;
+use App\Services\PrintService;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -26,78 +26,80 @@ class OrderController extends Controller
 {
     use OrderFunctions;
     
-    function submitOrder (Request $request, $tableId, $waiterId) {
-        // params all Int
-        // ===========
-        // waiterId
-        // tableId
-
-        // needed data from Request as array
-        // ============
-        // menuId
-        // price
-        // status
-        // quantity
-        
-
-        //early return if orderMenus is empty
-        if(count($request->get('orderMenus'))===0) {
-            return ["isOk"=>FALSE];
-        }
-        $table = Table::lockForUpdate()->findorfail($tableId);
-        $orderId=null;
-        
-        if($table->table_status->isTableFree()) {
-            //create new order
-            $orderData = [
-                'status'=>0,
-                'table_id'=>$tableId,
-                'invoice_no'=>Order::generateInvoiceNumber()
-            ];
-        
-            $order = Order::create($orderData);
-            
-            $tableStatus = TableStatus::where('table_id', $tableId)->update([
-                'status'=>1,
-                'order_id'=>$order->id
-            ]);
-            
-            $orderId = $order->id;
-        }
-        else {
-            //bind with 
-            $orderId = $table->table_status->order_id;
-        }
-
-        //for loop order_menus
-        foreach($request->get('orderMenus') as $orderMenu) {
-            if ($orderMenu["quantity"] < 1) {
-                continue;
+    function submitOrder (Request $request, $tableId, $waiterId) {        
+        try {
+            DB::beginTransaction();
+            //early return if orderMenus is empty
+            if(count($request->get('orderMenus'))===0) {
+                return ["isOk"=>FALSE];
             }
-            //if menu id already existed in order
-            //increment existing ordermenu            
-            $order = Order::findorfail($orderId);
-            $is_old = $order->order_menus()->where('menu_id', $orderMenu["menu_id"])->first();
+            $table = Table::lockForUpdate()->findorfail($tableId);
+            $orderId=null;
             
-            if (is_null($is_old)) { //new
-                //if menu id is new create new ordermenu
-                OrderMenu::create([
-                    "menu_id"=> $orderMenu["menu_id"],
-                    "price"=>$orderMenu["price"],
-                    "status"=>0,
-                    "order_id"=>$orderId,
-                    "quantity"=>$orderMenu["quantity"],
-                    "waiter_id"=>$waiterId
+            if($table->table_status->isTableFree()) {
+                //create new order
+                $orderData = [
+                    'status'=>0,
+                    'table_id'=>$tableId,
+                    'invoice_no'=>Order::generateInvoiceNumber()
+                ];
+            
+                $order = Order::create($orderData);
+                
+                $tableStatus = TableStatus::where('table_id', $tableId)->update([
+                    'status'=>1,
+                    'order_id'=>$order->id
                 ]);
+                
+                $orderId = $order->id;
             }
-            if (!is_null($is_old)) { //old                
-                $is_old->quantity = $is_old->quantity + (int) $orderMenu["quantity"];
-                $is_old->save();
+            else {
+                //bind with 
+                $orderId = $table->table_status->order_id;
+            }
+                
+
+            //for loop order_menus
+            foreach($request->get('orderMenus') as $orderMenu) {
+                if ($orderMenu["quantity"] < 1) {
+                    continue;
+                }
+                //if menu id already existed in order
+                //increment existing ordermenu            
+                $order = Order::findorfail($orderId);
+                $is_old = $order->order_menus()->where('menu_id', $orderMenu["menu_id"])->first();
+                
+                if (is_null($is_old)) { //new
+                    //if menu id is new create new ordermenu
+                    OrderMenu::create([
+                        "menu_id"=> $orderMenu["menu_id"],
+                        "price"=>$orderMenu["price"],
+                        "status"=>0,
+                        "order_id"=>$orderId,
+                        "quantity"=>$orderMenu["quantity"],
+                        "waiter_id"=>$waiterId
+                    ]);
+
+                }
+                if (!is_null($is_old)) { //old                
+                    $is_old->quantity = $is_old->quantity + (int) $orderMenu["quantity"];
+                    $is_old->save();
+                }                
+                PrintService::printOrderSlipTable($order, $waiterId, $request->get('printOrderMenus'));
             }
 
+            DB::commit();
 
+            return ["isOk"=>TRUE, "orderMenus"=>$request->get('orderMenus')];
         }
-        return ["isOk"=>TRUE, "orderMenus"=>$request->get('orderMenus')];
+        catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+            "message" => $e->getMessage()
+            ]);
+        }
+        
+
     }
 
     function addOrderMenu (Request $request)
@@ -113,62 +115,7 @@ class OrderController extends Controller
                 'is_foc' => 0
             ]);
 
-            // only if menu grup is slip print enabled
-            if ($orderMenu->menu->menu_group->print_slip == 1)
-            {
-
-                $printer_connector = Setting::getPrinterConnector();        
-                $shop_infos = Setting::getShopInfo()->pluck('value');
-
-                $connector = new FilePrintConnector($printer_connector);
-                $printer = new Printer($connector);
-
-                $width = 570;            
-                $height = 200;
-
-                $im = imagecreatetruecolor($width, $height);
-                $white = imagecolorallocate($im, 255, 255, 255);
-                $grey = imagecolorallocate($im, 128, 128, 128);
-                $black = imagecolorallocate($im, 0, 0, 0);
-
-
-                $font = realpath('fonts/zawgyi.ttf');
-
-                $Y = 30;
-
-                imagefilledrectangle($im, 0, 0, $width, $height, $white);
-                $font_size = 20;
-                
-                imagettftext($im, 17, 0, 10, $Y, $black, $font, MyanFont::uni2zg(Carbon::parse($orderMenu->created_at)->format('h:i A d-M-Y')));
-
-                $Y += 50;            
-
-                imagettftext($im, $font_size, 0, 10, $Y, $black, $font, MyanFont::uni2zg($orderMenu->menu->name));
-                
-                imagettftext($im, $font_size, 0, $width - 130, $Y, $black, $font, MyanFont::uni2zg($orderMenu->quantity));
-                $Y += 50;
-
-                $waiter = null;
-
-                if (is_null($orderMenu->waiterId)) {
-                    $waiter = "Express";
-                }
-                if (!is_null($orderMenu->waiterId)) {
-                    $waiter = $orderMenu->waiter->name;
-                }
-
-                imagettftext($im, 17, 0, 10, $Y, $black, $font, MyanFont::uni2zg($waiter));
-
-                imagepng($im, "print-slip.png");            
-
-                
-                $img = EscposImage::load("print-slip.png");
-                $printer -> bitImage($img);
-                $printer -> cut();
-
-
-                File::delete(public_path('print-slip.png'));
-            }
+            PrintService::printOrderSlipExpress($orderMenu);
 
             return response()->json([
                 "orderMenu" => $orderMenu
@@ -244,13 +191,16 @@ class OrderController extends Controller
         }
     }
 
-    function payBill($orderId, $waiterId) {
+    function payBill($orderId, $waiterId, $printBill=false) {
+        // dd($printBill);
         
         //string null set by javascript
         if($orderId === "null") {
             //early return if orderId is null
             return ["isOk"=>FALSE];
         }
+
+
 
         //TODO::check of all orders are served to customers 
         $order=Order::lockForUpdate()->findorfail($orderId);
@@ -277,6 +227,12 @@ class OrderController extends Controller
             "status"=>0,
             "order_id"=>null
         ]);
+        if ($printBill == "true")
+        {
+            $order = Order::findorfail($orderId);
+            PrintService::printOrderBill($order);
+        }
+
         return ["isOk"=>TRUE];
     }
 

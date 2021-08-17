@@ -2,7 +2,7 @@
 @section('content')
 <div class="container">
     <h2>
-    <a href="{{route('menugroups.index')}}">🔙</a>
+    <a href="{{route('menugroups.show', $menu->menu_group_id)}}">🔙</a>
     Editing {{ $menu->name}}</h2>  
     @if (session('error'))
     <div class="alert alert-danger">
@@ -49,6 +49,11 @@
                 <p style="color:red">{{ $errors->first('image') }}</p>
             </div>
 
+            <input {{$menu->isStockMenu() ? "checked" : ""}} name="is_stock_menu" value="yes" class="form-check-input" type="checkbox" id="stock_menu_radio">
+            <label class="form-check-label" for="stock_menu_radio">
+                Stock Item
+            </label>
+            <br>
             
             <button type="submit" class="btn btn-primary">Submit</button>
             <a class="btn btn-info" href="/admin/menugroups">Back</a>
