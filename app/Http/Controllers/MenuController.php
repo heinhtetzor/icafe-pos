@@ -126,7 +126,7 @@ class MenuController extends Controller
                 StockMenu::createStockMenu($menu);
             }
             else {
-                StockMenu::disableStockMenu($menu);
+                StockMenu::disableStockMenu($menu);            
             }
             DB::commit();
             return redirect()->back()->with('msg', 'Menu successfully updated');

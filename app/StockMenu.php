@@ -30,10 +30,12 @@ class StockMenu extends Model
     public static function disableStockMenu (Menu $menu) 
     {
         $stock_menu = $menu->stock_menu;
-        $stock_menu->status = self::STATUS_INACTIVE;       
-        $stock_menu->save();
+        if (!is_null($stock_menu)) {
+            $stock_menu->status = self::STATUS_INACTIVE;       
+            $stock_menu->save();
 
-        return $stock_menu;
+            return $stock_menu;            
+        }
     }
 
     public function menu () 
