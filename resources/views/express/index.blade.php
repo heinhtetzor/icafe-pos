@@ -348,7 +348,8 @@
         if (!confirm("သေချာပါသလား?")) {
             return;
         }
-        fetch(`/api/payBill/${orderId}/${waiterId}`, {
+        //temp fix
+        fetch(`/api/payBill/${orderId}/${waiterId}/false`, {
             headers: {
                 "Content-Type": "application/json",
                 "Accept": "application/json",

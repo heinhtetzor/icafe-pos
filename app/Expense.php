@@ -12,6 +12,7 @@ class Expense extends Model
         "invoice_no",
         "total",
         "status",
+        "type",
         "datetime",
         "remarks",
         "user_id"
@@ -23,6 +24,9 @@ class Expense extends Model
 
     const DRAFT = 0;
     const SUBMITTED = 1;
+
+    const TYPE_NON_STOCK = 0;
+    const TYPE_STOCK = 1;
 
     public static function generateInvoiceNumber() {
         //get today datevap
@@ -58,9 +62,80 @@ class Expense extends Model
         return $expenseMenuGroups;   
     }
 
+    public function addExpenseItem ($data)
+    {
+        $menuGroupId = $data["menu_group_id"];
+        if  ($data["is_general_item"] == 1) {
+            $menuGroupId = null;
+        }
+
+        $is_old = ExpenseItem::where('item_id', $data["item_id"])
+                                 ->where('expense_id', $data["expense_id"])
+                                 ->where('menu_group_id', $menuGroupId)
+                                 ->where('cost', $data["cost"])
+                                 ->where('is_general_item', $data["is_general_item"])
+                                 ->where('unit', $data["unit"])
+                                 ->first();
+            
+
+        $expense_item = null;                                 
+        if (is_null($is_old)) { //new
+            $expense_item = ExpenseItem::create([
+                "expense_id" => $data["expense_id"],
+                "quantity" => $data["quantity"],
+                "cost" => $data["cost"],
+                "menu_group_id" => $menuGroupId,
+                "item_id" => $data["item_id"],
+                "is_general_item" => $data["is_general_item"],
+                "unit" => $data["unit"]
+            ]);
+        }
+        if (!is_null($is_old)) { //old
+            $is_old->quantity = $is_old->quantity + (int) $data["quantity"];
+            $is_old->save();
+        }
+
+        return $expense_item ?? $is_old;
+
+    }
+
+    public function addExpenseStockMenu ($data) 
+    {        
+        $is_old = ExpenseStockMenu::where('stock_menu_id', $data["item_id"])
+        ->where('expense_id', $data["expense_id"])        
+        ->where('cost', $data["cost"])        
+        ->where('unit', $data["unit"])
+        ->first();
+
+        $stock_menu = StockMenu::findOrFail($data["item_id"]);        
+        $expense_stock_menu = null; 
+
+        if (is_null($is_old)) { //new
+            $expense_stock_menu = ExpenseStockMenu::create([
+                "expense_id" => $data["expense_id"],
+                "quantity" => $data["quantity"],
+                "cost" => $data["cost"],                
+                "stock_menu_id" => $stock_menu->id,                
+                "unit" => $data["unit"]
+            ]);            
+        }
+
+        if (!is_null($is_old)) { //old
+            $is_old->quantity = $is_old->quantity + (int) $data["quantity"];
+            $is_old->save();
+        }        
+
+        return $expense_stock_menu ?? $is_old;
+    }
+
     public function expense_items ()
     {
         return $this->hasMany('App\ExpenseItem');
+    }
+
+    public function expense_stock_menus ()
+    {
+        return $this->hasMany('App\ExpenseStockMenu');
     }
 
     public function user ()

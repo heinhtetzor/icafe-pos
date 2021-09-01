@@ -17,14 +17,5 @@
 </div>
 @endsection
 @section('js')
-<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
-<script>
-//get stock items from api
-var app = new Vue({
-  el: '#app',
-  data: {
-    message: 'Hello Vue!'
-  }
-})
-</script>
+
 @endsection

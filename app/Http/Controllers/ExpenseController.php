@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Expense;
 use App\Item;
+use App\StockMenu;
 use App\MenuGroup;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -66,7 +67,14 @@ class ExpenseController extends Controller
         {
             return redirect(route('expenses.show', $expense->id));
         }
-        $items = Item::orderby('name')->get();
+        if ($expense->type == Expense::TYPE_NON_STOCK) {
+            $items = Item::orderby('name')->get();
+        }
+        if ($expense->type == Expense::TYPE_STOCK) {
+            $items = StockMenu::whereHas('menu', function ($q) {
+                $q->orderBy('name');
+            })->get();   
+        }
         $menu_groups = MenuGroup::orderBy('name')->get();
         return view('admin.expenses.create', [
             "expense" => $expense,
@@ -82,6 +90,7 @@ class ExpenseController extends Controller
             "datetime" => $request->datetime,
             "total" => 0,
             "remarks" => $request->remarks,
+            "type" => (int) $request->type,
             "status" => Expense::DRAFT,            
             "user_id" => Auth()->guard('admin_account')->user()->id
         ]);
@@ -95,6 +104,7 @@ class ExpenseController extends Controller
         $expenseItemMenuGroups = Expense::getSummaryByExpense($id);
         return view ('admin.expenses.show', [
             "expense" => $expense,
+
             "expense_items" => $expenseItems,
             "expenseItemMenuGroups" => $expenseItemMenuGroups
         ]);

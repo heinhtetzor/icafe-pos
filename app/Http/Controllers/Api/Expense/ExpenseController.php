@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Api\Expense;
 
 use App\Expense;
 use App\ExpenseItem;
+use App\ExpenseStockMenu;
 use App\Http\Controllers\Controller;
 use App\Item;
 use App\MenuGroup;
+use App\StockMenu;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -16,11 +18,24 @@ class ExpenseController extends Controller
 {
     public function getExpenseItems ($id)
     {
-        $expense_items = ExpenseItem::where('expense_id', $id)
-                        ->with('menu_group', 'expense', 'item')
+        $items = [];
+
+        $expense = Expense::findOrFail($id);
+
+        if ($expense->type == Expense::TYPE_STOCK) {
+            $items = ExpenseStockMenu::where('expense_id', $id)
+                        ->with('expense', 'stockMenu', 'stockMenu.menu')
                         ->get();
+        }
+
+        if ($expense->type == Expense::TYPE_NON_STOCK) {
+            $items = ExpenseItem::where('expense_id', $id)
+                            ->with('menu_group', 'expense', 'item')
+                            ->get();
+        }
+
         return response()->json([
-            'expense_items' => $expense_items
+            'items' => $items
         ]); 
     }
 
@@ -76,9 +91,15 @@ class ExpenseController extends Controller
         }
     }
 
-    public function getItem ($itemId)
+    public function getItem (Request $request, $itemId)
     {
-        $item = Item::findorfail($itemId);
+        if ($request->type == Expense::TYPE_NON_STOCK) {
+            $item = Item::findorfail($itemId);
+        }
+        if ($request->type == Expense::TYPE_STOCK) {
+            $item = StockMenu::findorfail($itemId);
+        }
+        
         return response()->json([
             "item" => $item,
         ]);
@@ -95,46 +116,30 @@ class ExpenseController extends Controller
     public function addExpenseItem (Request $request)
     {        
         try {
+            $expense = Expense::findOrFail($request->expense_id);
             // TODO: group by menu_group_id, item_id, unit
-            $menuGroupId = $request->menu_group_id;
-            if ($request->is_general_item == 1) {
-                $menuGroupId = null;
-            }
-            if ($request->is_general_item == 0 && empty($request->menu_group_id)) {
+   
+            if ($expense->type == Expense::TYPE_NON_STOCK && $request->is_general_item == 0 && empty($request->menu_group_id)) {
                 throw new Exception("Menu group is required");
             }
-            
-            $is_old = ExpenseItem::where('item_id', $request->item_id)
-                                 ->where('expense_id', $request->expense_id)
-                                 ->where('menu_group_id', $menuGroupId)
-                                 ->where('cost', $request->cost)
-                                 ->where('is_general_item', $request->is_general_item)
-                                 ->where('unit', $request->unit)
-                                 ->first();
-            
 
-            $expense_item = null;                                 
-            if (is_null($is_old)) { //new
-                $expense_item = ExpenseItem::create([
-                    "expense_id" => $request->expense_id,
-                    "quantity" => $request->quantity,
-                    "cost" => $request->cost,
-                    "menu_group_id" => $menuGroupId,
-                    "item_id" => $request->item_id,
-                    "is_general_item" => $request->is_general_item,
-                    "unit" => $request->unit
-                ]);
+            $item = null;
+
+            if ($expense->type == Expense::TYPE_NON_STOCK) {
+                $item = $expense->addExpenseItem($request->all());
             }
-            if (!is_null($is_old)) { //old
-                $is_old->quantity = $is_old->quantity + (int) $request->quantity;
-                $is_old->save();
+
+            if ($expense->type == Expense::TYPE_STOCK) {
+                $item = $expense->addExpenseStockMenu($request->all());
             }
+            
             return response()->json([
-                "expense_item" => $expense_item ?? $is_old
+                "expense_item" => $item
             ]);
 
         }
         catch (Exception $e) {
+            throw $e;
             return response()->json([
                 "message" => $e->getMessage()
             ], 500);
@@ -144,13 +149,25 @@ class ExpenseController extends Controller
     public function deleteExpenseItem (Request $request)
     {
         try {
-            $expenseItem = ExpenseItem::findorfail($request->id);
-            $expenseItem->quantity = $expenseItem->quantity - 1;
-            if ($expenseItem->quantity == 0) {
-                $expenseItem->delete();
+            $item = null;
+            if ($request->type == Expense::TYPE_NON_STOCK) {
+                $item = ExpenseItem::findOrFail($request->id);
+
+            }
+            else if ($request->type == Expense::TYPE_STOCK) {
+                $item = ExpenseStockMenu::findOrFail($request->id);
+            }
+
+            if (is_null ($item)) {
+                throw new Exception("Item cant be found");
+            }
+
+            $item->quantity = $item->quantity - 1;
+            if ($item->quantity == 0) {
+                $item->delete();
             } 
             else {
-                $expenseItem->save();
+                $item->save();
             }
             return response()->json([
                 "message" => "Deleted"

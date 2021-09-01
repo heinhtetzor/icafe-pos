@@ -12,7 +12,7 @@
         padding: 1rem;
         box-shadow: 8px 4px 8px 4px #bbbbbb;
     }
-    .expense-item-form, .expense-item-list {
+    .expense-item-form, .expense-item-list, .expense-stock-menu-list, .expense-stock-menu-form {
         margin-top: 1rem;
         background-color: white;
         border-radius: 8px;
@@ -98,7 +98,21 @@
                                 <label for="remarks">မှတ်ချက်</label>
                                 <textarea class="form-control" name="remarks" id="remarks" cols="30" rows="3"></textarea>
                             </div>
-                        </div>                        
+                        </div>         
+
+                        <div class="form-check">
+                          <input value="1" class="form-check-input" type="radio" name="type" id="stock" checked>
+                          <label class="form-check-label" for="stock">
+                            Stock
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input value="0" class="form-check-input" type="radio" name="type" id="non-stock">
+                          <label class="form-check-label" for="non-stock">
+                            Non Stock
+                          </label>
+                        </div>
+
                         <div class="col-md-3">
                             <br><br>
                             <button class="btn btn-primary" type="submit">Submit</button>
@@ -109,66 +123,120 @@
         </section>
         
         @if (!empty($expense))
-        <section class="expense-items">
-            <div class="expense-item-form">
-                <div class="row">
-                    <div class="col-md-3">
-                        <select id="item-select" class="form-control">
-                            <option value="">===</option>
-                            @foreach ($items as $item)
-                            <option value="{{ $item->id }}">{{ $item->name }}</option>
-                            @endforeach 
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <select id="menu-group-select" class="form-control">
-                            <option value="">===</option>
-                            @foreach ($menu_groups as $menu_group)
-                            <option value="{{ $menu_group->id }}">{{ $menu_group->name }}</option>
-                            @endforeach 
-                        </select>
-                        <input name="is_general_item" value="0" class="form-check-input" type="checkbox" id="is_general_item">
-                        <label class="form-check-label" for="is_general_item">
-                        အထွေထွေ
-                        </label>
-                    </div>
-                    <div class="col-md-1">
-                        <input type="number" class="form-control" id="quantity" placeholder="Qty">
-                        
-                    </div>
-                    <div class="col-md-1">
-                        {{-- <input type="text" class="form-control" id="unit" placeholder="Unit"> --}}
-                        <select name="unit" id="unit" class="form-control">
-                            <option value="ခု">ခု</option>
-                            <option value="ထုပ်">ထုပ်</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <input type="text" class="form-control" id="cost" placeholder="နှုန်း">
-                    </div>
-                    <div class="col-md-2">
-                        <h4 id="total">0 ကျပ်</h4>
-                        <button id="addBtn" class="btn btn-primary">Add</button>
+            @if ($expense->type == 0)
+            <section class="expense-items">
+                <div class="expense-item-form">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <select id="item-select" class="form-control">
+                                <option value="">===</option>
+                                @foreach ($items as $item)
+                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                @endforeach 
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select id="menu-group-select" class="form-control">
+                                <option value="">===</option>
+                                @foreach ($menu_groups as $menu_group)
+                                <option value="{{ $menu_group->id }}">{{ $menu_group->name }}</option>
+                                @endforeach 
+                            </select>
+                            <input name="is_general_item" value="0" class="form-check-input" type="checkbox" id="is_general_item">
+                            <label class="form-check-label" for="is_general_item">
+                            အထွေထွေ
+                            </label>
+                        </div>
+                        <div class="col-md-1">
+                            <input type="number" class="form-control" id="quantity" placeholder="Qty">
+                            
+                        </div>
+                        <div class="col-md-1">
+                            {{-- <input type="text" class="form-control" id="unit" placeholder="Unit"> --}}
+                            <select name="unit" id="unit" class="form-control">
+                                <option value="ခု">ခု</option>
+                                <option value="ထုပ်">ထုပ်</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <input type="text" class="form-control" id="cost" placeholder="နှုန်း">
+                        </div>
+                        <div class="col-md-2">
+                            <h4 id="total">0 ကျပ်</h4>
+                            <button id="addBtn" class="btn btn-primary">Add</button>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <table class="table table-hover expense-item-list">
-                <thead>
-                    <tr>
-                        <th>အမည်</th>
-                        <th>နှုန်း</th>
-                        <th>Qty</th>
-                        <th>Unit</th>
-                        <th>ကျသင့်ငွေ</th>
-                        <th>အမျိုးအစား</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>                    
-                </tbody>
-            </table>
-        </section>       
+                <table class="table table-hover expense-item-list">
+                    <thead>
+                        <tr>
+                            <th>အမည်</th>
+                            <th>နှုန်း</th>
+                            <th>Qty</th>
+                            <th>Unit</th>
+                            <th>ကျသင့်ငွေ</th>
+                            <th>အမျိုးအစား</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>                    
+                    </tbody>
+                </table>
+            </section>     
+            @endif  
+
+
+            <!-- stock -->
+            @if ($expense->type == 1)
+            <section class="expense-stock-menus">
+                <div class="expense-stock-menu-form">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <select id="item-select" class="form-control">
+                                <option value="">===</option>
+                                @foreach ($items as $item)
+                                <option value="{{ $item->id }}">{{ $item->menu->name }}</option>
+                                @endforeach 
+                            </select>
+                        </div>
+                        <div class="col-md-1">
+                            <input type="number" class="form-control" id="quantity" placeholder="Qty">
+                            
+                        </div>
+                        <div class="col-md-1">
+                            {{-- <input type="text" class="form-control" id="unit" placeholder="Unit"> --}}
+                            <select name="unit" id="unit" class="form-control">
+                                <option value="ခု">ခု</option>
+                                <option value="ထုပ်">ထုပ်</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <input type="text" class="form-control" id="cost" placeholder="နှုန်း">
+                        </div>
+                        <div class="col-md-2">
+                            <h4 id="total">0 ကျပ်</h4>
+                            <button id="addBtn" class="btn btn-primary">Add</button>
+                        </div>
+                    </div>
+                </div>
+
+                <table class="table table-hover expense-stock-menu-list">
+                    <thead>
+                        <tr>
+                            <th>အမည်</th>
+                            <th>နှုန်း</th>
+                            <th>Qty</th>
+                            <th>Unit</th>
+                            <th>ကျသင့်ငွေ</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>                    
+                    </tbody>
+                </table>
+            </section>
+            @endif
         @endif
 
         @if (empty($expense))
@@ -258,15 +326,20 @@
         const total = document.querySelector('#total');
         const unit = document.querySelector("#unit");
         const addBtn = document.querySelector('#addBtn');
+        @if ($expense->type == 0) //non stock
         const expenseItemList = document.querySelector('.expense-item-list > tbody');
+        @elseif ($expense->type == 1) // stock
+        const expenseItemList = document.querySelector('.expense-stock-menu-list > tbody');
+        @endif
+    
         const totalText = document.querySelector('#expenseTotal');
         const expenseId = document.querySelector('#expenseId');
         const confirmBtn = document.querySelector('#confirmBtn');
 
         addBtn.addEventListener('click', addBtnClickHandler);
         itemSelect.addEventListener('change', itemSelectChangeHandler);
-        menuGroupSelect.addEventListener('change', menuGroupChangeHandler);
-        isGeneralItemRadio.addEventListener('click', isGeneralItemChangeHandler);
+        menuGroupSelect?.addEventListener('change', menuGroupChangeHandler);
+        isGeneralItemRadio?.addEventListener('click', isGeneralItemChangeHandler);
         cost.addEventListener('input', costChangeHandler);
         quantity.addEventListener('input', quantityChangeHandler);
         confirmBtn.addEventListener('click', confirmBtnHandler);
@@ -275,17 +348,21 @@
         
 
         function resetExpenseItemForm () {
-            menuGroupSelect.value = "";
+            if (menuGroupSelect) {
+                menuGroupSelect.value = "";
+            }
             itemSelectSlim.set("");             
             cost.value = 0;
             quantity.value = 1;
             unit.value = "ခု";
             total.innerHTML = "0 ကျပ်";
-            isGeneralItemRadio.checked = false;
+            if (isGeneralItemRadio) {
+                isGeneralItemRadio.checked = false;
+            }
         }
 
         function itemSelectChangeHandler (e) {            
-            fetch (`/api/expenses/getItem/${e.target.value}`)
+            fetch (`/api/expenses/getItem/${e.target.value}?type={{$expense->type}}`)
             .then (res => res.json())
             .then (res => {
                 
@@ -299,7 +376,7 @@
                     menuGroupSelect.value = "";
                     is_general_item.checked = true;
                 }
-                cost.value = res.item.cost;
+                cost.value = res.item.cost || 0;
                 quantity.value = 1;
                 total.innerHTML = calculateTotal();
             })
@@ -378,10 +455,10 @@
                 expense_id: {{$expense->id}},
                 quantity: quantity.value,
                 cost: cost.value,
-                menu_group_id: menuGroupSelect.value,
+                menu_group_id: menuGroupSelect?.value,
                 item_id: itemSelect.value,
                 unit: unit.value,
-                is_general_item: isGeneralItemRadio.checked ? 1 : 0
+                is_general_item: isGeneralItemRadio?.checked ? 1 : 0
             }
             
             fetch(`/api/expenses/addExpenseItem`, {
@@ -422,8 +499,9 @@
             fetch (`/api/expenses/${expenseId}/getExpenseItems`)
             .then (res => res.json())
             .then (res => {
+                console.log(expenseItemList)
                 expenseItemList.innerHTML = "";
-                if (res.expense_items.length == 0) {
+                if (res.items.length == 0) {
                     expenseItemList.innerHTML += `
                     <tr>
                         <td colspan="7">မရှိသေးပါ</td>
@@ -431,20 +509,36 @@
                     `;
                     return;
                 }
-                res.expense_items.forEach (expenseItem => {
-                    expenseItemList.innerHTML += `
-                        <tr>
-                            <td>${expenseItem.item.name}</td>
-                            <td>${expenseItem.cost}</td>
-                            <td>${expenseItem.quantity}</td>
-                            <td>${expenseItem.unit}</td>
-                            <td>${(expenseItem.cost * expenseItem.quantity).toFixed(2)} ကျပ်</td>
-                            <td>${expenseItem.menu_group ? expenseItem.menu_group.name : "အထွေထွေ"}</td>
-                            <td>
-                                <button class="btn btn-danger deleteExpenseItemBtn" data-id="${expenseItem.id}">⛔️</button>
-                            </td>                             
-                        </tr>
-                    `;
+                res.items.forEach (expenseItem => {
+                    if (expenseItem.expense.type == 0) { // non stock
+                        expenseItemList.innerHTML += `
+                            <tr>
+                                <td>${expenseItem.item.name}</td>
+                                <td>${expenseItem.cost}</td>
+                                <td>${expenseItem.quantity}</td>
+                                <td>${expenseItem.unit}</td>
+                                <td>${(expenseItem.cost * expenseItem.quantity).toFixed(2)} ကျပ်</td>
+                                <td>${expenseItem.menu_group ? expenseItem.menu_group.name : "အထွေထွေ"}</td>
+                                <td>
+                                    <button class="btn btn-danger deleteExpenseItemBtn" data-id="${expenseItem.id}">⛔️</button>
+                                </td>                             
+                            </tr>
+                        `;          
+                    }
+                    if (expenseItem.expense.type == 1) { // stock
+                        expenseItemList.innerHTML += `
+                            <tr>
+                                <td>${expenseItem.stock_menu.menu.name}</td>
+                                <td>${expenseItem.cost}</td>
+                                <td>${expenseItem.quantity}</td>
+                                <td>${expenseItem.unit}</td>
+                                <td>${(expenseItem.cost * expenseItem.quantity).toFixed(2)} ကျပ်</td>                                
+                                <td>
+                                    <button class="btn btn-danger deleteExpenseItemBtn" data-id="${expenseItem.id}">⛔️</button>
+                                </td>                             
+                            </tr>
+                        `;          
+                    }
                     const deleteExpenseItemBtns = document.querySelectorAll('.deleteExpenseItemBtn');
                     deleteExpenseItemBtns.forEach (x => {
                         x.addEventListener('click', deleteExpenseItem);
@@ -467,7 +561,8 @@
                 credentials: "same-origin",
                 method: 'POST',
                 body: JSON.stringify({
-                    "id": e.target.dataset["id"]
+                    "id": e.target.dataset["id"],
+                    "type": {{$expense->type}}
                 })
             })
             .then (res => res.json())
