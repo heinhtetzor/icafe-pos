@@ -110,7 +110,6 @@ class MenuController extends Controller
     public function update(MenuRequest $request, $id)
     {
         try {
-            dd($require->all());
             DB::beginTransaction();
             $data = $request->all();
             if ($request->hasFile('image')) {
