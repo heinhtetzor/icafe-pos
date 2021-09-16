@@ -24,10 +24,13 @@
 @endsection
 @section('content')
 <div class="container">
-    <h2><a href="javascript:history.back()">🔙</a>
+    <h2><a href="{{ route('expenses.index') }}">🔙</a>
         <span class="badge rounded-pill bg-success">{{$expense->invoice_no}}</span>
 
         {{$expense->created_at->format('d-M-Y')}} - {{$expense->datetime->format('h:i A')}}
+        @if ($expense->type == 1)
+        <span class="badge bg-primary">Stock Item</span>
+        @endif
 
     </h2>
 
@@ -44,6 +47,9 @@
                     </tr>
                 </thead>
                 <tbody>
+                    <!-- non stock -->
+                    @if ($expense->type == 0)
+
                     @foreach ($expense_items as $expense_item)
                         <tr>
                             <td>{{ $expense_item->quantity }} {{ $expense_item->unit }}</td>
@@ -57,6 +63,22 @@
                             <td>{{ $expense_item->cost * $expense_item->quantity }} ကျပ်</td>
                         </tr>
                     @endforeach
+
+                    @endif 
+
+                    @if ($expense->type == 1)
+
+                    @foreach ($expense_items as $expense_item)
+                        <tr>
+                            <td>{{ $expense_item->quantity }} {{ $expense_item->unit }}</td>
+                            <td>x</td>
+                            <td>{{ $expense_item->stockMenu->menu->name }}</td>
+                            <td>{{ $expense_item->cost }}</td>
+                            <td>{{ $expense_item->cost * $expense_item->quantity }} ကျပ်</td>
+                        </tr>
+
+                    @endforeach
+                    @endif
                 </tbody>   
             </table>
         </div>
@@ -75,7 +97,7 @@
                         @php $grandTotal=0; @endphp
                         @forelse($expenseItemMenuGroups as $mg)
                         <tr>
-                            @if ($mg->is_general_item == 1)
+                            @if ($expense->type == 0 && $mg->is_general_item == 1)
                             <td>အထွေထွေ</td>
                             @else 
                             <td>{{$mg->name}}</td>

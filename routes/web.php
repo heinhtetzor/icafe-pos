@@ -104,7 +104,8 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/', 'AdminHomeController@admin')->name('admin.home');
 
         //inventory
-        Route::get('/stockmenus/index', 'StockMenuController@index')->name('stockmenus.index');
+        Route::get('/stockmenus', 'StockMenuController@index')->name('stockmenus.index');
+        Route::get('/stockmenus/{stockMenu}', 'StockMenuController@show')->name('stockmenus.show');
 
         //expense module
         Route::get('/expenses', 'ExpenseController@index')->name('expenses.index');

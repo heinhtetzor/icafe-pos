@@ -54,6 +54,11 @@
                 </div>
             </div>
         </a>
+        
+    </div>
+    <hr>
+
+    <div class="flex">
         <a href="{{route('expenses.create')}}">
             <div class="card bg-dark text-white">
                 <div class="card-header">

@@ -12,7 +12,6 @@
     <script defer src="/toastify/toastify.js"></script>
     <script defer src="/bootstrap/js/popper.min.js"></script>
     <script defer src="/bootstrap/js/bootstrap.min.js"></script>
-    <script defer src="/js/vue.js"></script>
 
     
     <style>

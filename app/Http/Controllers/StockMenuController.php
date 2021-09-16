@@ -49,7 +49,11 @@ class StockMenuController extends Controller
      */
     public function show(StockMenu $stockMenu)
     {
-        //
+        $stock_menu_entries = $stockMenu->stockMenuEntries()->orderBy('created_at', 'desc')->paginate(5);
+        return view('admin.stockmenus.show', [
+            "stock_menu" => $stockMenu->load('menu'),
+            "stock_menu_entries" => $stock_menu_entries
+        ]);
     }
 
     /**

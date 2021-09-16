@@ -101,6 +101,9 @@
         border: 4px solid green;
         background-color: #fff;
     }    
+    .stock_menu {
+        background-color:  green;
+    }
 </style>
 @endsection
 @section('content')
@@ -242,7 +245,7 @@
         style="background-size:cover;background-image: url('/images/default.png')">                
         @endif
         <span class="price">{{$menu->price}}</span>
-        <span class="caption">{{$menu->name}}</span>
+        <span class="caption {{ $menu->stock_menu()->exists() ? 'stock_menu' : '' }}">{{$menu->name}}</span>
         </div>     
         @endforeach
     </div>
@@ -401,7 +404,18 @@
             })
         })
         .then (res => res.json())
-        .then (res => {            
+        .then (res => {     
+            console.log(res)
+
+            if (!res.success) {
+                    Toastify({
+                    text: res.message,
+                    backgroundColor: "red",
+                    className: "info",
+                    }).showToast();
+                    return;
+            }
+
             ticker.classList.add('badge', 'bg-success');            
             let menuQuantityDisplay = menuQuantity;
             if (ticker.innerHTML.split(' x ')[0] === menuName) {

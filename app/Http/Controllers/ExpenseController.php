@@ -100,8 +100,17 @@ class ExpenseController extends Controller
     public function show ($id)
     {
         $expense = Expense::findorfail($id);
-        $expenseItems = $expense->expense_items()->with('menu_group')->get();
-        $expenseItemMenuGroups = Expense::getSummaryByExpense($id);
+
+        if ($expense->type == Expense::TYPE_NON_STOCK) {
+            $expenseItems = $expense->expense_items()->with('menu_group')->get();
+            $expenseItemMenuGroups = Expense::getSummaryByExpense($id);
+        }
+
+        if ($expense->type == Expense::TYPE_STOCK) {
+            $expenseItems = $expense->expense_stock_menus;
+            $expenseItemMenuGroups = Expense::getSummaryByExpenseStock($id);
+        }
+
         return view ('admin.expenses.show', [
             "expense" => $expense,
 

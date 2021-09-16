@@ -81,6 +81,15 @@
         right: 0;
         background-color: purple;
         color: white;
+    }    
+    .balance-badge {        
+        position: absolute;
+        top: 0;
+        left: 0;
+        min-width:  1rem;
+        background-color: blue;
+        color: white;
+        border-radius: 25%;
     }
     .price::after {
         content: ' ကျပ်';
@@ -222,6 +231,8 @@
                     data-menu-name="{{$menu->name}}"                
                     data-menu-price="{{$menu->price}}"                
                     data-menu-code="{{$menu->code}}"
+                    data-menu-is-stock="{{ $menu->stock_menu()->exists() ? TRUE : FALSE }}"
+                    data-menu-stock-balance="{{$menu->stock_menu->balance ?? 0}}"
                     data-print-slip="{{$menu->menu_group->print_slip}}"                    
                     class="menus-grid-item"
                     @if ($menu->image)
@@ -231,6 +242,9 @@
                     @endif                    
                     <span class="price">{{$menu->price}}</span>
                     <span class="caption">{{$menu->name}}</span>
+                    @if ($menu->stock_menu()->exists())
+                    <span class="balance-badge">{{$menu->stock_menu->balance}}</span>
+                    @endif
                     
                 </div>
                 @empty 
@@ -457,6 +471,27 @@
             let cartRow;
             
             let menu;
+
+            //check if it is stock item 
+            //then check balance
+            const isStockMenu = e.target.dataset['menuIsStock'];
+
+            if (isStockMenu == 1) {
+                const stockBalance = e.target.dataset['menuStockBalance'];
+                
+
+                if (stockBalance == 0) {
+                    Toastify({
+                    text: "ပစ္စည်းမရှိတော့ပါ",
+                    backgroundColor: "red",
+                    className: "info",
+                    }).showToast();
+                    return;
+                }
+
+                e.target.dataset['menuStockBalance'] = stockBalance - 1;
+
+            }
 
             //existing old cart item
             //check if item already exists

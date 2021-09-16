@@ -32,12 +32,13 @@
 @section('content')
     <div class="container">
         <h3>
-            @if (Request::segment(3) == "edit")
+            {{-- @if (Request::segment(3) == "edit")
             <a href="{{ route('expenses.create') }}">🔙</a>
             @else 
             <a href="{{ route('admin.home') }}">🔙</a>
-            @endif
+            @endif --}}
             {{-- <a href="{{ route('expenses.index') }}">🔙</a> --}}
+            <a href="javascript:history.back()">🔙</a>
             အသုံးစာရင်း အသစ်</h3>
         <section class="expense-form">
             <input type="hidden" name="_token" id="_token" value="{{csrf_token()}}">          

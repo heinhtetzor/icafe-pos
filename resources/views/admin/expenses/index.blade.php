@@ -4,6 +4,9 @@
     body {
         background-color: rgb(233, 232, 232);
     }
+    .stock-row {
+        background-color:  lightgreen;
+    }
 </style>
 @endsection
 @section('content')
@@ -77,7 +80,7 @@
                     </thead>
                     <tbody>
                         @forelse($expenses as $expense)
-                        <tr>                         
+                        <tr class="{{ $expense->type == 1 ? 'stock-row' : '' }}">                         
                             @if ($expense->status == 0)
                             <td><a href="{{ route('expenses.edit', $expense->id) }}">{{ $expense->invoice_no }}</a></td>                            
                             @endif

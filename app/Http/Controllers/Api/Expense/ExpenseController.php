@@ -72,19 +72,40 @@ class ExpenseController extends Controller
     public function confirmExpense ($expenseId)
     {
         try {
+            DB::beginTransaction();
             $expense = Expense::findorfail($expenseId);
-            if ($expense->expense_items->count() <= 0) {
+            if ($expense->expense_items->count() <= 0 && $expense->expense_stock_menus->count() <= 0) {
                 throw new Exception("ပစ္စည်းအမျိုးအမည်ထည့်သွင်းပါ");
             }
             $expense->update([
                 "status" => Expense::SUBMITTED
             ]);
+
+            if ($expense->type == Expense::TYPE_STOCK) {                             
+                foreach ($expense->expense_stock_menus as $expense_stock_menu)
+                {
+                    $stock_menu = $expense_stock_menu->stockMenu;
+                    $old_balance = $stock_menu->balance;
+                    $stock_menu->balance = $old_balance + $expense_stock_menu->quantity;
+                    $stock_menu->save();
+        
+                    $stock_menu->stockMenuEntries()->create([
+                        "expense_stock_menu_id" => $expense_stock_menu->id,
+                        "cost" => $expense_stock_menu->cost,
+                        "in" => $expense_stock_menu->quantity,
+                        "out" => 0,
+                        "balance" => $stock_menu->balance
+                    ]);
+                }
+            }
+            DB::commit();
             return response()->json([
                 "isOk" => TRUE,
                 "message" => "Confirmed expense"
             ]);                 
         }
         catch (Exception $e) {
+            DB::rollBack();
             return response()->json([
                 "message" => $e->getMessage()
             ], 500);
@@ -116,6 +137,8 @@ class ExpenseController extends Controller
     public function addExpenseItem (Request $request)
     {        
         try {
+            DB::beginTransaction();
+
             $expense = Expense::findOrFail($request->expense_id);
             // TODO: group by menu_group_id, item_id, unit
    
@@ -133,12 +156,15 @@ class ExpenseController extends Controller
                 $item = $expense->addExpenseStockMenu($request->all());
             }
             
+
+            DB::commit();
             return response()->json([
                 "expense_item" => $item
             ]);
 
         }
         catch (Exception $e) {
+            DB::rollBack();
             throw $e;
             return response()->json([
                 "message" => $e->getMessage()

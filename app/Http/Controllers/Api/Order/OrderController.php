@@ -11,6 +11,7 @@ use App\Setting;
 use App\TableStatus;
 use Illuminate\Http\Request;
 use App\Http\Traits\OrderFunctions;
+use App\Menu;
 use App\Services\PrintService;
 use Carbon\Carbon;
 use Exception;
@@ -104,7 +105,10 @@ class OrderController extends Controller
 
     function addOrderMenu (Request $request)
     {
-        try {            
+        try {    
+            DB::beginTransaction();
+
+
             $orderMenu = OrderMenu::create([
                 'waiter_id' => $request->waiterId,
                 'menu_id' => $request->menuId,
@@ -115,13 +119,41 @@ class OrderController extends Controller
                 'is_foc' => 0
             ]);
 
+            $menu = Menu::findOrFail($request->menuId);
+            if ($menu->stock_menu()->exists()) {
+                $stock_menu = $menu->stock_menu;
+                if ($stock_menu->balance == 0) {
+                    DB::rollBack();
+                    return response()->json([
+                        "success" => FALSE,
+                        "message" => "ပစ္စည်းမရှိတော့ပါ"
+                    ]);
+                }
+
+                $stock_menu->stockMenuEntries()->create([
+                    "order_menu_id" => $orderMenu->id,
+                    "cost" => $orderMenu->price,
+                    "in" => 0,
+                    "out" => $orderMenu->quantity,
+                    "balance" => $stock_menu->balance - (int) $orderMenu->quantity
+                ]);
+
+                $stock_menu->balance -= (int) $orderMenu->quantity;
+                $stock_menu->save();
+            }
+
+
             PrintService::printOrderSlipExpress($orderMenu);
 
+            DB::commit();
+
             return response()->json([
+                "success" => TRUE,
                 "orderMenu" => $orderMenu
             ]);
         }
         catch (Exception $e) {            
+            DB::rollBack();
             return response()->json([
                 "message" => $e->getMessage()
             ], 500);

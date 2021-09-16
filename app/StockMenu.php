@@ -23,7 +23,6 @@ class StockMenu extends Model
             "balance" => 0,
             "status" => self::STATUS_ACTIVE
         ]);
-        // dd($stock_menu);
         return $stock_menu;
     }
 
@@ -41,5 +40,10 @@ class StockMenu extends Model
     public function menu () 
     {
         return $this->belongsTo('App\Menu');
+    }
+
+    public function stockMenuEntries ()
+    {
+        return $this->hasMany(StockMenuEntry::class);
     }
 }

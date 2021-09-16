@@ -76,6 +76,9 @@ Route::get('/orders/getSummary', 'Api\Order\OrderController@getSummary');
 Route::get('/orders/getSummaryByOrder/{id}', 'Api\Order\OrderController@getSummaryByOrder');
 
 
+//stock menu creation
+Route::get('/stock-menus', 'Api\Menu\MenuController@getStockMenus');
+
 //waiter - get current order
 Route::get('/waiter/{orderId}/orders', 'Api\Order\OrderController@show');
 

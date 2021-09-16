@@ -18,6 +18,9 @@ class ExpenseStockMenu extends Model
             }
             $model->expense->total = $total;
             $model->expense->save();
+
+
+            
         });
 
         static::deleted (function ($model) {

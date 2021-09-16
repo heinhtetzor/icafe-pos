@@ -22,6 +22,14 @@ class Expense extends Model
         "datetime" => 'datetime'
     ];
 
+    protected static function boot ()
+    {
+        parent::boot();
+        static::saved (function ($model) {
+            
+        });
+    }
+
     const DRAFT = 0;
     const SUBMITTED = 1;
 
@@ -57,6 +65,22 @@ class Expense extends Model
         ->selectRaw('expense_items.is_general_item, menu_groups.id as id, menu_groups.name as name, SUM(expense_items.quantity) as quantity, SUM(expense_items.quantity*expense_items.cost) as total')
         ->where('expenses.id', '=', $id)                              
         ->groupBy('expense_items.menu_group_id')
+        ->get();  
+        
+        return $expenseMenuGroups;   
+    }
+
+    public static function getSummaryByExpenseStock ($id)
+    {
+        //for summary panel
+        $expenseMenuGroups=DB::table('expense_stock_menus')
+        ->join('stock_menus', 'expense_stock_menus.stock_menu_id', '=', 'stock_menus.id')
+        ->leftjoin('menus', 'stock_menus.menu_id', '=', 'menus.id')
+        ->leftjoin('menu_groups', 'menus.menu_group_id', '=', 'menu_groups.id')
+        ->join('expenses', 'expenses.id', '=', 'expense_stock_menus.expense_id')                      
+        ->selectRaw('menu_groups.id as id, menu_groups.name as name, SUM(expense_stock_menus.quantity) as quantity, SUM(expense_stock_menus.quantity*expense_stock_menus.cost) as total')
+        ->where('expenses.id', '=', $id)                              
+        ->groupBy('menus.menu_group_id')
         ->get();  
         
         return $expenseMenuGroups;   
