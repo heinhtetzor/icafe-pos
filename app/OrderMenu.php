@@ -34,4 +34,8 @@ class OrderMenu extends Model
     function waiter() {
         return $this->belongsTo('App\Waiter');
     }
+
+    function stockEntry () {
+        return $this->hasOne('App\StockMenuEntry');
+    }
 }

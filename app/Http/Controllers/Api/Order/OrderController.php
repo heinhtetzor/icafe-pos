@@ -278,6 +278,8 @@ class OrderController extends Controller
 
     function cancelOrderMenu($orderMenuId, $cancelQuantity) {
         try {
+            DB::beginTransaction();
+
             $orderMenu = OrderMenu::findorfail($orderMenuId);
             $orderId = $orderMenu->order_id;
             //mot allowed user to cancel if it is already served to customer
@@ -293,8 +295,27 @@ class OrderController extends Controller
             
             $orderMenu->quantity = $newQuantity;
             $orderMenu->save();
+
+            $stock_menu_entry = $orderMenu->stockEntry;
+
+            if (!is_null ($stock_menu_entry)) {
+                $stock_menu_entry->out -= (int) $cancelQuantity;
+                $stock_menu_entry->save();
+
+                if ($stock_menu_entry->out == 0) {
+                    $stock_menu_entry->delete();
+                }
+
+                $stock_menu = $orderMenu->menu->stock_menu;
+                $stock_menu->balance += (int) $cancelQuantity;
+                $stock_menu->save();
+            }
+
+
+            $stock_menu->balance -= (int) $orderMenu->quantity;
+            $stock_menu->save();
         
-            if ($orderMenu->quantity === 0) {
+            if ($orderMenu->quantity == 0) {
                 $orderMenu->delete();    
             }
             
@@ -308,10 +329,12 @@ class OrderController extends Controller
                 $order->delete();
                 return ["returnToTables" => TRUE];
             }
-    
+            
+            DB::commit();
             return ["isOk"=>TRUE];
         }
         catch (Exception $e) {
+            DB::rollBack();
             return response()->json([
                 "message" => $e->getMessage()
             ], 500);

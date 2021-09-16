@@ -49,6 +49,7 @@
 		@endforeach
 		</tbody>
 	</table>
+		{{$stock_menu_entries->appends($_GET)->links()}}
 </div>
 @endsection
 @section('js')
