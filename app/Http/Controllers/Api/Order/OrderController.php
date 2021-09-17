@@ -309,11 +309,13 @@ class OrderController extends Controller
                 $stock_menu = $orderMenu->menu->stock_menu;
                 $stock_menu->balance += (int) $cancelQuantity;
                 $stock_menu->save();
+
+                
+                $stock_menu->balance -= (int) $orderMenu->quantity;
+                $stock_menu->save();
             }
 
 
-            $stock_menu->balance -= (int) $orderMenu->quantity;
-            $stock_menu->save();
         
             if ($orderMenu->quantity == 0) {
                 $orderMenu->delete();    
@@ -340,6 +342,7 @@ class OrderController extends Controller
         }
         catch (Exception $e) {
             DB::rollBack();
+            throw $e;
             return response()->json([
                 "message" => $e->getMessage()
             ], 500);

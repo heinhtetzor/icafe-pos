@@ -50,7 +50,7 @@ class MenuController extends Controller
             DB::beginTransaction();
     
             $data = $request->all();
-            if ($request->hasFile('image')) {
+            if (!is_null ($request->file('image'))) {
                 $imagePath = $request->file('image');
                 $imageName = $imagePath->getClientOriginalName();
                 $fileNameToStore = time(). '-menu-' .$imageName;
@@ -112,7 +112,8 @@ class MenuController extends Controller
         try {
             DB::beginTransaction();
             $data = $request->all();
-            if ($request->hasFile('image')) {
+            
+            if (!is_null ($request->file('image'))) {
                 $imagePath = $request->file('image');
                 $imageName = $imagePath->getClientOriginalName();
                 $fileNameToStore = time(). '-menu-' .$imageName;

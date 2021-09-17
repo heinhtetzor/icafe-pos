@@ -181,9 +181,12 @@
       </div>
 
     <div class="top">
-        <span class="badge bg-primary" style="font-size:1rem">
-            Started time - {{$order->created_at->format('h:i a')}}  {{ $order->created_at->format('d-M-Y') }}
-        </span>
+        <div>
+            <a style="font-size: 1.4rem; text-decoration: none; margin-right: 1rem;" href="{{route('admin.home')}}">🔙 </a>
+            <span class="badge bg-primary" style="font-size:1rem">
+                Started time - {{$order->created_at->format('h:i a')}}  {{ $order->created_at->format('d-M-Y') }}
+            </span>
+        </div>
         <span class="" id="ticker">
         </span>
         <div>
