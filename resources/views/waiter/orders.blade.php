@@ -242,11 +242,15 @@
                         }) 
                         .then(res => res.json())
                         .then(res => {
+                            socket.emit('send-order', {
+                                roomId: 1
+                            }) 
+
                             if (res.returnToTables) {
-                                socket.emit('send-order', {
-                                    roomId: 1
-                                }) 
                                 location.href="/admin/pos/tables";
+                            }
+                            if (res.returnToExpress) {
+                                location.href="/admin/express";   
                             }
                             if (res.isOk) {
                                 passcodeModal.hide();

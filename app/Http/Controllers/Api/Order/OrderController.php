@@ -327,6 +327,11 @@ class OrderController extends Controller
                     "order_id"=>null
                 ]);
                 $order->delete();
+
+                DB::commit();
+                if ($order->table_id == 'express') {
+                    return ["returnToExpress" => TRUE]; 
+                }
                 return ["returnToTables" => TRUE];
             }
             
