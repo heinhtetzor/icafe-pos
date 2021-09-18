@@ -15,6 +15,7 @@
 
     
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
         .topnav {
             position: fixed;
             top: 0;
@@ -41,6 +42,8 @@
             font-size: 2rem;
             font-weight: 900;
             text-decoration: none;
+            color:  #000;            
+            font-family: 'Pacifico', cursive;
         }
         .logout-button {
             font-size: 2rem;
