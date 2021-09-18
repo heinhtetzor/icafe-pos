@@ -152,21 +152,26 @@ class OrderController extends Controller
      */
     public function destroy($id, Request $request)
     {
-        $section = explode("/", $request->getRequestUri());
+        try {
+            $section = explode("/", $request->getRequestUri());
 
-        $order = Order::findorfail($id);
-        
-        OrderMenu::where('order_id', $id)->delete();
-        
-        $order->delete();
-        
-        if ($section[2] === "orders") 
-        {
-            return redirect("/admin/reports/day");
+            $order = Order::findorfail($id);
+            
+            OrderMenu::where('order_id', $id)->delete();
+            
+            $order->delete();
+            
+            if ($section[2] === "orders") 
+            {
+                return redirect("/admin/reports/day");
+            }
+            if ($section[2] === "express") 
+            {
+                return redirect()->back();
+            }
         }
-        if ($section[2] === "express") 
-        {
-            return redirect()->back();
+        catch (\Exception $e) {
+            return redirect()->back()->with("error", "ဖျက်လို့မရပါ");
         }
     }
 }
