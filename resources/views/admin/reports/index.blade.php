@@ -64,6 +64,18 @@
                     </div>
                 </div>
             </a>
+        </div>        
+        <div class="col-md-4">
+            <a href="{{route('admin.reports.stock-menus')}}">
+                <div class="card bg-info text-white">
+                    <div class="card-header">
+                        အဝယ် ပစ္စည်းများ (Stock)
+                    </div>
+                    <div class="card-body">
+                        ..
+                    </div>
+                </div>
+            </a>
         </div>
     </div>
     <hr>

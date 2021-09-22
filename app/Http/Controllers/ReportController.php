@@ -9,6 +9,7 @@ use App\Menu;
 use App\OrderMenu;
 use App\MenuGroup;
 use App\Order;
+use App\StockMenu;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use DatePeriod;
@@ -19,8 +20,71 @@ class ReportController extends Controller
     public function index()
     {
         return view('admin.reports.index');
-    }    
+    }
 
+    public function stockMenus (Request $request) 
+    {
+        $fromTime = "";
+        $toTime = "";
+        if ($request->has('date')) {
+            $from=explode(" - ", $request->date)[0];
+            $to=explode(" - ", $request->date)[1];
+            $fromTime=Carbon::parse($from)->startOfDay();
+            $toTime=Carbon::parse($to)->endOfDay();            
+        }
+        $mgs = [];
+        $ms = [];
+        if ($request->menuGroup) {
+            $mgs = $request->menuGroup;
+        }
+        if ($request->menu) {
+            $ms = $request->menu;
+        }
+        
+        $all_menus = StockMenu::with('menu')->get();
+        $all_menu_groups = MenuGroup::all();
+
+        if ($request->has('menuGroup')) {
+
+        }
+
+        if ($request->has('stockMenu')) {
+            $results = OrderMenu::whereIn('menu_id', $ms)
+            ->whereHas('order', function ($q) use ($fromTime,$toTime) {
+                $q->whereBetween('created_at', [$fromTime, $toTime]);
+            })
+            ->selectRaw('*, SUM(quantity) as total')            
+            ->groupby('menu_id', 'price')
+            ->with('menu')
+            ->orderby('total', 'desc')
+            ->get();                
+            $filtered_menus = Menu::whereIn('id', $ms)->get();
+            $total = $results->sum(function($t) {
+                return $t->price * $t->total;
+            });
+            return view('admin.reports.menus', [
+                "menus" => $all_menus,
+                "menuGroups" => $all_menu_groups,
+                "results" => $results,
+                "fromTime" => $fromTime,
+                "toTime" => $toTime,
+                "filtered_menus" => $filtered_menus,
+                "filtered_menu_groups" => [],
+                "total" => $total
+            ]);
+
+        }
+
+        return view('admin.reports.stock-menus', [
+            "menus" => $all_menus,
+            "menuGroups" => $all_menu_groups,
+            "results" => []
+        ]);
+
+    }
+
+
+    //expense items
     public function items (Request $request)
     {
         $fromTime = "";

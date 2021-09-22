@@ -146,6 +146,8 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/reports/expenses', 'ExpenseController@index')->name('admin.reports.expenses');
         Route::get('/reports/items', 'ReportController@items')->name('admin.reports.items');
 
+        Route::get('/reports/stock-menus', 'ReportController@stockMenus')->name('admin.reports.stock-menus');
+
         Route::get('/reports/profit-loss', 'ReportController@profitLossIndex')->name('admin.reports.profit-loss');
         Route::get('/reports/profit-loss/get-data-for-menu-groups-bar-chart', 'ReportController@getDataForMenuGroupsBarChart')->name('admin.reports.profit-loss.get-data-for-menu-groups-bar-chart');
         Route::get('/reports/profit-loss/get-data-for-daily-line-chart', 'ReportController@getDataForDailyLineChart')->name('admin.reports.profit-loss.get-data-for-daily-line-chart');

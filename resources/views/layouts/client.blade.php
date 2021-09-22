@@ -8,12 +8,12 @@
     <link rel="stylesheet" href="/icons/font/bootstrap-icons.css">
     <script defer src="/bootstrap/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="/toastify/toastify.css">
-    <script defer src="/toastify/toastify.js"></script>
-    <script defer src="/js/vue.js"></script>
+    <script defer src="/toastify/toastify.js"></script>    
     
     <title>Waiter View</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
         *, ::after, ::before {
             margin: 0;
             padding: 0;
@@ -53,6 +53,8 @@
             font-size: 1.4rem;
             font-weight: 900;
             text-decoration: none;
+            font-family: 'Pacifico', cursive;
+            color:  #000;   
         }
         .logout-button {
             font-size: 2rem;
