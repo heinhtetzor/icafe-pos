@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\ExpenseItem;
+use App\ExpenseStockMenu;
 use App\Item;
 use Illuminate\Http\Request;
 use App\Menu;
@@ -24,6 +25,7 @@ class ReportController extends Controller
 
     public function stockMenus (Request $request) 
     {
+
         $fromTime = "";
         $toTime = "";
         if ($request->has('date')) {
@@ -37,38 +39,66 @@ class ReportController extends Controller
         if ($request->menuGroup) {
             $mgs = $request->menuGroup;
         }
-        if ($request->menu) {
-            $ms = $request->menu;
-        }
-        
+        if ($request->stockMenu) {
+            $ms = $request->stockMenu;
+        }        
         $all_menus = StockMenu::with('menu')->get();
         $all_menu_groups = MenuGroup::all();
 
-        if ($request->has('menuGroup')) {
-
-        }
-
-        if ($request->has('stockMenu')) {
-            $results = OrderMenu::whereIn('menu_id', $ms)
-            ->whereHas('order', function ($q) use ($fromTime,$toTime) {
-                $q->whereBetween('created_at', [$fromTime, $toTime]);
+        if ($request->has('menuGroup')) {            
+            $results = ExpenseStockMenu::whereHas('stockMenu', function($q) use ($mgs) {
+                $q->whereHas('menu', function ($r) use ($mgs) {
+                    $r->whereIn('menu_group_id', $mgs);
+                });
             })
-            ->selectRaw('*, SUM(quantity) as total')            
-            ->groupby('menu_id', 'price')
-            ->with('menu')
+            ->whereHas('expense', function ($t) use ($fromTime, $toTime) {
+                $t->whereBetween('created_at', [$fromTime, $toTime]);
+            })
+            ->selectRaw('*, SUM(quantity) as total')
+            ->groupby('stock_menu_id', 'cost')
+            ->with('stockMenu')
             ->orderby('total', 'desc')
-            ->get();                
-            $filtered_menus = Menu::whereIn('id', $ms)->get();
+            ->get();
             $total = $results->sum(function($t) {
-                return $t->price * $t->total;
+                return $t->cost * $t->total;
             });
-            return view('admin.reports.menus', [
+        
+
+            $filtered_menu_groups = MenuGroup::whereIn('id', $mgs)->get();
+            return view('admin.reports.stock-menus', [
                 "menus" => $all_menus,
                 "menuGroups" => $all_menu_groups,
                 "results" => $results,
                 "fromTime" => $fromTime,
                 "toTime" => $toTime,
-                "filtered_menus" => $filtered_menus,
+                "filtered_stock_menus" => [],
+                "filtered_menu_groups" => $filtered_menu_groups,
+                "total" => $total
+            ]);
+        }
+
+        if ($request->has('stockMenu')) {
+            $results = ExpenseStockMenu::whereIn('stock_menu_id', $ms)
+            ->whereHas('expense', function ($q) use ($fromTime,$toTime) {
+                $q->whereBetween('created_at', [$fromTime, $toTime]);
+            })
+            ->selectRaw('*, SUM(quantity) as total')            
+            ->groupby('stock_menu_id', 'cost')
+            ->with('stockMenu')
+            ->orderby('total', 'desc')
+            ->get();       
+
+            $total = $results->sum(function($t) {
+                return $t->cost * $t->total;
+            });
+            $filtered_stock_menus = StockMenu::whereIn('id', $ms)->get();
+            return view('admin.reports.stock-menus', [
+                "menus" => $all_menus,
+                "menuGroups" => $all_menu_groups,
+                "results" => $results,
+                "fromTime" => $fromTime,
+                "toTime" => $toTime,
+                "filtered_stock_menus" => $filtered_stock_menus,
                 "filtered_menu_groups" => [],
                 "total" => $total
             ]);
@@ -327,7 +357,20 @@ class ReportController extends Controller
         ->where('expenses.status', '=', '1')
         ->whereBetween('expenses.datetime', [$fromTime, $toTime])
         ->groupBy('expense_items.menu_group_id')
-        ->get();  
+        ->get();
+
+
+        $menuGroupsWithExpenseStockMenus = DB::table('expense_stock_menus')
+        ->join('expenses', 'expenses.id', '=', 'expense_stock_menus.expense_id')
+        ->join('stock_menus', 'stock_menus.id', '=', 'expense_stock_menus.stock_menu_id')
+        ->join('menus', 'menus.id', '=', 'stock_menus.menu_id')
+        ->join('menu_groups', 'menu_groups.id', '=', 'menus.menu_group_id')
+        ->selectRaw('menu_groups.id as id, menu_groups.name as name, SUM(expense_stock_menus.quantity) as quantity, SUM(expense_stock_menus.quantity*expense_stock_menus.cost) as total')
+        ->where('expenses.status', '=', '1')
+        ->whereBetween('expenses.datetime', [$fromTime, $toTime])
+        ->groupBy('menu_groups.id')
+        ->get();        
+        
 
         $generalExpenses = ExpenseItem::whereHas('expense', function ($q) use ($fromTime, $toTime) {
             $q->whereBetween('datetime', [$fromTime, $toTime]);
@@ -341,6 +384,7 @@ class ReportController extends Controller
         return response()->json([
             "menuGroupsWithSales" => $menuGroupsWithSales,
             "menuGroupsWithExpenses" => $menuGroupsWithExpenses,
+            "menuGroupsWithExpenseStockMenus" => $menuGroupsWithExpenseStockMenus,
             "generalExpenses" => $generalExpenses,
             "menuGroups" => $menu_groups
         ]);

@@ -51,8 +51,18 @@
                     <canvas id="barchart"></canvas>
                 </div>
                 <div class="col-md-6">
-                    <table id="summaryTable" class="table table-hovered">
-                        
+                    <table class="table table-striped" id="summaryTable">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>အရောင်း</th>
+                                <th>အဝယ်</th>
+                                <th>အဝယ် (Stock)</th>
+                                <th>အမြတ်</th>
+                            </tr>
+                        </thead>       
+                        <tbody></tbody>
+                        <tfoot></tfoot>
                     </table>
                 </div>
             </div>
@@ -81,7 +91,8 @@
         const params = new URLSearchParams(location.search);
         const date = params.get('date');        
 
-        const summaryTable = document.querySelector('#summaryTable');
+        const summaryTableBody = document.querySelector('#summaryTable > tbody');
+        const summaryTableFooter = document.querySelector('#summaryTable > tfoot');
 
         
         //retreive sales and expenses and calculate profits
@@ -90,13 +101,16 @@
         .then (res => {
             let sales_total_arr = [];
             let expenses_total_arr = [];
+            let expense_stock_menus_arr = [];
             let profits_total_arr = [];
             let menugroups_name_arr = [];
 
             let summary = [];
 
+            //overall total
             let totalSales = 0;
             let totalExpenses = 0;
+            let totalExpenseStockMenus = 0;
 
 
             let menu_groups = res.menuGroups;        
@@ -118,10 +132,22 @@
                 });
                 return total;
             }
+
+            let searchInMenuGroupsWithExpenseStockMenus = menuGroupId => {
+                let total = 0;
+                res.menuGroupsWithExpenseStockMenus.forEach (me => {
+                    if (me.id == menuGroupId)                                            
+                        total = me.total;
+                });
+                return total;
+            }
  
-            for (let i = 0; i < menu_groups.length; i++) {         
+            for (let i = 0; i < menu_groups.length; i++) {  
+                //one by one total by menu group       
                 let sales_total = searchInMenuGroupsWithSales(menu_groups[i].id);                
                 let expenses_total = searchInMenuGroupsWithExpenses(menu_groups[i].id);                
+                let expense_stock_menus_total = searchInMenuGroupsWithExpenseStockMenus(menu_groups[i].id);
+
                 menugroups_name_arr.push(menu_groups[i].name);
 
                 sales_total_arr.push(sales_total);
@@ -130,13 +156,16 @@
                 expenses_total_arr.push(expenses_total);
                 totalExpenses += expenses_total;
 
+                expense_stock_menus_arr.push(expense_stock_menus_total);
+                totalExpenseStockMenus += expense_stock_menus_total;                
 
-                profits_total_arr.push(sales_total - expenses_total);
+                profits_total_arr.push(sales_total - expenses_total - expense_stock_menus_total);
 
                 let summaryObj = {
                     'menu_group': menu_groups[i].name,
                     'sales': sales_total,
-                    'expenses': expenses_total
+                    'expenses': expenses_total,
+                    'expense_stock_menus': expense_stock_menus_total
                 };
                 summary.push(summaryObj);
 
@@ -147,56 +176,48 @@
             expenses_total_arr.push(res.generalExpenses.total);    
             totalExpenses += +res.generalExpenses.total;
             
-            summaryTable.innerHTML += 
-            `
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>အရောင်း</th>
-                    <th>အဝယ်</th>
-                    <th>အမြတ်</th>
-                </tr>
-            </thead>            
-            `;
-            summaryTable.innerHTML += 
-                `
-                <tbody>
-                `;
+                                
             let salesTotal = 0
             let expensesTotal = 0;
+            let expenseStockMenusTotal = 0;
+
             summary.forEach (s => {
                 salesTotal += +s.sales;
                 expensesTotal += +s.expenses;
+                expenseStockMenusTotal += +s.expense_stock_menus;
 
-                summaryTable.innerHTML += 
+                summaryTableBody.innerHTML += 
                 `
                  <tr>
                     <td>${s.menu_group}</td>
                     <td>${s.sales}</td>
                     <td>${s.expenses}</td>
-                    <td>${(s.sales - s.expenses).toFixed(2)}</td>
+                    <td>${s.expense_stock_menus}</td>
+                    <td>${(s.sales - s.expenses - s.expense_stock_menus).toFixed(2)}</td>
                  </tr>
                 `;
             })
-            summaryTable.innerHTML += 
+            summaryTableBody.innerHTML += 
                 `
-                <tr>
+                <tr>                
                     <td>အထွေထွေ</td>
                     <td>-</td>
                     <td>${+res.generalExpenses.total}</td>
                     <td>${-res.generalExpenses.total}</td>
+                    <td></td>
                 </tr>
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <th>စုစုပေါင်း</th>
-                        <th>${salesTotal}</th>
-                        <th>${expensesTotal + +res.generalExpenses.total}</th>
-                        <th>${salesTotal - expensesTotal - +res.generalExpenses.total}</th>
-                    </tr>
-                </tfoot>
-                `;
-
+                </tbody>`;
+                
+            summaryTableFooter.innerHTML += 
+            `<tfoot>
+                <tr>
+                    <th>စုစုပေါင်း</th>
+                    <th>${salesTotal}</th>
+                    <th>${expensesTotal + +res.generalExpenses.total}</th>
+                    <th>${expenseStockMenusTotal}</th>
+                    <th>${salesTotal - expensesTotal - expenseStockMenusTotal - +res.generalExpenses.total}</th>
+                </tr>
+            </tfoot>`;
         
 
             const data = {
@@ -206,11 +227,18 @@
                     data: sales_total_arr,
                     backgroundColor: 'lightblue',
                     opacity: 0.2
-                }, {
+                }, 
+                {
                     label: "အဝယ်",
                     data: expenses_total_arr,
                     backgroundColor: 'orange'
-                }, {
+                }, 
+                {
+                    label: "အဝယ် (Stock)",
+                    data: expense_stock_menus_arr,
+                    backgroundColor: 'blue'
+                },
+                {
                     type: 'bar',
                     label: "အမြတ်",
                     data: profits_total_arr,

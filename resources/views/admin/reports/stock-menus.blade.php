@@ -30,7 +30,7 @@
         
 
         <div>
-            <form action="{{route('admin.reports.menus')}}" method="GET">
+            <form action="{{route('admin.reports.stock-menus')}}" method="GET">
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
@@ -45,7 +45,7 @@
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <select multiple name="menu[]" id="menu" class="form-control">
+                            <select multiple name="stockMenu[]" id="menu" class="form-control">
                                 <option value="">Menu ရွေးပါ</option>
                                 @foreach($menus as $stock_menu)
                                 <option value="{{$stock_menu->id}}">{{$stock_menu->menu->name}}</option>
@@ -67,15 +67,15 @@
     @if(count($results) > 0)
     <div class="alert alert-primary">
         <span>
-            {{$fromTime->format('d-M-Y')}} မှ​ {{$toTime->format('d-M-Y')}} ထိ
+            {{$fromTime->format('d-M-Y')}} မှ {{$toTime->format('d-M-Y')}} ထိ
             @if(count($filtered_menu_groups) > 0)
                 @foreach($filtered_menu_groups as $mg)
                 <div class="badge bg-primary">{{$mg->name}}</div>
                 @endforeach
             @endif
-            @if(count($filtered_menus) > 0)
-                @foreach($filtered_menus as $m)
-                    <div class="badge bg-success">{{$m->name}}</div>
+            @if(count($filtered_stock_menus) > 0)
+                @foreach($filtered_stock_menus as $m)
+                    <div class="badge bg-success">{{$m->menu->name}}</div>
                 @endforeach
             @endif
             <span style="float:right;font-weight:bolder">{{$total}} ကျပ်</span>
@@ -92,10 +92,10 @@
         <tbody>
             @foreach ($results as $result)
             <tr>
-                <td>{{$result->menu->name}}</td>
-                <td>{{$result->price}}</td> 
+                <td>{{$result->stockMenu->menu->name}}</td>
+                <td>{{$result->cost}}</td> 
                 <td style="text-align: center">{{$result->total}}</td> 
-                <td style="text-align: center">{{$result->total * $result->price}}</td> 
+                <td style="text-align: center">{{$result->total * $result->cost}}</td> 
             </tr>        
             @endforeach
         </tbody>
