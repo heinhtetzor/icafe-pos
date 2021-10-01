@@ -9,6 +9,7 @@ use DB;
 use Carbon\Carbon;
 use App\Http\Traits\OrderFunctions;
 use App\OrderMenu;
+use App\Setting;
 
 class OrderController extends Controller
 {
@@ -98,8 +99,14 @@ class OrderController extends Controller
      * @param  \App\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {        
+        $is_edit_mode = false;
+        if ($request->edit == "true") {
+            $is_edit_mode = true;
+        }
+        $passcode = Setting::getPasscode();
+        
         $order=Order::findorfail($id);
         $orderMenus=$this->getOrderMenusGrouped($order);
         $orderMenuGroups = $this->getSummaryByOrder($order->id);
@@ -117,7 +124,9 @@ class OrderController extends Controller
             'order'=>$order,
             'orderMenus'=>$orderMenus,
             'orderMenuGroups'=>$orderMenuGroups,
-            'total'=>$total
+            'total'=>$total,
+            'is_edit_mode'=>$is_edit_mode,
+            'passcode' => $passcode
         ]);
     }
 
