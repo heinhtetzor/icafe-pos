@@ -248,7 +248,7 @@
         style="background-size:cover;background-image: url('/images/default.png')">                
         @endif
         <span class="price">{{$menu->price}}</span>
-        <span class="caption {{ $menu->stock_menu()->exists() ? 'stock_menu' : '' }}">{{$menu->name}}</span>
+        <span class="caption {{ $menu->stock_menu()->exists() && $menu->stock_menu->status == 1 ? 'stock_menu' : '' }}">{{$menu->name}}</span>
         </div>     
         @endforeach
     </div>

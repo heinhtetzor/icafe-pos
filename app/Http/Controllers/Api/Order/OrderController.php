@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use App\Http\Traits\OrderFunctions;
 use App\Menu;
 use App\Services\PrintService;
+use App\StockMenu;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -120,7 +121,7 @@ class OrderController extends Controller
             ]);
 
             $menu = Menu::findOrFail($request->menuId);
-            if ($menu->stock_menu()->exists()) {
+            if ($menu->stock_menu()->exists() && $menu->stock_menu->status == StockMenu::STATUS_ACTIVE) {
                 $stock_menu = $menu->stock_menu;
                 if ($stock_menu->balance == 0) {
                     DB::rollBack();

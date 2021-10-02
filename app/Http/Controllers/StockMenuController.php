@@ -14,7 +14,7 @@ class StockMenuController extends Controller
      */
     public function index()
     {
-        $stock_menus = StockMenu::all();
+        $stock_menus = StockMenu::where('status', StockMenu::STATUS_ACTIVE)->get();
         return view('admin.stockmenus.index', [
             "stock_menus" => $stock_menus
         ]);
