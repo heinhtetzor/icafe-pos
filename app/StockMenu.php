@@ -20,7 +20,6 @@ class StockMenu extends Model
         ], [
             "purchase_cost" => 0,
             "sales_price" => 0,
-            "balance" => 0,
             "status" => self::STATUS_ACTIVE
         ]);
         return $stock_menu;
