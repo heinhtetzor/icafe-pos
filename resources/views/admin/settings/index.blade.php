@@ -59,7 +59,7 @@
                 Backup Data
             </button>
             {{-- <a href="/storage/backup/backup-2021-05-08_08:23:56.gz">Download</a> --}}
-            <a href="{{ route('settings.download-backup-file') }}">Download</a>
+            <a class="btn btn-dark" href="{{ route('settings.download-backup-file') }}">Download</a>
         </div>
 
     </div>
