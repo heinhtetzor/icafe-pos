@@ -42,7 +42,7 @@ Route::get('/backup', function () {
 
 Route::get('/software-upgrade', function () {
     try {
-        exec("cd ../ && git pull");
+        exec("cd ../ git reset --hard HEAD && git pull");
     }
     catch (Exception $e) {
         return response()->json([

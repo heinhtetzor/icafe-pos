@@ -50,6 +50,7 @@
             font-weight: 900;
             text-decoration: none;
             margin-top: 100px;
+            color: red
         }
         
         .container-fluid {
