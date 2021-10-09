@@ -188,7 +188,12 @@ class ExpenseController extends Controller
                 throw new Exception("Item cant be found");
             }
 
-            $item->quantity = $item->quantity - 1;
+            if ($item->quantity > 0 && $item->quantity < 1) {
+                $item->quantity = 0;                
+            } else {
+                $item->quantity = $item->quantity - 1;
+            }
+
             if ($item->quantity == 0) {
                 $item->delete();
             } 
