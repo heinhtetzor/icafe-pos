@@ -24,7 +24,8 @@
 @endsection
 @section('content')
 <div class="container">
-    <h2><a href="{{ route('expenses.index') }}">🔙</a>
+    <!-- <h2><a href="{{ route('expenses.index') }}">🔙</a> -->
+    <h2><a href="javascript:history.back()">🔙</a>
         <span class="badge rounded-pill bg-success">{{$expense->invoice_no}}</span>
 
         {{$expense->created_at->format('d-M-Y')}} - {{$expense->datetime->format('h:i A')}}
