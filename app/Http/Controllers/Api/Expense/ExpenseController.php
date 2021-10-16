@@ -59,7 +59,7 @@ class ExpenseController extends Controller
                       ->join('items', 'expense_items.item_id', '=', 'items.id')
                       ->leftjoin('menu_groups', 'items.menu_group_id', '=', 'menu_groups.id')
                       ->join('expenses', 'expenses.id', '=', 'expense_items.expense_id')                      
-                      ->selectRaw('expense_items.is_general_item, menu_groups.id as id, menu_groups.name as name, SUM(expense_items.quantity) as quantity, SUM(expense_items.quantity*expense_items.cost) as total')
+                      ->selectRaw('expense_items.is_general_item, menu_groups.id as id, menu_groups.name as name, SUM(expense_items.quantity) as quantity, ROUND(SUM(expense_items.quantity*expense_items.cost), 2) as total')
                       ->where('expenses.status', '=', '1')                      
                       ->whereBetween('expenses.datetime', [$fromTime, $toTime])
                       ->groupBy('menu_groups.id')
