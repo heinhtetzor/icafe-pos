@@ -172,6 +172,28 @@
         background-color: rgb(233, 225, 225);
         font-weight: 900;
     }
+    @media (max-width: 560px) {
+        .clock {
+            display: none;
+        }        
+    }
+    .clock {
+        padding:8px;
+        background-color: black; 
+        color:rgb(158, 245, 158);
+        border-radius: 8px;
+        border: 1px solid gold;
+        box-shadow: 1px 1px 1px;
+    }
+    .round-card {
+        border-radius: 1rem;
+        box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
+    }
+    .round-card:hover {
+        box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
+        transform: scale(1.03);
+        transition: all 500ms ease-in-out; 
+    }
     </style>
     @yield('css')
 </head>
@@ -186,7 +208,7 @@
         </div>
         
         <div class="topnav-center">
-            <span class="clock" style="padding:8px;background-color: black; color:rgb(158, 245, 158)">
+            <span class="clock">
                 <div class="spinner-border" role="status">
                     <span class="visually-hidden">Loading...</span>
                 </div>

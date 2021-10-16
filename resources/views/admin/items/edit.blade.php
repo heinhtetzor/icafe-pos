@@ -6,10 +6,10 @@
         Editing {{ $item->name }}</h2>
     
     @if (session('msg'))
-        {{ session('msg') }}
+        <div class="alert alert-success">{{ session('msg') }}</div>
     @endif
     @if (session('error'))
-        {{ session('error') }}
+        <div class="alert alert-danger">{{ session('error') }}</div>
     @endif
     <section>
         <form action="{{ route('items.update', $item->id) }}" method="POST">

@@ -4,7 +4,6 @@
     .flex {
         display: flex;
         flex-wrap: wrap;
-        
     }
     .flex > * {
         width: 300px;
@@ -22,11 +21,22 @@
         color: #fff;
     }
     .card {
-        height: 200px;
+        height: 200px;        
+    }    
+    .img-cover {
+        position: absolute;
+        height: 1000px;
+        width: 98vw;
+    }
+    @media (max-width: 900px) {
+        .img-cover {
+            display: none;
+        }
     }
 </style>
 @endsection
 @section('content')
+<div class="img-cover"></div>
 <div class="container">
     @if (session('msg'))
     <div class="alert alert-info">
@@ -35,7 +45,7 @@
     @endif
     <div class="flex">
         <a href="{{route('admin.tables')}}">
-            <div class="card bg-dark text-white">
+            <div class="card round-card bg-dark text-white">
                 <div class="card-header">
                     <h2 class="card-title">အရောင်း</h2>
                 </div>
@@ -45,7 +55,7 @@
             </div>
         </a>
         <a href="{{route('express.home')}}">
-            <div class="card bg-dark text-white">
+            <div class="card round-card bg-dark text-white">
                 <div class="card-header">
                     <h2 class="card-title"><i>Express</i></h2>
                 </div>
@@ -56,11 +66,11 @@
         </a>
         
     </div>
-    <hr>
+    <br>
 
     <div class="flex">
         <a href="{{route('expenses.create')}}">
-            <div class="card bg-dark text-white">
+            <div class="card round-card bg-dark text-white">
                 <div class="card-header">
                     <h2 class="card-title"><i>အသုံးစာရင်း</i></h2>
                 </div>
@@ -71,7 +81,7 @@
         </a>
         {{-- stock menus --}}
         <a href="{{route('stockmenus.index')}}">
-            <div class="card bg-info text-white">
+            <div class="card round-card bg-info text-white">
                 <div class="card-header">
                     <h2 class="card-title"><i>အဝယ်စာရင်း Stock</i></h2>
                 </div>
@@ -82,12 +92,12 @@
         </a>
     </div>
 
-    <hr>
+    <br>
 
     <div class="flex">
         
         <a href="{{route('admin.reports')}}">
-            <div class="card bg-success text-white">
+            <div class="card round-card bg-success text-white">
                 <div class="card-header">
                     <h2 class="card-title">စာရင်းများ</h2>
                 </div>
@@ -100,7 +110,7 @@
     
     
         <a href="{{route('admin.masterdatamanagement')}}">
-            <div class="card bg-danger text-white">
+            <div class="card round-card bg-danger text-white">
                 <div class="card-header">
                     <h2 class="card-title">Master Data</h2>
                 </div>
@@ -111,7 +121,7 @@
         </a>
 
         <a href="{{route('admin.accountmanagement')}}">
-            <div class="card bg-warning text-white">
+            <div class="card round-card bg-warning text-white">
                 <div class="card-header">
                     <h2 class="card-title">Account များ</h2>
                 </div>
@@ -123,12 +133,12 @@
         
     </div>
 
-    <hr>
+    <br>
 
     <div class="flex">
         
         <a href="{{route('settings.index')}}">        
-            <div class="card bg-primary text-white">
+            <div class="card round-card bg-primary text-white">
                 <div class="card-header">
                     <h2 class="card-title">Setting</h2>
                 </div>
@@ -147,5 +157,14 @@
 </div>
 @endsection
 @section('js')
+<script>
+    window.addEventListener ('load', () => {       
+        const imgCover = document.querySelector (".img-cover");
+        imgCover.style.backgroundImage = `url('images/thadingyut/tdg.png')`;
+        imgCover.style.backgroundRepeat = "no-repeat";
+        imgCover.style.backgroundSize = "cover";
+        imgCover.style.opacity = "0.7";
+    })
+</script>
  
 @endsection

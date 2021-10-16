@@ -172,26 +172,50 @@ class ExpenseController extends Controller
         }
     }
 
+
+    //before confirming
     public function deleteExpenseItem (Request $request)
     {
         try {
+            DB::beginTransaction();
+
             $item = null;
+            $item_name = null;//for logging
+            $cancel_quantity = 1;
             if ($request->type == Expense::TYPE_NON_STOCK) {
                 $item = ExpenseItem::findOrFail($request->id);
+                $item_name = $item->item->name;
 
             }
             else if ($request->type == Expense::TYPE_STOCK) {
                 $item = ExpenseStockMenu::findOrFail($request->id);
+                $item_name = $item->stockMenu->menu->name;
             }
+
+            $expense = $item->expense;
 
             if (is_null ($item)) {
                 throw new Exception("Item cant be found");
             }
 
+            if (!is_null ($request->cancel_quantity)) {
+                $cancel_quantity = $request->cancelQuantity;
+            }
+
+            //if expense is submitted and it is stock
+            //only confirmed have stock 
+            if ($expense->status == Expense::SUBMITTED && $request->type == Expense::TYPE_STOCK) { // reduce stock level item quantity
+                $stock_menu = $item->stockMenu;
+                $stock_menu->lockForUpdate();
+                $stock_menu->balance = $stock_menu->balance - $cancel_quantity;
+                $stock_menu->save();
+            }
+
+            //reducing item from expense_item
             if ($item->quantity > 0 && $item->quantity < 1) {
                 $item->quantity = 0;                
             } else {
-                $item->quantity = $item->quantity - 1;
+                $item->quantity = $item->quantity - $cancel_quantity;
             }
 
             if ($item->quantity == 0) {
@@ -200,11 +224,26 @@ class ExpenseController extends Controller
             else {
                 $item->save();
             }
+
+            if ($expense->status == Expense::SUBMITTED && $cancel_quantity > 0) {
+                //log deleted row
+                $expense->logDeletion([
+                    "item_name" => $item_name,
+                    "cost" => $item->cost,
+                    "quantity" => $cancel_quantity,
+                    "deleted_at" => Carbon::now()->format('d-M-Y h:i A')
+                ]);
+            }
+
+            DB::commit();
+
+
             return response()->json([
                 "message" => "Deleted"
             ]);
         }
         catch (Exception $e) {
+            DB::rollBack();
             return response()->json([
                 "message" => $e->getMessage()
             ], 500);

@@ -85,7 +85,7 @@
                             <td><a href="{{ route('expenses.edit', $expense->id) }}">{{ $expense->invoice_no }}</a></td>                            
                             @endif
                             @if ($expense->status == 1)                               
-                            <td><a href="{{ route('expenses.show', ["id" => $expense->id]) }}">{{ $expense->invoice_no }}</a></td>                            
+                            <td><a href="{{ route('expenses.show', ["id" => $expense->id, 'from_search_result' => true]) }}">{{ $expense->invoice_no }}</a></td>                            
                             @endif
                             <td>{{ $expense->datetime->format('d-M-Y h:i A') }}</td>
                             <td>{{ $expense->total }} ကျပ်</td>

@@ -4,6 +4,9 @@
     <h2>
     <a href="{{route('menugroups.show', $menu->menu_group_id)}}">🔙</a>
     Editing {{ $menu->name}}</h2>  
+    @if (session('msg'))
+        <div class="alert alert-success">{{ session('msg') }}</div>
+    @endif    
     @if (session('error'))
     <div class="alert alert-danger">
         {{session('error')}}

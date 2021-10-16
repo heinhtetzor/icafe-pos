@@ -16,7 +16,7 @@
     <div class="row">
         <div class="col-md-3 icon">
             <a href="{{route('menugroups.index')}}">
-                <div class="card bg-primary text-white">
+                <div class="card round-card bg-primary text-white">
                     <div class="card-header">
                         <h4 class="card-title">Menus</h4>
                     </div>
@@ -28,7 +28,7 @@
         </div>
         <div class="col-md-3 icon">
             <a href="{{route('tables.index')}}">
-                <div class="card bg-warning text-dark">
+                <div class="card round-card bg-warning text-dark">
                     <div class="card-header">
                         <h4 class="card-title">Tables</h4>
                     </div>
@@ -45,7 +45,7 @@
     <div class="row">
         <div class="col-md-3 icon">
             <a href="{{ route('items.index') }}">
-                <div class="card bg-success text-white">
+                <div class="card round-card bg-success text-white">
                     <div class="card-header">
                         <h4 class="card-title">Items</h4>
                     </div>

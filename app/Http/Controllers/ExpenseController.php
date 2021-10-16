@@ -6,6 +6,7 @@ use App\Expense;
 use App\Item;
 use App\StockMenu;
 use App\MenuGroup;
+use App\Setting;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -73,7 +74,9 @@ class ExpenseController extends Controller
         if ($expense->type == Expense::TYPE_STOCK) {
             $items = StockMenu::whereHas('menu', function ($q) {
                 $q->orderBy('name');
-            })->get();   
+            })
+            ->where('status', StockMenu::STATUS_ACTIVE)
+            ->get();   
         }
         $menu_groups = MenuGroup::orderBy('name')->get();
         return view('admin.expenses.create', [
@@ -97,8 +100,18 @@ class ExpenseController extends Controller
         return $this->edit($expense->id);
     }
 
-    public function show ($id)
+    public function show (Request $request, $id)
     {
+        $is_edit_mode = false;
+        $from_search_result = false;
+        if ($request->edit=="true") {
+            $is_edit_mode = true;
+        }
+        if ($request->from_search_result) {
+            $from_search_result = true;
+        }
+        $passcode = Setting::getPasscode();
+
         $expense = Expense::findorfail($id);
 
         if ($expense->type == Expense::TYPE_NON_STOCK) {
@@ -115,24 +128,32 @@ class ExpenseController extends Controller
             "expense" => $expense,
 
             "expense_items" => $expenseItems,
-            "expenseItemMenuGroups" => $expenseItemMenuGroups
+            "expenseItemMenuGroups" => $expenseItemMenuGroups,
+            'is_edit_mode'=>$is_edit_mode,
+            'from_search_result'=>$from_search_result,
+            'passcode' => $passcode
         ]);
     }
 
     public function destroy (Request $request, $id)
     {        
-        $section = explode("/", URL::previous());
-        
-        $expense = Expense::findorfail($id);
-        $expense->delete();
+        try {
+            $section = explode("/", URL::previous());
+            
+            $expense = Expense::findorfail($id);
+            $expense->delete();
 
-        if ($section[5] == "edit") 
-        {
-            return redirect(route('expenses.create'));
+            if ($section[5] == "edit") 
+            {
+                return redirect(route('expenses.create'));
+            }
+            else 
+            {
+                return redirect(route('expenses.index'));
+            }
         }
-        else 
-        {
-            return redirect(route('expenses.index'));
+        catch (\Exception $e) {
+            return redirect()->back()->with('error', 'ဖျက်လို့မရပါ');
         }
     }
 }

@@ -16,7 +16,7 @@
     <div class="row">
         <div class="col-md-4">
             <a href="{{route('admin.reports.day')}}">
-                <div class="card bg-success text-white">
+                <div class="card round-card bg-success text-white">
                     <div class="card-header">
                         နေ့စဉ်
                     </div>
@@ -28,7 +28,7 @@
         </div>
         <div class="col-md-4">
             <a href="{{route('admin.reports.menus')}}">
-                <div class="card bg-danger text-white">
+                <div class="card round-card bg-danger text-white">
                     <div class="card-header">
                         Menus
                     </div>
@@ -43,7 +43,7 @@
     <div class="row">
         <div class="col-md-4">
             <a href="{{route('admin.reports.expenses')}}">
-                <div class="card bg-primary text-white">
+                <div class="card round-card bg-primary text-white">
                     <div class="card-header">
                         နေ့စဉ်
                     </div>
@@ -55,7 +55,7 @@
         </div>
         <div class="col-md-4">
             <a href="{{route('admin.reports.items')}}">
-                <div class="card bg-info text-white">
+                <div class="card round-card bg-info text-white">
                     <div class="card-header">
                         အဝယ် ပစ္စည်းများ
                     </div>
@@ -67,7 +67,7 @@
         </div>        
         <div class="col-md-4">
             <a href="{{route('admin.reports.stock-menus')}}">
-                <div class="card bg-info text-white">
+                <div class="card round-card bg-info text-white">
                     <div class="card-header">
                         အဝယ် ပစ္စည်းများ (Stock)
                     </div>
@@ -82,7 +82,7 @@
     <div class="row">
         <div class="col-md-4">
             <a href="{{route('admin.reports.profit-loss')}}">
-                <div class="card bg-dark text-white">
+                <div class="card round-card bg-dark text-white">
                     <div class="card-header">
                         အရှုံးအမြတ်စာရင်း
                     </div>

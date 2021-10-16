@@ -134,6 +134,24 @@
                         </tr>
                     </tbody>   
                 </table>
+
+                <!-- delete logs -->
+                <div style="margin-top:1rem;opacity: 0.6;">
+                @if ($order->delete_logs)
+                    <h4>ဖျက်ထားသည့် မှတ်တမ်းများ</h4>
+                    <table class="table table-sm bg-white">                        
+                        @foreach ($order->delete_logs as $log)
+                        <tr>
+                            <td>{{ $log['item_name'] ?? "" }}</td>
+                            <td>{{ $log['price'] ?? "" }}</td>
+                            <td>x</td>
+                            <td>{{ $log['quantity'] ?? "" }}</td>
+                            <td>{{ $log['deleted_at'] ?? "" }}</td>
+                        </tr>
+                        @endforeach
+                    </table>
+                @endif    
+                </div>
             </div>
             <div class="col-md-4">
                 <section class="details">

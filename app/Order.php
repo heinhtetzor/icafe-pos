@@ -8,6 +8,13 @@ class Order extends Model
 {
     protected $fillable = ['status', 'table_id', 'waiter_id', 'invoice_no', 'total'];
 
+    protected $casts = [        
+        "delete_logs" => 'array'
+    ];
+
+    const DRAFT = 0;
+    const SUBMITTED = 1;
+
     public function getStatus() {
         //0 is unpaid
         //1 is paid
@@ -54,6 +61,14 @@ class Order extends Model
             return true;
         }
         return false;
+    }
+
+    public function logDeletion ($data)
+    {
+        $new_data = $this->delete_logs ?? [];
+        array_push($new_data, $data);        
+        $this->delete_logs = $new_data;
+        $this->save();
     }
 
 }

@@ -19,7 +19,8 @@ class Expense extends Model
     ];
  
     protected $casts = [
-        "datetime" => 'datetime'
+        "datetime" => 'datetime',
+        "delete_logs" => 'array'
     ];
 
     protected static function boot ()
@@ -150,6 +151,14 @@ class Expense extends Model
         }        
 
         return $expense_stock_menu ?? $is_old;
+    }
+
+    public function logDeletion ($data)
+    {
+        $new_data = $this->delete_logs ?? [];
+        array_push($new_data, $data);        
+        $this->delete_logs = $new_data;
+        $this->save();
     }
 
     public function expense_items ()

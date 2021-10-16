@@ -316,6 +316,17 @@ class OrderController extends Controller
                 $stock_menu->save();
             }
 
+            $order = $orderMenu->order;
+
+            if ($order->status == Order::SUBMITTED && $cancelQuantity > 0) {
+                //log deleted row
+                $order->logDeletion([
+                    "item_name" => $orderMenu->menu->name,
+                    "price" => $orderMenu->price,
+                    "quantity" => $cancelQuantity,
+                    "deleted_at" => Carbon::now()->format('d-M-Y h:i A')
+                ]);
+            }
 
         
             if ($orderMenu->quantity == 0) {

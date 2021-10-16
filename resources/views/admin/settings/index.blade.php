@@ -11,7 +11,7 @@
     Settings</h4>
     <div class="row">
         <a class="col-md-3" href="{{route('settings.passcode')}}">        
-            <div class="card bg-primary text-white">
+            <div class="card round-card bg-primary text-white">
                 <div class="card-header">
                     <h2 class="card-title">Passcode</h2>
                 </div>
@@ -23,7 +23,7 @@
         </a>
 
         <a class="col-md-3" href="{{route('settings.shop')}}">        
-            <div class="card bg-success text-white">
+            <div class="card round-card bg-success text-white">
                 <div class="card-header">
                     <h2 class="card-title">ဆိုင်အချက်အလက်</h2>
                 </div>

@@ -18,7 +18,9 @@
                 <button type="submit" class="btn btn-success">
                     Start
                 </button>
+                <a class="btn btn-danger" href="{{route('admin.home')}}">Exit</a>
             </form>
+
         </div>
     </div>
 
