@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Auth;
 use DB;
 use App\Http\Traits\OrderFunctions;
+use App\Setting;
 use App\TableGroup;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use PhpParser\Node\Expr\Cast\Array_;
@@ -92,8 +93,10 @@ class WaiterHomeController extends Controller
     function orders($orderId) {
         $order=Order::findorfail($orderId);
         $orderMenus=$order->order_menus;
+        $passcode=Setting::getPasscode();
         return view("waiter.orders", [
-            'orderMenus'=>$orderMenus
+            'orderMenus'=>$orderMenus,
+            'passcode'=>$passcode
         ]);
     }
     
