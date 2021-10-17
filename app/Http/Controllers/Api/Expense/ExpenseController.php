@@ -198,7 +198,7 @@ class ExpenseController extends Controller
                 throw new Exception("Item cant be found");
             }
 
-            if (!is_null ($request->cancel_quantity)) {
+            if (!is_null ($request->cancelQuantity)) {
                 $cancel_quantity = $request->cancelQuantity;
             }
 
