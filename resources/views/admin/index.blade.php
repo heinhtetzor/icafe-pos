@@ -158,13 +158,13 @@
 @endsection
 @section('js')
 <script>
-    window.addEventListener ('load', () => {       
-        const imgCover = document.querySelector (".img-cover");
-        imgCover.style.backgroundImage = `url('images/thadingyut/tdg.png')`;
-        imgCover.style.backgroundRepeat = "no-repeat";
-        imgCover.style.backgroundSize = "cover";
-        imgCover.style.opacity = "0.7";
-    })
+    //window.addEventListener ('load', () => {       
+        //const imgCover = document.querySelector (".img-cover");
+        //imgCover.style.backgroundImage = `url('images/thadingyut/tdg.png')`;
+        //imgCover.style.backgroundRepeat = "no-repeat";
+        //imgCover.style.backgroundSize = "cover";
+        //imgCover.style.opacity = "0.7";
+    //})
 </script>
  
 @endsection
