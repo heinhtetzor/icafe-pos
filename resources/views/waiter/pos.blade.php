@@ -256,7 +256,7 @@
         <div class="col-sm-6 cart-panel-container">
   
             {{-- panel for larger screens --}}
-            <div class="cart-panel card text-warning bg-success" id="cart-panel">
+            <div class="cart-panel card text-warning card-primary bg-success" id="cart-panel">
                 <div class="card-body" style="overflow-y: scroll;">
                     <table class="table table-hovered cart-table text-white">
                         <thead>
@@ -271,6 +271,7 @@
                         <tbody>
                             @foreach($order_menus as $order_menu)                            
                             <tr class="cartRowsToBeSaved" 
+                            style="font-weight: 900"
                             data-id="{{$order_menu->menu_id}}" 
                             data-price="{{$order_menu->price}}"
                             data-print-slip="{{$order_menu->menu->menu_group->print_slip}}"
@@ -523,7 +524,7 @@
                 }
                 
                 cartTableBody.innerHTML+= `
-                    <tr class="cartRowsToBeSaved" data-id="${menu.id}" data-price="${menu.price}" data-is-foc="false" data-menugroup-id="${menu.menugroup_id}" data-print-slip="${menu.print_slip}">
+                    <tr style="opacity:0.6" class="cartRowsToBeSaved" data-id="${menu.id}" data-price="${menu.price}" data-is-foc="false" data-menugroup-id="${menu.menugroup_id}" data-print-slip="${menu.print_slip}">
                         <td id="qty">${1}</td>
                         <td>x</td>
                         <td>${menu.name}</td>

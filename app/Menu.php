@@ -18,7 +18,7 @@ class Menu extends Model
     }
     public function stock_menu ()
     {
-        return $this->hasOne('App\StockMenu');
+        return $this->hasOne('App\StockMenu')->where('status', StockMenu::STATUS_ACTIVE);
     }
     public static function getActiveMenus() {
         return Menu::where('status', 1)->with('stock_menu')->get();

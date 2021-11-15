@@ -62,6 +62,7 @@ class OrderController extends Controller
                 
 
             //for loop order_menus
+            // $orderMenu is from request 
             foreach($request->get('orderMenus') as $orderMenu) {
                 if ($orderMenu["quantity"] < 1) {
                     continue;
@@ -69,11 +70,11 @@ class OrderController extends Controller
                 //if menu id already existed in order
                 //increment existing ordermenu            
                 $order = Order::findorfail($orderId);
-                $is_old = $order->order_menus()->where('menu_id', $orderMenu["menu_id"])->first();
+                $order_menu = $order->order_menus()->where('menu_id', $orderMenu["menu_id"])->first();
                 
-                if (is_null($is_old)) { //new
+                if (is_null($order_menu)) { //new
                     //if menu id is new create new ordermenu
-                    OrderMenu::create([
+                    $order_menu = OrderMenu::create([
                         "menu_id"=> $orderMenu["menu_id"],
                         "price"=>$orderMenu["price"],
                         "status"=>0,
@@ -83,11 +84,36 @@ class OrderController extends Controller
                     ]);
 
                 }
-                if (!is_null($is_old)) { //old                
-                    $is_old->quantity = $is_old->quantity + (int) $orderMenu["quantity"];
-                    $is_old->save();
+                if (!is_null($order_menu)) { //old                
+                    $order_menu->quantity = $order_menu->quantity + (int) $orderMenu["quantity"];
+                    $order_menu->save();
                 }                
                 PrintService::printOrderSlipTable($order, $waiterId, $request->get('printOrderMenus'));
+
+                //adjust stock
+                $menu = Menu::findOrFail($orderMenu["menu_id"]);
+
+                if ($menu->stock_menu()->exists() && $menu->stock_menu->status == StockMenu::STATUS_ACTIVE) {
+                    $stock_menu = $menu->stock_menu;
+                    if ($stock_menu->balance == 0) {
+                        DB::rollBack();
+                        return response()->json([
+                            "success" => FALSE,
+                            "message" => "ပစ္စည်းမရှိတော့ပါ"
+                        ]);
+                    }
+    
+                    $stock_menu->stockMenuEntries()->create([
+                        "order_menu_id" => $order_menu->id,
+                        "cost" => $orderMenu['price'],
+                        "in" => 0,
+                        "out" => $orderMenu['quantity'],
+                        "balance" => $stock_menu->balance - (int) $orderMenu['quantity']
+                    ]);
+    
+                    $stock_menu->balance -= (int) $orderMenu['quantity'];
+                    $stock_menu->save();
+                }
             }
 
             DB::commit();
@@ -96,6 +122,7 @@ class OrderController extends Controller
         }
         catch (Exception $e) {
             DB::rollBack();
+            throw $e;
             return response()->json([
             "message" => $e->getMessage()
             ]);
@@ -309,10 +336,6 @@ class OrderController extends Controller
 
                 $stock_menu = $orderMenu->menu->stock_menu;
                 $stock_menu->balance += (int) $cancelQuantity;
-                $stock_menu->save();
-
-                
-                $stock_menu->balance -= (int) $orderMenu->quantity;
                 $stock_menu->save();
             }
 

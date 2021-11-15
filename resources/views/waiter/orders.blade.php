@@ -40,7 +40,7 @@
         {{-- CSRF token --}}
         <input type="hidden" name="_token" id="_token" value="{{csrf_token()}}">
         <h3>
-            <a href="javascript:history.back()">🔙 </a>
+            <a href="{{ url()->previous() }}">🔙 </a>
             <span id="orderNumber"></span>
         </h3>   
         <table class="table" id="ordersTable">
@@ -259,7 +259,7 @@
                                 socket.emit('send-order', {
                                     roomId: 1
                                 })
-                                location.reload();
+                                // location.reload();
                             }
                         })
                         .catch (err => {
