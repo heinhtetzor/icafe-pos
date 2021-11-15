@@ -59,7 +59,6 @@ class OrderController extends Controller
                 //bind with 
                 $orderId = $table->table_status->order_id;
             }
-                
 
             //for loop order_menus
             // $orderMenu is from request 
@@ -81,13 +80,11 @@ class OrderController extends Controller
                         "order_id"=>$orderId,
                         "quantity"=>$orderMenu["quantity"],
                         "waiter_id"=>$waiterId
-                    ]);
-
-                }
-                if (!is_null($order_menu)) { //old                
+                    ]);                    
+                } else {                                
                     $order_menu->quantity = $order_menu->quantity + (int) $orderMenu["quantity"];
                     $order_menu->save();
-                }                
+                }          
                 PrintService::printOrderSlipTable($order, $waiterId, $request->get('printOrderMenus'));
 
                 //adjust stock
