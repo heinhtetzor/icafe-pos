@@ -217,8 +217,9 @@ class ExpenseController extends Controller
             } else {
                 $item->quantity = $item->quantity - $cancel_quantity;
             }
-
+            
             if ($item->quantity == 0) {
+                // $item->stockMenu->stockMenuEntries()->delete();
                 $item->delete();
             } 
             else {
@@ -244,6 +245,7 @@ class ExpenseController extends Controller
         }
         catch (Exception $e) {
             DB::rollBack();
+            throw $e;
             return response()->json([
                 "message" => $e->getMessage()
             ], 500);
