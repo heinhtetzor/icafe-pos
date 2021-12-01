@@ -389,13 +389,13 @@
         //modal open listener
         const cartModal=document.querySelector('#cart-modal');
         const modalBody=document.querySelector('.cart-modal-body');
-        cartModal.addEventListener('show.bs.modal', function(e) {            
+        cartModal.addEventListener('shown.bs.modal', function(e) {            
             const clonedCart=cartPanel.cloneNode(true);
             modalBody.innerHTML=clonedCart.outerHTML;
             //select orderBtn inside modal
             const orderBtn=document.querySelector('.cart-modal-body > .cart-panel > .card-footer > .card-footer-btns > #orderBtn');
             const payBtn=document.querySelector('.cart-modal-body > .cart-panel > .card-footer > .card-footer-btns > #payBtn');
-            const rollbackBtn=document.querySelector('.cart-modal-body > .cart-panel > .card-footer > .card-footer.btns > #rollbackBtn');
+            const rollbackBtn=document.querySelector('.cart-modal-body > .cart-panel > .card-footer > .card-footer-btns > #rollbackBtn');
             //attach event listener inside modal
             //attching event listener to orderBtn         
             orderBtn.addEventListener('click', orderBtnClickHandler);        
@@ -668,10 +668,10 @@
                     test connection
                     and res.data through
                     */                    
-                    socket.emit('send-order', {
-                        roomId: 1,
-                        data: orderMenus
-                    })
+                    // socket.emit('send-order', {
+                    //     roomId: 1,
+                    //     data: orderMenus
+                    // })
 
                     location.reload();
                 }
@@ -760,8 +760,9 @@
             calculateCartTotal();
             //TODO: update cart display in modal too
             //check if the user is clicking from modal
-            if(e.target.parentNode.parentNode.parentNode.classList.contains('cart-modal-body')) {
+            if(e.target.parentNode.parentNode.parentNode.parentNode.classList.contains('cart-modal-body')) {
                 let c=document.querySelector('.cart-modal-body > .cart-panel > .card-body > .cart-table > tbody');
+                console.log(c)
                 let cartRowToBeUpdatedModal;
                 
                 //search cart row in display for modal**

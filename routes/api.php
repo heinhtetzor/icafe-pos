@@ -33,6 +33,10 @@ Route::post('/expenses/confirm/{expenseId}', 'Api\Expense\ExpenseController@conf
 
 Route::post('/expenses/deleteExpenseItem', 'Api\Expense\ExpenseController@deleteExpenseItem');
 
+//menus 
+Route::get('/menus', 'Api\Menu\MenuController@index');
+Route::get('/menu-groups', 'Api\MenuGroup\MenuGroupController@index');
+
 //expense api ends
 
 // Orders starts

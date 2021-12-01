@@ -9,6 +9,7 @@
     <script defer src="/bootstrap/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="/toastify/toastify.css">
     <script defer src="/toastify/toastify.js"></script>    
+    @yield('head')
     
     <title>Waiter View</title>
     <style>

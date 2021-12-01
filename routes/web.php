@@ -132,6 +132,8 @@ Route::group(['prefix' => 'admin'], function () {
 
         Route::get('/accountmanagement', 'AdminHomeController@accountmanagement')->name('admin.accountmanagement');
         Route::get('/masterdatamanagement', 'AdminHomeController@masterdatamanagement')->name('admin.masterdatamanagement');
+
+        Route::get('/pos', 'PosController@index')->name('pos.index');
         
 
         Route::get('/pos/tables', 'AdminHomeController@tables')->name('admin.tables');
