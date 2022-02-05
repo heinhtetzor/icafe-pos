@@ -8,7 +8,7 @@ use App\Waiter;
 
 class WaiterController extends Controller
 {
-    public function getWaiters() {
+    public function index() {
         $waiters = Waiter::all();
         return $waiters->toJson();
     }

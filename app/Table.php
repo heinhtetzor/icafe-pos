@@ -14,13 +14,18 @@ class Table extends Model
             'table_group_id' => 'required'
         ];
     }
-    protected $fillable = ['name', 'table_group_id'];
+    protected $fillable = ['name', 'table_group_id', 'status', 'is_processing'];
     
     public function table_status () {
         return $this->hasOne('App\TableStatus');
     }
     public static function getTablesAsc () {
         return Table::orderBy('name')->get();
+    }
+
+    public function setIsProcessing ($isProcessing) {
+        $this->table_status->is_processing = $isProcessing;
+        $this->table_status->save();
     }
     // public static function getTables() {
     //     return Table::with(['table_status' => function($query) {

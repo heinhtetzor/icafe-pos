@@ -8,8 +8,10 @@ use Illuminate\Support\Facades\Storage;
 
 class SettingController extends Controller
 {
-    public function index ()
+    public function index (Request $request)
     {
+        $ip = $request->ip();
+
         return view('admin.settings.index');
     }
 

@@ -28,15 +28,15 @@
         position: relative;
         /* border: 1px solid #353434; */
         border-radius: 10px;
-        overflow-y: scroll;
+        overflow-y: auto;
     }
     .menus-grid {        
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
         grid-row-gap: 2rem;
         grid-column-gap: 4px;
-        max-height: 60vh;
-        overflow-y: scroll;
+        max-height: 65vh;
+        overflow-y: auto;
         /* padding-bottom: 3rem; */
     }
     .menus-grid-item {
@@ -98,9 +98,9 @@
         border: 1px solid #aca9a9;
         border-radius: 10px;
         padding: 8px;
-        height: 80vh;
-        overflow-y: scroll;        
+        height: 85vh;
     }
+
     .card-footer {
         display: flex;
         justify-content: space-around;
@@ -160,16 +160,25 @@
         text-align: center;
     }
 
+    .header {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .header .button {
+        font-size: 1.4rem;
+    }
+
 </style>
 @endsection
 @section('content')
 <div class="container-fluid mt-5">
     {{-- CSRF token --}}
     <input type="hidden" name="_token" id="_token" value="{{csrf_token()}}">
-    <h4>    
+    <div class="header">
 
             @if(Auth::guard('admin_account')->check())
-            <a href="{{route('admin.tables')}}">🔙</a>            
+            <a class="button" href="{{route('admin.tables')}}">🔙</a>            
             @endif
 
             @if(Auth::guard('waiter')->check())
@@ -200,10 +209,10 @@
         </select>
         @endif
 
-    </h4>
+    </div>
 
     <div class="row">
-        <div class="col-sm-6 menus-panel">
+        <div class="col-sm-8 menus-panel">
             {{-- <h3>MENU ရွေးရန်</h3> --}}
             {{-- menu group selector - scroll snap --}}
             <div class="menugroups-flex-container">
@@ -253,11 +262,11 @@
             </div>
  
         </div>
-        <div class="col-sm-6 cart-panel-container">
+        <div class="col-sm-4 cart-panel-container">
   
             {{-- panel for larger screens --}}
             <div class="cart-panel card text-warning card-primary bg-success" id="cart-panel">
-                <div class="card-body" style="overflow-y: scroll;">
+                <div class="card-body" style="overflow-y: auto;">
                     <table class="table table-hovered cart-table text-white">
                         <thead>
                             <tr>
@@ -276,6 +285,7 @@
                             data-price="{{$order_menu->price}}"
                             data-print-slip="{{$order_menu->menu->menu_group->print_slip}}"
                             data-menugroup_id="{{$order_menu->menu->menu_group_id}}"
+                            data-is-in-order="true"
                             data-is-foc="{{$order_menu->is_foc == 1 ? 'true' : 'false'}}">
                                 <td id="qty">{{$order_menu->quantity}}</td>
                                 <td>x</td>
@@ -500,7 +510,11 @@
                 if (i.dataset['isFoc'] === 'true') {
                     continue;
                 }
-                if(i.dataset['id']===e.target.dataset['menuId']) {                    
+
+                const isInOrder = i.dataset['isInOrder'] === 'true';
+
+                //get exiting item
+                if(i.dataset['id']===e.target.dataset['menuId'] && !isInOrder) {
                     isNew=false;
                     cartRow=i;
                     break;
@@ -739,7 +753,11 @@
 
             //search cart row in display
             for(let i of cartTableBody.children) {
-                if(i.dataset['id']===popedOrderMenu.menu_id && i.dataset['isFoc'] === 'false') {                    
+                const isInOrder = i.dataset['isInOrder'] === 'true';
+                const isFoc = i.dataset['isFoc'] === 'true';
+                if(i.dataset['id']===popedOrderMenu.menu_id 
+                && !isFoc
+                && !isInOrder) {
                     //ignore FOC items
                     cartRowToBeUpdated=i;
                     break;
@@ -762,12 +780,15 @@
             //check if the user is clicking from modal
             if(e.target.parentNode.parentNode.parentNode.parentNode.classList.contains('cart-modal-body')) {
                 let c=document.querySelector('.cart-modal-body > .cart-panel > .card-body > .cart-table > tbody');
-                console.log(c)
                 let cartRowToBeUpdatedModal;
                 
                 //search cart row in display for modal**
                 for(let i of c.children) {
-                    if(i.dataset.id===popedOrderMenu.menu_id) {
+                    const isInOrder = i.dataset['isInOrder'] === 'true';
+                    const isFoc = i.dataset['isFoc'] === 'true';
+                    if(i.dataset.id===popedOrderMenu.menu_id
+                    && !isFoc
+                    && !isInOrder) {
                         cartRowToBeUpdatedModal=i;
                         break;
                     }

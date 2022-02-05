@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class TableController extends Controller
 {
-    public function getTables () {
+    public function tables () {
         $tables = Table::orderBy('name')->get();
         return $tables->toJson();
     }

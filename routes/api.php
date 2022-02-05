@@ -40,13 +40,13 @@ Route::get('/menu-groups', 'Api\MenuGroup\MenuGroupController@index');
 //expense api ends
 
 // Orders starts
-Route::get('/test', 'Api\Waiter\WaiterController@getWaiters');
+Route::get('/test', 'Api\Waiter\WaiterController@index');
 
 //get waitersd
-Route::get('/getWaiters', 'Api\Waiter\WaiterController@getWaiters');
+Route::get('/getWaiters', 'Api\Waiter\WaiterController@index');
 
 //get tables
-Route::get('/getTables', 'Api\Table\TableController@getTables');
+Route::get('/tables', 'Api\Table\TableController@tables');
 
 //get menus
 Route::get('/getMenusByMenuGroup', 'Api\Menu\MenuController@getMenusByMenuGroup');
