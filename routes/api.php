@@ -88,3 +88,10 @@ Route::get('/waiter/{orderId}/orders', 'Api\Order\OrderController@show');
 
 //kitchen - get yellow order from related menu groups
 Route::get('/kitchen/{kitchenId}/orders', 'Api\Order\OrderController@getKitchenOrders');
+
+
+//table pos view
+Route::prefix('table-statuses')->group(function () {
+    Route::get('/', 'Api\Table\TableStatusController@index');
+    Route::get('/{id}', 'Api\Table\TableStatusController@show');
+});

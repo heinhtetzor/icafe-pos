@@ -9,20 +9,20 @@
     .tables-grid-item {      
         text-decoration: none;
         display: block;  
-        height: 100px;
-        width: 100px;
+        height: 80px;
+        width: 80px;
         position: relative;
         text-align: center;        
         position: relative;
         background-image: url('/assets/table-icon.png');
-        background-size: 100px;
+        background-size: 80px;
         background-blend-mode: overlay;
         background-repeat: no-repeat;
         cursor: pointer;
-        border: 0.8px solid #bcbcbc;
+        border: 5px solid green;
     }
     .tables-grid-item-occupied {
-        filter: blur(3px);
+        filter: grayscale(1);
     }
 
     .tables-grid-item  span {
@@ -30,13 +30,13 @@
         font-weight: 900;
         /* position: absolute;
         top: 40%; */
-        font-size: 2rem;
+        font-size: 1rem;
         color: black;        
         text-shadow: 4px 4px 5px rgb(144, 172, 250);
     }
     .table-group {
         border: 1px solid #bcbcbc;
-        margin-bottom: 1rem;
+        margin-bottom: 1rem;        
     }
     .table-group-name {
         font-size: 0.8rem;
@@ -61,25 +61,70 @@
             Table ရွေးပါ         
             </h3> 
             @endif
-            
-            @foreach($table_groups as $table_group)
-                <fieldset class="table-group">
-                    <legend class="table-group-name">{{ $table_group->name }}</legend>
-                    <div class="tables-grid">
-                        @foreach($table_group->tables as $table)        
-                        @if(Auth::guard('admin_account')->check())
-                        <a href="{{route('admin.pos', $table->id)}}" class="tables-grid-item @if(!$table->table_status->isTableFree()) tables-grid-item-occupied @endif">
-                        @else 
-                        <a href="{{route('waiter.pos', $table->id)}}" class="tables-grid-item @if(!$table->table_status->isTableFree()) tables-grid-item-occupied @endif">                                  
-        
-                        @endif         
-                            <span>{{$table->name}}</span>
-                        </a>
-                        @endforeach                
-                    </div>
-                </fieldset>
-            @endforeach
+
+            <section id="table-groups">
+            </section>
+                        
         </div>
     </div>
 </div>
+@endsection
+@section('script')
+<script>
+    const _TABLE_OCCUPIED = 1;
+
+    const is_admin = !!"{{Auth::guard('admin_account')->check()}}";    
+    
+    // get table statuses
+    async function fetchTableStatuses () {
+        const response = await fetch (`/api/table-statuses`);
+        return await response.json();        
+    }
+
+    function createTableGroupContainer (element, tableGroups) {
+        element.innerHTML = "";
+        for (let tableGroup of tableGroups) {
+            const tableGroupEle = document.createElement('div');
+            tableGroupEle.classList += 'table-group';
+            element.appendChild(tableGroupEle);
+
+            const tableGroupNameEle = document.createElement('span');
+            tableGroupNameEle.classList += 'table-group-name';
+            tableGroupNameEle.innerText = tableGroup.name;
+            tableGroupEle.appendChild(tableGroupNameEle);
+
+            const tableGridEle = document.createElement('div');
+            tableGridEle.classList += 'tables-grid';
+
+            for (let table of tableGroup.tables) {
+                const tableLink = document.createElement('a');
+                const href = is_admin ? `/admin/pos/tables/${table.id}` : `/waiter/${table.id}/pos`;
+                tableLink.classList += 'tables-grid-item';
+                tableLink.setAttribute('href', href);
+                if (table.table_status.status === _TABLE_OCCUPIED) {
+                    tableLink.classList += ' tables-grid-item-occupied';
+                    tableLink.innerHTML = `<span style="text-decoration:line-through;">${table.name}</span>`;
+                } else {
+                    tableLink.innerHTML = `<span>${table.name}</span>`;
+                }
+                tableGridEle.appendChild(tableLink);
+            }
+            tableGroupEle.appendChild(tableGridEle);
+            element.appendChild(tableGroupEle);
+        }
+    }
+
+    async function updateTables () {
+        console.log('fetching tables..');
+        const table_groups = await fetchTableStatuses();        
+
+        const tableGroupEle = document.querySelector('#table-groups');
+        createTableGroupContainer(tableGroupEle, table_groups);
+    }
+
+    (async () => {
+        await updateTables();
+        setInterval(updateTables, 3000);
+    }) ();
+</script>
 @endsection

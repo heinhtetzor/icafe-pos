@@ -50,7 +50,8 @@ class OrderController extends Controller
                 
                 $tableStatus = TableStatus::where('table_id', $tableId)->update([
                     'status'=>1,
-                    'order_id'=>$order->id
+                    'order_id'=>$order->id,
+                    'waiter_id' => $waiterId,
                 ]);
                 
                 $orderId = $order->id;
@@ -282,7 +283,8 @@ class OrderController extends Controller
         //change table status
         TableStatus::where('order_id', $orderId)->update([
             "status"=>0,
-            "order_id"=>null
+            "order_id"=>null,
+            "waiter_id"=>null
         ]);
         if ($printBill == "true")
         {
