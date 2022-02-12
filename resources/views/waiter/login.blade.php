@@ -30,7 +30,6 @@
             </div>
             <div class="card-footer">
                 <button class="btn btn-warning">Login</button>
-                <a style="float:right;" class="btn btn-secondary" href="/">HOME</a>
             </div>
         </form>
     </div>

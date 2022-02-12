@@ -29,10 +29,23 @@
                 </div>
                 <div class="card-body">
                   
-                </div>
-             
+                </div>             
             </div>
         </a>
+    </div>
+    <hr>
+    <div class="row">    
+        <div class="col-md-3">
+            <div class="card round-card bg-danger text-white">
+                <div class="card-header">
+                    <h2 class="card-title">{{ $ip_address }}</h2>
+                </div>
+                <div class="card-body">
+                  Connect to Mobile
+                  <button class="btn btn-secondary" id="start-server-button">Start</button>
+                </div>
+            </div>
+        </div>                        
     </div>
     <hr>
     <div class="row">
@@ -69,12 +82,22 @@
 <script>
     const backupBtn = document.querySelector('#backupBtn');
     const upgradeBtn = document.querySelector('#upgradeBtn');
+    const startServerBtn = document.querySelector('#start-server-button');
     const backupBtnSpinner = document.querySelector('#backupBtnSpinner');
     const upgradeBtnSpinner = document.querySelector('#upgradeBtnSpinner');
 
     const softwareUpgradeBtn = document.querySelector('#softwareUpgradeBtn');
     const databaseUpgradeBtn = document.querySelector('#databaseUpgradeBtn');
     const composerUpgradeBtn = document.querySelector('#composerUpgradeBtn');
+
+    startServerBtn.addEventListener('click', function () {
+        console.log('hi')
+        fetch('/api/mobile-server/start')
+        .then (res => res.json())
+        .then (res => {
+            console.log(res);    
+        });
+    })
 
     backupBtn.addEventListener('click', function () {
         backupBtnSpinner.style.display = 'inline-block';

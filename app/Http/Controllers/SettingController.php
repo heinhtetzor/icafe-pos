@@ -10,9 +10,11 @@ class SettingController extends Controller
 {
     public function index (Request $request)
     {
-        $ip = $request->ip();
+        $localIP = getHostByName(getHostName());   
 
-        return view('admin.settings.index');
+        return view('admin.settings.index', [
+            "ip_address" => $localIP
+        ]);
     }
 
     public function passcode ()
