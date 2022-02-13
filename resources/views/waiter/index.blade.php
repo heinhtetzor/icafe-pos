@@ -58,8 +58,15 @@
 
             @if(Auth::guard('waiter')->check())
             <h3>
-            Table ရွေးပါ         
+            Table ရွေးပါ
+
+            @if($existing_express)
+            <a style="float:right;" class="btn btn-primary" href="{{ route('waiter.express.home') }}">
+                Express
+            </a>         
+            @endif
             </h3> 
+            <br>
             @endif
 
             <section id="table-groups">

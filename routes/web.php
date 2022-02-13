@@ -196,6 +196,8 @@ Route::group(['prefix' => 'waiter'], function() {
     
     Route::group(['middleware' => 'waiterAccountAuth'], function () {
         Route::get('/', 'WaiterHomeController@home')->name('waiter.home');
+
+        Route::get('/express', 'ExpressHomeController@home')->name('waiter.express.home');
         //go to POS instance
         //id=tableId
         Route::get('/{id}/pos', 'WaiterHomeController@pos')->name('waiter.pos');

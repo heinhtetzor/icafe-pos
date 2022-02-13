@@ -41,8 +41,7 @@
                     <h2 class="card-title">{{ $ip_address }}</h2>
                 </div>
                 <div class="card-body">
-                  Connect to Mobile
-                  <button class="btn btn-secondary" id="start-server-button">Start</button>
+                  Connect to Mobile                  
                 </div>
             </div>
         </div>                        

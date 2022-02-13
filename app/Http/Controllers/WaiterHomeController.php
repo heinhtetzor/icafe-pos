@@ -15,6 +15,7 @@ use App\Http\Traits\OrderFunctions;
 use App\Setting;
 use App\TableGroup;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Carbon;
 use PhpParser\Node\Expr\Cast\Array_;
 
 class WaiterHomeController extends Controller
@@ -54,9 +55,12 @@ class WaiterHomeController extends Controller
 
     //home aka Tables list
     function home() {        
-        $table_groups = TableGroup::all();
+        $existing_express = Order::where('created_at', '>=', Carbon::today()->startOfDay())
+        ->where('table_id', 'express')
+        ->where('status', 0)
+        ->first();
         return view("waiter.index", [            
-            "table_groups" => $table_groups
+            "existing_express" => $existing_express
         ]);
     }
 

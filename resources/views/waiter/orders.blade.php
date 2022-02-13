@@ -105,6 +105,8 @@
 
         fetchOrderMenus();
 
+        setInterval(fetchOrderMenus, 3000);
+
         function fetchOrderMenus() {
             fetch(`/api/waiter/${id}/orders`, {
                 headers: {

@@ -182,19 +182,23 @@
 
     <div class="top">
         <div>
-            <a style="font-size: 1.4rem; text-decoration: none; margin-right: 1rem;" href="{{route('admin.home')}}">🔙 </a>
+            @if(Auth::guard('admin_account')->check())  
+                <a style="font-size: 1.4rem; text-decoration: none; margin-right: 1rem;" href="{{route('admin.home')}}">🔙 </a>
+            @endif
+            @if(Auth::guard('waiter')->check())  
+                <a style="font-size: 1.4rem; text-decoration: none; margin-right: 1rem;" href="{{route('waiter.home')}}">🔙 </a>
+            @endif
             <span class="badge bg-primary" style="font-size:1rem">
                 Started time - {{$order->created_at->format('h:i a')}}  {{ $order->created_at->format('d-M-Y') }}
             </span>
         </div>
         <span class="" id="ticker">
         </span>
+        @if(Auth::guard('admin_account')->check())  
         <div>
             <a class="btn btn-warning" href="{{route('express.show', $order->id)}}">အကျဉ်းချုပ်</a>
         
-            @if(Auth::guard('admin_account')->check())
             <a class="btn btn-info" href="{{route('admin.pos.orders', $order->id)}}">အသေးစိတ်</a>
-            @endif 
 
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#payBillModal">
                 ရှင်းမည်
@@ -204,6 +208,7 @@
                 Delete
             </button>
         </div>
+        @endif 
     </div>
     <hr>
 
