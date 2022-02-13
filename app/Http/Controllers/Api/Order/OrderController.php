@@ -86,7 +86,7 @@ class OrderController extends Controller
                     $order_menu->quantity = $order_menu->quantity + (int) $orderMenu["quantity"];
                     $order_menu->save();
                 }          
-                PrintService::printOrderSlipTable($order, $waiterId, $request->get('printOrderMenus'));
+                
 
                 //adjust stock
                 $menu = Menu::findOrFail($orderMenu["menu_id"]);
@@ -113,6 +113,7 @@ class OrderController extends Controller
                     $stock_menu->save();
                 }
             }
+            PrintService::printOrderSlipTable($order, $waiterId, $request->get('printOrderMenus'));
 
             DB::commit();
 
