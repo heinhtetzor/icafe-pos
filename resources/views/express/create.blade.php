@@ -31,6 +31,7 @@
                 <th>Invoice No</th>
                 <th>အချိန်</th>
                 {{-- <th>စုစုပေါင်း</th> --}}
+                <th>Status</th>                
             </tr>
         </thead>
         <tbody>
@@ -54,6 +55,7 @@
                 }
                 @endphp 
                 <td>{{ $total }}</td> --}}
+                <td>{{($order->status==0) ? "🟠" : "🟢"}}</td>                
             </tr>
             @endforeach
         </tbody>

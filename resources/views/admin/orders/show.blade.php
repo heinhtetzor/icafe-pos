@@ -25,7 +25,38 @@
 @section('content')
     {{-- CSRF token --}}
     <input type="hidden" name="_token" id="_token" value="{{csrf_token()}}">
-    {{-- modal starts --}}
+    
+    {{-- paybill modal --}}
+    <div class="modal fade" id="payBillModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Choose Waiter</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div class="form-group">                
+                <label for="waiter_id">Waiter ရွေးပါ</label>
+                <select name="waiter_id" id="waiter-id" class="form-control">
+                    <option value="">----</option>
+                    @foreach ($waiters as $waiter)
+                    <option value="{{$waiter->id}}">{{$waiter->name}}</option>
+                    @endforeach
+                </select>
+              </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>                
+                <button id="payBill" class="btn btn-primary">
+                  ရှင်းမည်
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+    
+    {{-- passcode starts --}}
     <div class="modal fade" id="passcodeModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -67,11 +98,17 @@
             {{$order->created_at->format('d-M-Y')}} - {{$order->created_at->format('h:i A')}}
             
             <!-- Example single danger button -->
-            <div class="btn-group">
+        <div class="btn-group" style="float:right">
                 @if ($order->isExpressOrder())
-                <a href="{{ route('orders.printOrderSummary', $order->id) }}" class="btn btn-info">
-                    🖨  Print
-                </a>
+                  @if ($order->status == 0)
+                  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#payBillModal">
+                      ရှင်းမည်
+                  </button>
+                  @endif
+                  
+                  <a href="{{ route('orders.printOrderSummary', $order->id) }}" class="btn btn-info">
+                      🖨  Print
+                  </a>
                 @endif
 
                 @if (!$order->isExpressOrder())
@@ -232,6 +269,45 @@
     const cancelOrderMenuBtns = document.querySelectorAll('.cancel-order-menu');                
     for (cancelOrderMenuBtn of cancelOrderMenuBtns) {
         cancelOrderMenuBtn.addEventListener('click', cancelOrderMenuBtnHandler); 
+    }
+    
+    const orderId = {{$order->id}};
+    const waiterIdSelect = document.querySelector('#waiter-id');
+    const payBillBtn = document.querySelector('#payBill');
+    payBillBtn.addEventListener('click', payBillBtnHandler);
+    
+    const token=document.querySelector('#_token').value;   
+    
+    function payBillBtnHandler () {        
+        const waiterId = waiterIdSelect.value;
+        if (!waiterId) {
+            Toastify({
+            text: "Waiter ရွေးပါ",
+            backgroundColor: "red",
+            className: "info",
+            }).showToast();
+            return;
+        }
+        if (!confirm("သေချာပါသလား?")) {
+            return;
+        }
+        //temp fix
+        fetch(`/api/payBill/${orderId}/${waiterId}/false`, {
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "X-Requested-With": "XMLHttpRequest",
+                "X-CSRF-Token": token
+            },
+            credentials: "same-origin",
+            method: 'GET'                
+        })
+        .then (res => res.json())
+        .then (res => {
+            if (res.isOk) location.reload();
+        })
+        .catch (err => console.log(err));
+
     }
 
 

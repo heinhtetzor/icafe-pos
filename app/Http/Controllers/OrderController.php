@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use DB;
 use Carbon\Carbon;
 use App\Http\Traits\OrderFunctions;
+use App\Waiter;
 use App\OrderMenu;
 use App\Setting;
 
@@ -56,7 +57,7 @@ class OrderController extends Controller
         $orders=Order::orderBy('created_at', 'DESC')
                 ->whereBetween('created_at', [$fromTime, $toTime])
                 ->simplePaginate(20);
-        
+
         return view('admin.orders.day', [
             'orders'=>$orders,
             'fromTime'=>$fromTime,
@@ -120,13 +121,16 @@ class OrderController extends Controller
             });
         }
         
+        $waiters = Waiter::all();
+        
         return view('admin.orders.show', [
             'order'=>$order,
             'orderMenus'=>$orderMenus,
             'orderMenuGroups'=>$orderMenuGroups,
             'total'=>$total,
             'is_edit_mode'=>$is_edit_mode,
-            'passcode' => $passcode
+            'passcode' => $passcode,
+            'waiters' => $waiters
         ]);
     }
 
