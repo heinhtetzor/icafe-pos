@@ -15,7 +15,7 @@
 </style>
 @endsection
 @section('content')
-<div class="container">
+<div class="container-fluid">
     <div>
         <h3 style="display: inline">
             <a href="{{route('admin.reports')}}">🔙 </a>
@@ -32,7 +32,7 @@
         <div>
             <form action="{{route('admin.reports.menus')}}" method="GET">
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-2">
                         <div class="form-group">
                             {{-- menugroups select --}}
                             <select multiple name="menuGroup[]" id="menuGroup" class="form-control">
@@ -43,7 +43,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-2">
                         <div class="form-group">
                             <select multiple name="menu[]" id="menu" class="form-control">
                                 <option value="">Menu ရွေးပါ</option>
@@ -53,7 +53,28 @@
                             </select>                     
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <select multiple name="table[]" id="table" class="form-control">
+                                <option value="">Table ရွေးပါ</option>
+                                <option value="express">Express</option>
+                                @foreach($tables as $table)
+                                <option value="{{$table->id}}">{{$table->name}}</option>
+                                @endforeach
+                            </select>                     
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group"> 
+                            <select multiple name="waiter[]" id="waiter" class="form-control">
+                                <option value="">Waiter ရွေးပါ</option>
+                                @foreach($waiters as $waiter)
+                                <option value="{{$waiter->id}}">{{$waiter->name}}</option>
+                                @endforeach
+                            </select>                     
+                        </div>
+                    </div>
+                    <div class="col-md-2">
                         <div class="form-group">
                             <input autocomplete="off" class="form-control" required type="text" id="datePicker" placeholder="နေ့စွဲရွေးပါ" name="date">                     
                         </div>                
@@ -76,6 +97,16 @@
             @if(count($filtered_menus) > 0)
                 @foreach($filtered_menus as $m)
                     <div class="badge bg-success">{{$m->name}}</div>
+                @endforeach
+            @endif
+            @if(count($filtered_tables) > 0)
+                @foreach($filtered_tables as $t)
+                    <div class="badge bg-danger">{{$t->name}}</div>
+                @endforeach
+            @endif
+            @if(count($filtered_waiters) > 0)
+                @foreach($filtered_waiters as $w)
+                    <div class="badge bg-danger">{{$w->name}}</div>
                 @endforeach
             @endif
             <span style="float:right;font-weight:bolder">{{$total}} ကျပ်</span>
@@ -117,8 +148,12 @@
     });
     const menuGroupSelect = document.querySelector('#menuGroup');
     const menuSelect = document.querySelector('#menu');
+    const tableSelect = document.querySelector('#table');
+    const waiterSelect = document.querySelector('#waiter');
     const menuGroupChoices = new Choices(menuGroupSelect);
     const menuChoices = new Choices(menuSelect);
+    const tableChoices = new Choices(tableSelect);
+    const waiterChoices = new Choices(waiterSelect);
 
     const printBtn = document.querySelector('#print');
     const resultTable = document.querySelector('#results-table tbody');

@@ -11,6 +11,8 @@ use App\OrderMenu;
 use App\MenuGroup;
 use App\Order;
 use App\StockMenu;
+use App\Table;
+use App\Waiter;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use DatePeriod;
@@ -241,22 +243,38 @@ class ReportController extends Controller
         }
         $mgs = [];
         $ms = [];
+        $ts = [];
+        $ws = [];
         if ($request->menuGroup) {
             $mgs = $request->menuGroup;
         }
         if ($request->menu) {
             $ms = $request->menu;
         }
+        if ($request->table) {
+            $ts = $request->table;
+        }
+        if ($request->waiter) {
+            $ws = $request->waiter;
+        }
         
         $all_menus = Menu::with('menu_group')->get();
         $all_menu_groups = MenuGroup::all();
+        $all_tables = Table::all();
+        $all_waiters = Waiter::all();
 
         if ($request->has('menuGroup')) {
             $results = OrderMenu::whereHas('menu', function($q) use ($mgs) {
                 $q->whereIn('menu_group_id', $mgs);
             })
-            ->whereHas('order', function ($t) use ($fromTime, $toTime) {
+            ->whereHas('order', function ($t) use ($fromTime, $toTime, $ts, $ws) {
                 $t->whereBetween('created_at', [$fromTime, $toTime]);
+                $t->when(count($ts) > 0, function ($q) use ($ts) {
+                    return $q->whereIn('table_id', $ts);
+                });
+                $t->when(count($ws) > 0, function ($q) use ($ws) {
+                    return $q->whereIn('waiter_id', $ws);
+                });
             })
             ->selectRaw('*, SUM(quantity) as total')
             ->groupby('menu_id', 'price')
@@ -267,13 +285,19 @@ class ReportController extends Controller
                 return $t->price * $t->total;
             });
             $filtered_menu_groups = MenuGroup::whereIn('id', $mgs)->get();
+            $filtered_tables = Table::whereIn('id', $ts)->get();
+            $filtered_waiters = Waiter::whereIn('id', $ws)->get();
             return view('admin.reports.menus', [
                 "menus" => $all_menus,
                 "menuGroups" => $all_menu_groups,
+                "tables" => $all_tables,
+                "waiters" => $all_waiters,
                 "results" => $results,
                 "fromTime" => $fromTime,
                 "toTime" => $toTime,
                 "filtered_menu_groups" => $filtered_menu_groups,
+                "filtered_tables" => $filtered_tables,
+                "filtered_waiters" => $filtered_waiters,
                 "filtered_menus" => [],
                 "total" => $total
             ]);
@@ -282,8 +306,14 @@ class ReportController extends Controller
         
         if ($request->has('menu')) {
             $results = OrderMenu::whereIn('menu_id', $ms)
-            ->whereHas('order', function ($q) use ($fromTime,$toTime) {
+            ->whereHas('order', function ($q) use ($fromTime,$toTime, $ts, $ws) {
                 $q->whereBetween('created_at', [$fromTime, $toTime]);
+                $q->when(count($ts) > 0, function ($q) use ($ts) {
+                    return $q->whereIn('table_id', $ts);
+                });
+                $q->when(count($ws) > 0, function ($q) use ($ws) {
+                    return $q->whereIn('waiter_id', $ws);
+                });
             })
             ->selectRaw('*, SUM(quantity) as total')            
             ->groupby('menu_id', 'price')
@@ -291,16 +321,22 @@ class ReportController extends Controller
             ->orderby('total', 'desc')
             ->get();                
             $filtered_menus = Menu::whereIn('id', $ms)->get();
+            $filtered_tables = Table::whereIn('id', $ts)->get();
+            $filtered_waiters = Waiter::whereIn('id', $ws)->get();
             $total = $results->sum(function($t) {
                 return $t->price * $t->total;
             });
             return view('admin.reports.menus', [
                 "menus" => $all_menus,
                 "menuGroups" => $all_menu_groups,
+                "tables" => $all_tables,
+                "waiters" => $all_waiters,
                 "results" => $results,
                 "fromTime" => $fromTime,
                 "toTime" => $toTime,
                 "filtered_menus" => $filtered_menus,
+                "filtered_tables" => $filtered_tables,
+                "filtered_waiters" => $filtered_waiters,
                 "filtered_menu_groups" => [],
                 "total" => $total
             ]);
@@ -308,6 +344,8 @@ class ReportController extends Controller
         return view('admin.reports.menus', [
             "menus" => $all_menus,
             "menuGroups" => $all_menu_groups,
+            "tables" => $all_tables,
+            "waiters" => $all_waiters,
             "results" => []
         ]);
         
