@@ -9,7 +9,7 @@
 @section('content')
 <div class="container" id="app">
 	<h4>
-        <a href="{{route('stockmenus.index')}}">🔙 </a>
+        <a href="javascript:history.back()">🔙</a>
 		{{ $stock_menu->menu->name }}
 		<!-- <a href="{{ route('menus.edit', $stock_menu->menu->id) }}">စျေးနှုန်းပြောင်းရန်</a> -->
 		<div style="float: right;">
@@ -18,8 +18,8 @@
 			<a class="{{ request()->query('type') === 'in' ? 'btn btn-success' : '' }}" href="{{route('stockmenus.show', ['stockMenu' => $stock_menu->id, 'type' => 'in'])}}"> အဝယ်</a>
 		</div>
 	</h4>	
-	<p class="alert alert-success">လက်ရှိ အရေအတွက် - {{ $stock_menu->balance }} | <strong>ရောင်းစျေး - {{ $stock_menu->menu->price }} ကျပ် </strong></p>	
-
+	<p class="alert alert-success">ရောင်းစျေး - <strong><a href="{{ route('menus.edit', $stock_menu->menu->id) }}">{{ $stock_menu->menu->price }} ကျပ်</a> </strong> | အရေအတွက် - <span class="badge bg-primary">{{ $stock_menu->balance }}</span></p>	
+5		
 	<h4></h4>
 	<table class="table table-striped">
 		<thead>
