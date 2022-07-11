@@ -11,6 +11,12 @@
 	<h4>
         <a href="{{route('stockmenus.index')}}">🔙 </a>
 		{{ $stock_menu->menu->name }}
+		<!-- <a href="{{ route('menus.edit', $stock_menu->menu->id) }}">စျေးနှုန်းပြောင်းရန်</a> -->
+		<div style="float: right;">
+			<a class="{{ !request()->query('type') ? 'btn btn-dark' : '' }}" href="{{route('stockmenus.show', ['stockMenu' => $stock_menu->id ])}}">All</a>
+			<a class="{{ request()->query('type') === 'out' ? 'btn btn-danger' : '' }}" href="{{route('stockmenus.show', ['stockMenu' => $stock_menu->id, 'type' => 'out'])}}"> အရောင်း</a>
+			<a class="{{ request()->query('type') === 'in' ? 'btn btn-success' : '' }}" href="{{route('stockmenus.show', ['stockMenu' => $stock_menu->id, 'type' => 'in'])}}"> အဝယ်</a>
+		</div>
 	</h4>	
 	<p class="alert alert-success">လက်ရှိ အရေအတွက် - {{ $stock_menu->balance }}</p>	
 

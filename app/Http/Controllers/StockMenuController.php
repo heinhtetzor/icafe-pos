@@ -20,7 +20,7 @@ class StockMenuController extends Controller
         });
         // $stock_menus->when(!is_null ($request->sortByAlpha), function ($q) use ($request) {
         //     $q->whereHas('menu', function ($r) use ($request) {
-        //         $r->orderBy('name', "ASC");
+        //         $r->orderBy('name', $request->sortByBalance);
         //     });
         // });
         $stock_menus->when(!is_null ($request->search), function ($q) use ($request) {
@@ -65,12 +65,21 @@ class StockMenuController extends Controller
      * @param  \App\StockMenu  $stockMenu
      * @return \Illuminate\Http\Response
      */
-    public function show(StockMenu $stockMenu)
+    public function show(Request $request, StockMenu $stockMenu)
     {
-        $stock_menu_entries = $stockMenu->stockMenuEntries()->orderBy('created_at', 'desc')->paginate(20);
+        $stock_menu_entries = $stockMenu->stockMenuEntries();
+        $stock_menu_entries->when(!is_null ($request->type), function ($q) use ($request) {
+            if ($request->type === "in") {
+                $q->where('in', '>', 0);
+            }
+            if ($request->type === "out") {
+                $q->where('out', '>', 0);
+            }
+        });
+        $stock_menu_entries->orderBy('created_at', 'desc');
         return view('admin.stockmenus.show', [
             "stock_menu" => $stockMenu->load('menu'),
-            "stock_menu_entries" => $stock_menu_entries
+            "stock_menu_entries" => $stock_menu_entries->paginate(20)
         ]);
     }
 
