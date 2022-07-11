@@ -19,7 +19,6 @@
 		</div>
 	</h4>	
 	<p class="alert alert-success">ရောင်းစျေး - <strong><a href="{{ route('menus.edit', $stock_menu->menu->id) }}">{{ $stock_menu->menu->price }} ကျပ်</a> </strong> | အရေအတွက် - <span class="badge bg-primary">{{ $stock_menu->balance }}</span></p>	
-5		
 	<h4></h4>
 	<table class="table table-striped">
 		<thead>
