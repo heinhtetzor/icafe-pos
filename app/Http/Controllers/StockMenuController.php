@@ -12,11 +12,29 @@ class StockMenuController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $stock_menus = StockMenu::where('status', StockMenu::STATUS_ACTIVE)->get();
+        $stock_menus = StockMenu::where('status', StockMenu::STATUS_ACTIVE);
+        $stock_menus->when(!is_null ($request->sortByBalance), function ($q) use ($request) {
+            $q->orderBy('balance', $request->sortByBalance);
+        });
+        // $stock_menus->when(!is_null ($request->sortByAlpha), function ($q) use ($request) {
+        //     $q->whereHas('menu', function ($r) use ($request) {
+        //         $r->orderBy('name', "ASC");
+        //     });
+        // });
+        $stock_menus->when(!is_null ($request->search), function ($q) use ($request) {
+            $q->whereHas('menu', function ($r) use ($request) {
+                $r->where('name', 'LIKE', '%'.$request->search.'%');
+            });
+        });
+        $stock_menus->when(!is_null ($request->menuGroupId), function ($q) use ($request) {
+            $q->whereHas('menu', function ($r) use ($request) {
+                $r->where('menu_group_id', $request->menuGroupId);
+            });
+        });
         return view('admin.stockmenus.index', [
-            "stock_menus" => $stock_menus
+            "stock_menus" => $stock_menus->get()
         ]);
     }
 

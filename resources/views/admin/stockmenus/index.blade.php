@@ -31,11 +31,24 @@
 @section('content')
 <div class="container" id="app">
 	<h4><a href="{{route('admin.home')}}">🔙 </a> ရောင်းကုန် ပစ္စည်းများ
-		<a style="float:right" class="btn btn-secondary" href="">🔄<a>	
+		@if (request()->query('sortByBalance') === 'ASC')
+		<a style="float:right" class="btn btn-secondary" href="{{route('stockmenus.index', ['sortByBalance'=>'DESC'])}}">↕️<a>	
+		@else
+		<a style="float:right" class="btn btn-secondary" href="{{route('stockmenus.index', ['sortByBalance'=>'ASC'])}}">↕️<a>	
+		@endif
+		<!-- @if (request()->query('sortByAlpha') === 'ASC')
+		<a style="float:right" class="btn btn-secondary" href="{{route('stockmenus.index', ['sortByAlpha'=>'DESC'])}}">🔠<a>
+		@else
+		<a style="float:right" class="btn btn-secondary" href="{{route('stockmenus.index', ['sortByAlpha'=>'ASC'])}}">🔠<a>	
+		@endif -->
+		<a style="float:right" class="btn btn-secondary" href="{{route('stockmenus.index')}}">🔄<a>	
 		<a class="btn btn-success" href="{{route('expenses.create')}}">🟢 စာရင်းသွင်းရန်</a>		
 	</h4>
+	<form method="GET" action="{{route('stockmenus.index')}}">
+		<input type="text" class="col-md-3" name="search" placeholder="ရှာပါ">
+		<button class="btn btn-dark">Search</button>
+	</form>
 	<br>
-
 	<div class="grid-stock-menu">
 		@foreach ($stock_menus as $stock_menu)
 		<a href="{{ route('stockmenus.show', $stock_menu->id) }}" class="grid-stock-menu-item">
