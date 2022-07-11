@@ -45,7 +45,7 @@
 		<a class="btn btn-success" href="{{route('expenses.create')}}">🟢 စာရင်းသွင်းရန်</a>		
 	</h4>
 	<form method="GET" action="{{route('stockmenus.index')}}">
-		<input type="text" class="col-md-3" name="search" placeholder="ရှာပါ">
+		<input type="text" class="col-md-3" name="search" placeholder="ရှာပါ" value="{{request()->query('search')}}">
 		<button class="btn btn-dark">Search</button>
 	</form>
 	<br>
