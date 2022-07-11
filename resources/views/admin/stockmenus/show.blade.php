@@ -18,7 +18,7 @@
 			<a class="{{ request()->query('type') === 'in' ? 'btn btn-success' : '' }}" href="{{route('stockmenus.show', ['stockMenu' => $stock_menu->id, 'type' => 'in'])}}"> အဝယ်</a>
 		</div>
 	</h4>	
-	<p class="alert alert-success">လက်ရှိ အရေအတွက် - {{ $stock_menu->balance }}</p>	
+	<p class="alert alert-success">လက်ရှိ အရေအတွက် - {{ $stock_menu->balance }} | <strong>ရောင်းစျေး - {{ $stock_menu->menu->price }} ကျပ် </strong></p>	
 
 	<h4></h4>
 	<table class="table table-striped">
