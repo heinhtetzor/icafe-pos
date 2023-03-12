@@ -36,11 +36,11 @@
 		@else
 		<a style="float:right" class="btn btn-secondary" href="{{route('stockmenus.index', ['sortByBalance'=>'ASC'])}}">↕️<a>	
 		@endif
-		<!-- @if (request()->query('sortByAlpha') === 'ASC')
+		@if (request()->query('sortByAlpha') === 'ASC')
 		<a style="float:right" class="btn btn-secondary" href="{{route('stockmenus.index', ['sortByAlpha'=>'DESC'])}}">🔠<a>
 		@else
 		<a style="float:right" class="btn btn-secondary" href="{{route('stockmenus.index', ['sortByAlpha'=>'ASC'])}}">🔠<a>	
-		@endif -->
+		@endif
 		<a style="float:right" class="btn btn-secondary" href="{{route('stockmenus.index')}}">🔄<a>	
 		<a class="btn btn-success" href="{{route('expenses.create')}}">🟢 စာရင်းသွင်းရန်</a>		
 	</h4>

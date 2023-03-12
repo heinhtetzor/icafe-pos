@@ -18,14 +18,16 @@ class StockMenuController extends Controller
         $stock_menus->when(!is_null ($request->sortByBalance), function ($q) use ($request) {
             $q->orderBy('balance', $request->sortByBalance);
         });
-        // $stock_menus->when(!is_null ($request->sortByAlpha), function ($q) use ($request) {
-        //     $q->whereHas('menu', function ($r) use ($request) {
-        //         $r->orderBy('name', $request->sortByBalance);
-        //     });
-        // });
+        $stock_menus->when(!is_null ($request->sortByAlpha), function ($q) use ($request) {
+            $q->whereHas('menu', function ($r) use ($request) {
+                // dd($request->sortByAlpha);
+                $r->orderBy('name', "desc");
+            });
+        });
         $stock_menus->when(!is_null ($request->search), function ($q) use ($request) {
             $q->whereHas('menu', function ($r) use ($request) {
-                $r->where('name', 'LIKE', '%'.$request->search.'%');
+                $r->where('name', 'LIKE', ' %'.$request->search.'%');
+                $r->where('code', 'LIKE', ' %'.$request->search.'%');
             });
         });
         $stock_menus->when(!is_null ($request->menuGroupId), function ($q) use ($request) {
