@@ -78,6 +78,7 @@ class PrintJobService {
         $menu_name = $menu->name;
         $store_id = $menu->store_id;
         $qty = $orderMenu->quantity;
+        $price = $orderMenu->price;
         $datetime = Carbon::parse($orderMenu->created_at)->format('h:i A d-M-Y');
         $waiter = $orderMenu->waiter->name ?? "";
         
@@ -87,6 +88,7 @@ class PrintJobService {
             "menu_id" => $menu_id,
             "menu_name" => $menu_name,
             "qty" => $qty,
+            "price" => $price,
             "datetime" => $datetime,
             "waiter" => $waiter,
             "type" => PrintJob::TYPE_ORDER_MENU_EXPRESS_SLIP
