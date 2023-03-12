@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 class Order extends Model
 {
-    protected $fillable = ['status', 'table_id', 'waiter_id', 'invoice_no', 'total'];
+    protected $fillable = ['status', 'table_id', 'waiter_id', 'invoice_no', 'total', 'paid_amount', 'customer_id', 'paid_amount'];
 
     protected $casts = [        
         "delete_logs" => 'array'
@@ -28,6 +28,9 @@ class Order extends Model
     }
     public function waiter() {
         return $this->belongsTo('App\Waiter');
+    }
+    public function customer() {
+        return $this->belongsTo('App\Customer');
     }
     public static function getExpressOrders ()
     {

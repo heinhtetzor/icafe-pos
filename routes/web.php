@@ -177,6 +177,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::resource('/orders', 'OrderController');
 
         Route::resource('/tables', 'TableController');
+        Route::resource('/customers', 'CustomerController');
         Route::resource('/items', 'ItemController');
         Route::resource('/tablegroups', 'TableGroupController');
         Route::resource('/menugroups', 'MenuGroupController');

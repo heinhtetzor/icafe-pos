@@ -39,6 +39,19 @@
             </a>
 
         </div>
+        <div class="col-md-3 icon">
+            <a href="{{route('customers.index')}}">
+                <div class="card round-card bg-warning text-dark">
+                    <div class="card-header">
+                        <h4 class="card-title">Customers</h4>
+                    </div>
+                    <div class="card-body">
+                        {{-- Customer Management --}}
+                    </div>                
+                </div>
+            </a>
+
+        </div>
     </div>
     <hr>
     <h4>Expense</h4>

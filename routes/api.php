@@ -70,7 +70,7 @@ Route::post('/orderMenus/makeFoc/{orderMenuId}', 'Api\Order\OrderController@make
 Route::post('/orderMenus/undoOption/{orderMenuId}', 'Api\Order\OrderController@undoOption');
 
 //pay bill
-Route::get('/payBill/{orderId}/{waiterId}/{printBill}', 'Api\Order\OrderController@payBill');
+Route::get('/payBill/{orderId}/{waiterId}/{customerId}/{paidAmount}/{printBill}', 'Api\Order\OrderController@payBill');
 
 //serve to customer
 Route::get('/serveToCustomer/{orderMenuId}', 'Api\Order\OrderController@serveToCustomer');

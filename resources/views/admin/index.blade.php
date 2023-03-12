@@ -64,6 +64,16 @@
                 </div>
             </div>
         </a>
+        <a href="/admin/pos/tables/-1">
+            <div class="card round-card bg-dark text-white">
+                <div class="card-header">
+                    <h2 class="card-title"><i>Mart</i></h2>
+                </div>
+                <div class="card-body">
+                    <p class="icon" style="font-size: 4rem;">🖥</p>
+                </div>
+            </div>
+        </a>
         
     </div>
     <br>

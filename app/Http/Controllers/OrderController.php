@@ -56,6 +56,7 @@ class OrderController extends Controller
         //get today orders
         $orders=Order::orderBy('created_at', 'DESC')
                 ->whereBetween('created_at', [$fromTime, $toTime])
+                ->with('waiter', 'customer')
                 ->simplePaginate(20);
 
         return view('admin.orders.day', [

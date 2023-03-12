@@ -1,5 +1,9 @@
 @extends('layouts.client')
 @section('style')
+<!-- Include base CSS (optional) -->
+{{-- <link rel="stylesheet" href="/choices/styles/base.min.css" /> --}}
+<!-- Include Choices CSS -->
+<link rel="stylesheet" href="/choices/styles/choices.min.css" />
 <style>
     /* hide cart panel for mobile and small screens */
     @media screen and (max-width: 600px) {
@@ -165,6 +169,7 @@
         flex-direction: row;
         justify-content: space-between;
     }
+
     .header .button {
         font-size: 1.4rem;
     }
@@ -185,7 +190,9 @@
             <a href="{{route('waiter.home')}}">🔙</a>            
             @endif
 
-            Table - {{$table->name}}
+            @if ($table)
+            <span>Table - {{$table->name}}</span>
+            @endif
             @if($current_order)
                 @if(Auth::guard('admin_account')->check())
                 <a class="btn btn-info" href="{{route('admin.pos.orders', $current_order->id)}}">အသေးစိတ်</a>
@@ -201,8 +208,16 @@
         </button> 
 
         @if(Auth::guard('admin_account')->check())
+        <!-- only show when table is -1 i.e, mart mode -->
+        @if($tableId == -1) 
+        <select name="customerId" id="customerId" style="float: right">
+            <option value="">Customer ရွေးပါ</option>
+            @foreach($customers as $customer)
+            <option value="{{$customer->id}}">{{$customer->name}}</option>
+            @endforeach
+        </select>
+        @endif
         <select name="waiterId" id="waiterId" style="float: right">
-            <option value="">Waiter ရွေးပါ</option>
             @foreach($waiters as $waiter)
             <option value="{{$waiter->id}}">{{$waiter->name}}</option>
             @endforeach
@@ -303,7 +318,7 @@
                         </tbody>
                     </table>
                     {{-- <div class="sticky">
-                        <i>Total </i> : <b class="subtotal">{{$total}} ကျပ်</b><br>
+                        <i>Total </i> : <b class="subtotal"><span>{{$total}}</span< ကျပ်</b><br>
                         <button class="btn btn-success" id="orderBtn">မှာမည်</button>
                         <button class="btn btn-primary" id="payBtn">ရှင်းမည်</button>
                         <button class="btn btn-danger" id="rollbackBtn"><<<</button>
@@ -314,7 +329,7 @@
                     <div class="card-footer-total" style="display:flex;justify-content:space-between">
                         <div></div>
                         <div>
-                            <i>Total </i> :&nbsp; <b class="subtotal">{{$total}} ကျပ်</b>                            
+                            <i>Total </i> :&nbsp; <b class="subtotal"><span class="subtotal-amount">{{$total}}</span> ကျပ်</b>                            
                         </div>
                         <div>
                             <input name="print_bill" value="0" class="form-check-input" type="checkbox" id="print_bill">
@@ -337,7 +352,9 @@
                   <div class="modal-content">
                     <div class="modal-header">
                       <h5 style="width:100%" class="modal-title" id="exampleModalLabel">
+                        @if ($table)
                         <span>Table - {{$table->name}}</span>  
+                        @endif
                         <span style="float:right;">{{date("d-m-Y")}}</span>
                         </h5>
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -357,12 +374,17 @@
 @endsection
 @section('script')
 {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js" integrity="sha512-aMGMvNYu8Ue4G+fHa359jcPb1u+ytAF+P2SCb+PxrjCdO3n3ZTxJ30zuH39rimUggmTwmh2u7wvQsDTHESnmfQ==" crossorigin="anonymous"></script> --}}
+<script src="/choices/scripts/choices.min.js"></script>
 <script>
     (() => {
         // const socket = io('{{config('app.socket_url')}}');      
         // socket.emit('join-room', {
         //     roomId: 1
         // })
+        const waiterSelect = document.querySelector('#waiterId');
+        const customerSelect = document.querySelector('#customerId');
+        // const waiterChoice = new Choices(waiterSelect);
+        // const customerChoice = new Choices(customerSelect);
         
         const menuGroupItems=document.querySelectorAll('.menugroups-flex-item');
         const menuItems=document.querySelectorAll('.menus-grid-item');
@@ -583,7 +605,7 @@
             }
             //becuase subtotal appears twice including in modal
             for (let subTotalEle of subTotalEles) {
-                subTotalEle.innerHTML=subTotal + " ကျပ်";
+                subTotalEle.innerHTML=`<span class='subtotal-amount'>${subTotal}</span> ကျပ်`;
             }
         }
         
@@ -692,13 +714,27 @@
             });
         }
         function payBtnClickHandler() {
+            const subTotal=document.querySelector('.subtotal-amount');
+            const subTotalAmount = parseFloat(subTotal.innerHTML);
+            let paidAmount = prompt("ပေးငွေထည့်သွင်းပါ", parseFloat(subTotal.innerHTML));
+            // let paidAmount = 0;
             if (!confirm("သေချာပါသလား?")) {
                 return;
             }
-
+            if (paidAmount > subTotalAmount) {
+                alert("Paid amount could not be more than total");
+                return;
+            }
             let waiterId="{{$currentWaiter}}";
             let orderId={{$current_order->id ?? "null"}};            
             let printBill = document.querySelector('#print_bill').checked;
+
+            let customerId = null;
+
+            //customer select is rendered only in mart mode
+            if (document.querySelector('customerId')) {
+                customerId = document.querySelector('customerId').value;
+            }
             
             //for admin pos 
             //only when admin chooses waiter from dropdown
@@ -715,7 +751,8 @@
                 waiterId=selectedWaiter.value;
             }
             const token=document.querySelector('#_token').value;
-            fetch(`/api/payBill/${orderId}/${waiterId}/${printBill}`, {
+            // TODO: switch to post method
+            fetch(`/api/payBill/${orderId}/${waiterId}/${customerId}/${paidAmount}/${printBill}`, {
                 headers: {
                     "Content-Type": "application/json",
                     "Accept": "application/json",

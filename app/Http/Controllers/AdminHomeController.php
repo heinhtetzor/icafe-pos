@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Customer;
 use Illuminate\Http\Request;
 use Auth;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -57,14 +58,21 @@ class AdminHomeController extends Controller
             ]);
         }
 
-        public function pos($id)
+        public function pos($tableId)
         {
             // $menus=Menu::getActiveMenus();
             $menus=Menu::getActiveMenus();
             $menu_groups=MenuGroup::getMenuGroups();
             $waiters=Waiter::all();
-            $table=Table::findorfail($id);
-            $currentOrder=$this->getActiveOrder($id);
+            $customers = [];
+            
+            $table = null;
+            if ($tableId != -1) {
+                $table=Table::findorfail($tableId);
+                $customers = Customer::orderBy('name', 'ASC')->get();
+            }
+            // dd($id);
+            $currentOrder=$this->getActiveOrder($tableId);
             $order_menus=Array();
             $total=0;
             if($currentOrder) {
@@ -80,7 +88,8 @@ class AdminHomeController extends Controller
                 "menus"=>$menus,
                 "menu_groups"=>$menu_groups,
                 "waiters"=>$waiters,
-                "tableId"=>$id,
+                "customers"=>$customers,
+                "tableId"=>$tableId,
                 "table"=>$table,
                 "current_order"=>$currentOrder,
                 "order_menus"=>$order_menus,

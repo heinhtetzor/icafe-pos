@@ -250,13 +250,17 @@ class OrderController extends Controller
         }
     }
 
-    function payBill($orderId, $waiterId, $printBill=false) {
-        // dd($printBill);
-        
+    function payBill($orderId, $waiterId, $customerId, $paidAmount, $printBill=false) {
+        // dd($paidAmount);
+
         //string null set by javascript
         if($orderId === "null") {
             //early return if orderId is null
             return ["isOk"=>FALSE];
+        }
+
+        if($customerId == "null") {
+            $customerId = null;
         }
 
 
@@ -279,7 +283,9 @@ class OrderController extends Controller
         Order::findorfail($orderId)->update([
             "status"=>1,
             "waiter_id"=>$waiterId,
-            "total"=>$order_menu_total
+            "total"=>$order_menu_total,
+            "customer_id"=>$customerId,
+            "paid_amount"=>$paidAmount,
         ]);
         //change table status
         TableStatus::where('order_id', $orderId)->update([
