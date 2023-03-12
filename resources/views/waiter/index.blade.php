@@ -103,7 +103,13 @@
             const tableGridEle = document.createElement('div');
             tableGridEle.classList += 'tables-grid';
 
-            for (let table of tableGroup.tables) {
+            const sortedTables = tableGroup.tables.sort(function(a, b) {
+                return a.name.localeCompare(b.name, undefined, {
+                    numeric: true,
+                    sensitivity: 'base'
+                });
+            });
+            for (let table of sortedTables) {
                 const tableLink = document.createElement('a');
                 const href = is_admin ? `/admin/pos/tables/${table.id}` : `/waiter/${table.id}/pos`;
                 tableLink.classList += 'tables-grid-item';
