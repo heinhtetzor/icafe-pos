@@ -87,7 +87,6 @@
 </div>
 @endsection
 @section('script')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js" integrity="sha512-aMGMvNYu8Ue4G+fHa359jcPb1u+ytAF+P2SCb+PxrjCdO3n3ZTxJ30zuH39rimUggmTwmh2u7wvQsDTHESnmfQ==" crossorigin="anonymous"></script>
 <script>
 	(()=> {
 		const kitchenColor = "{{Auth()->guard('kitchen')->user()->color}}";
@@ -106,27 +105,15 @@
 			return (yiq >= 128) ? 'black' : 'white';
 		}
 
-	    const socket = io('{{config('app.socket_url')}}');
 	    
 	    const id=document.querySelector('#id').value;
 	    const token=document.querySelector('#_token').value;
 
-
-
-	    socket.emit('join-room', {
-	    	roomId: 1
-	    });
-
-	    socket.on('deliver-order', data=> {
-	    	console.log(data);
-	    	// location.reload()
-	    	fetchOrderMenus();
-
-			kitchenAlert.play();
-	    })
-
+		fetchOrderMenus();
+		setInterval(() => {
+			fetchOrderMenus();
+		}, 5000);
 	   
-	    fetchOrderMenus();
 
 	    //functions declarations
 	    //tick each  -serve to customer
@@ -145,9 +132,6 @@
 		    })
 		    .then(res=> {
 		    	fetchOrderMenus();
-
-		    	//send serve-to-customer to waiter 
-		    	socket.emit('serve-to-customer', res);
 		    })
 		    .catch(err=> console.log(err));
 	    }   
@@ -168,9 +152,6 @@
 	    	})
 	    	.then(res=> {
 	    		fetchOrderMenus();
-
-	    		//send serve-to-customer to waiter 
-		    	socket.emit('serve-to-customer', res);
 	    	})
 	    	.catch(err=> console.log(err));
 	    }
