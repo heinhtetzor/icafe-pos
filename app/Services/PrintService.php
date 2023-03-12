@@ -29,7 +29,10 @@ class PrintService {
                      ->with('menu', 'menu.menu_group') 
                      ->get();
 
-        $printer_connector = Setting::getPrinterConnector();        
+        $printer_connector = Setting::getPrinterConnector();
+        if (! $printer_connector) {
+            throw new \Exception("Printer Connector cannot be null");
+        }
         $shop_infos = Setting::getShopInfo()->pluck('value');        
 
         $connector = new FilePrintConnector($printer_connector);
@@ -158,7 +161,10 @@ class PrintService {
         $order_menus = OrderFunctions::getOrderMenusGrouped($order);
 
         //connect to printer
-        $printer_connector = Setting::getPrinterConnector();        
+        $printer_connector = Setting::getPrinterConnector();
+        if (! $printer_connector) {
+            throw new \Exception("Printer Connector cannot be null");
+        }        
         $shop_infos = Setting::getShopInfo()->pluck('value');       
 
         $bill_footer_text = Setting::getBillFooterText() ?? "ကျေးဇူးတင်ပါသည်";
@@ -298,7 +304,10 @@ class PrintService {
     {        
         if ($orderMenu->menu->menu_group->print_slip == 1)
         {
-            $printer_connector = Setting::getPrinterConnector();                        
+            $printer_connector = Setting::getPrinterConnector();
+            if (! $printer_connector) {
+                throw new \Exception("Printer Connector cannot be null");
+            }                        
             $connector = new FilePrintConnector($printer_connector);
             $printer = new Printer($connector);
 
@@ -359,7 +368,10 @@ class PrintService {
 
         foreach ($printMenuGroups as $key => $orderMenus)
         {
-            $printer_connector = Setting::getPrinterConnector();                        
+            $printer_connector = Setting::getPrinterConnector();
+            if (! $printer_connector) {
+                throw new \Exception("Printer Connector cannot be null");
+            }                        
             $connector = new FilePrintConnector($printer_connector);
             $printer = new Printer($connector);
 
@@ -431,7 +443,10 @@ class PrintService {
     }
     public static function printOrderMenuReport ($lines)
     {
-        $printer_connector = Setting::getPrinterConnector();                        
+        $printer_connector = Setting::getPrinterConnector();
+        if (! $printer_connector) {
+            throw new \Exception("Printer Connector cannot be null");
+        }                        
         $connector = new FilePrintConnector($printer_connector);
         $printer = new Printer($connector);
 
