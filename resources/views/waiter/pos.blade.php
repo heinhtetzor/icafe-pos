@@ -244,6 +244,7 @@
                     data-menu-stock-balance="{{$menu->stock_menu->balance ?? 0}}"
                     data-print-slip="{{$menu->menu_group->print_slip}}"                    
                     class="menus-grid-item"
+                    title="{{$menu->name}} ({{$menu->code}})"
                     @if ($menu->image)
                     style="background-size:cover;background-image: url('/storage/menu_images/{{$menu->image}}')">        
                     @else 
@@ -251,7 +252,7 @@
                     @endif                    
                     <span class="price">{{$menu->price}}</span>
                     <span class="caption">{{$menu->name}}</span>
-                    @if ($menu->stock_menu()->exists())
+                    @if ($menu->stock_menu != null)
                     <span class="balance-badge">{{$menu->stock_menu->balance}}</span>
                     @endif
                     

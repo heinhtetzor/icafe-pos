@@ -17,9 +17,10 @@
                     </h4>
                 </div>
                 <div class="card-body">
+                    <input type="text" id="menuSearchInput" class="form-control mb-4" placeholder="ရှာပါ" role="search">
                     <div class="grid">                    
                         @foreach($menus as $menu)
-                        <a class="grid-item" href="{{route('menus.edit', $menu->id)}}">
+                        <a data-menu-code="{{ $menu->code }}" data-menu-name="{{ $menu->name }}" class="grid-item" href="{{route('menus.edit', $menu->id)}}">
                             @if ($menu->image)
                             <img src="/storage/menu_images/{{$menu->image}}"/>
                             @else 
@@ -37,4 +38,32 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('js')
+<script>
+    const menuSearchInput=document.querySelector('#menuSearchInput');
+    menuSearchInput.addEventListener('input', menuSearchInputHandler);
+    const originalMenuItems=[...document.querySelector('.grid').children];
+
+    function menuSearchInputHandler (e) {
+        console.log(e.target.value);
+        filterByTextSearch(originalMenuItems, e.target.value);
+    }
+
+    function filterByTextSearch(originalMenuItems, text) {
+        originalMenuItems.forEach(x=>{
+            x.style.display='block';
+        }) 
+        if (!text) {
+            return;
+        }
+        originalMenuItems.forEach (x => {      
+            console.log(x)          
+            if (!x.dataset['menuName'].includes(text) && !x.dataset['menuCode'].includes(text)) {
+                x.style.display = 'none';
+            }
+        })            
+    }
+</script>
 @endsection

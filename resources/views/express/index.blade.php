@@ -1,6 +1,17 @@
 @extends('layouts.client')
 @section('style')
 <style>
+    @media screen and (max-width: 600px) {
+        .left-container {
+            width: 100% !important;
+        }  
+
+    }
+
+    #ticker 
+    {
+        display: none;
+    }
     .container {        
         margin-top: 4rem;
     }
@@ -12,24 +23,27 @@
         border-radius: 10px;
         overflow-y: scroll;
     }
-    .menus-grid {        
+    .menus-grid {
+        padding-top: 5px;
+        padding-left: 5px;
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
         grid-row-gap: 2rem;
-        grid-column-gap: 4px;
+        grid-column-gap: 12px;
         max-height: 70vh;
         overflow-y: scroll;
         /* padding-bottom: 3rem; */
     }
     .menus-grid-item {
-        width: 100px;
-        height: 100px;
-        border: 1px solid #d3d2d2;
+        width: 120px;
+        height: 120px;
+        /* border: 1px solid #d3d2d2; */
         /* border-bottom: none; */
         cursor: pointer;
         position: relative;         
         overflow: hidden;
         transition: all 0.3s ease-in-out;
+        box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
     }
     .menus-grid-item:hover, .menus-grid-item:active {
         /* border: 3px solid green; */
@@ -43,10 +57,11 @@
         position: absolute;
         bottom: 0;
         /* right: 0; */
-        background-color: purple;
-        
+        background-color: black;
+        width: 120px;
         color: white;       
-        white-space: nowrap;     
+        /* white-space: nowrap;      */
+        word-wrap: break-word;
         /* display: inline-block; */
         /* display: block;
         white-space: nowrap;
@@ -61,8 +76,20 @@
         position: absolute;
         top: 0;
         right: 0;
-        background-color: purple;
+        background-color: black;
         color: white;
+        border-radius: 8px;
+        padding: 5px;
+    }
+    .stock-mark {
+        position: absolute;
+        top: 0;
+        left: 0;
+        background-color: black;
+        color: white;
+        border-radius: 8px;
+        padding: 5px;
+        font-size: 1.4rem;
     }
     .price::after {
         content: ' ကျပ်';
@@ -71,25 +98,36 @@
         display: flex;
         justify-content: space-between;
     }
-    .menugroups-flex-container {        
-        white-space: nowrap;
-        overflow-x: scroll;       
-        margin-bottom: 1rem;
-        height: 70px;
+    .parent-container {
+        display: flex;
+        flex-direction: row;
+    }
+    .left-container {
+        width: 70%;
+    }
+    .right-container {
+        width: 30%;
+    }
+    .menugroups-flex {  
+        display: grid;      
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        grid-row-gap: 2rem;
+        grid-column-gap: 4px;
+        overflow-y: scroll;       
+        max-height: 70vh;
         background-color: rgb(241, 238, 238);          
-        position: sticky;
-        top: 0;
     }
     .menugroups-flex-item {
-        overflow: hidden;
-        display: inline-block;
-        /* border: 1px solid black; */
+        /* width: 100px;
+        height: 100px; */
+        height: 100px;
         border-radius: 10%;
-        width: 100px;
         background-color: rgb(180, 247, 202); 
-        height: 90%;        
         cursor: pointer;            
-        position: relative;        
+        position: relative;     
+        overflow: hidden;   
+        box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+        font-weight: 1000;
     }
     .menugroups-flex-item  span {
         position: absolute;
@@ -101,8 +139,21 @@
         border: 4px solid green;
         background-color: #fff;
     }    
-    .stock_menu {
-        background-color:  green;
+    .stock_menu_caption {
+        background-color:  black;
+    }
+    .stock_menu_price {
+        background-color:  black;
+    }
+    #history-container {
+        display: flex;
+        flex-direction: column;
+        height: 30px;
+        overflow-x: scroll;
+        overflow-y: hidden;
+        white-space: nowrap;
+        font-size: 0.75rem;
+        font-weight: 700;
     }
 </style>
 @endsection
@@ -114,7 +165,8 @@
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">မှာရန်</h5>
+              <h5 class="modal-title" id="exampleModalLabel">မှာရန် <a id="modal-menu-edit-link"> &nbsp; ✏️ Edit</a></h5>
+              
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -135,7 +187,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="modal-menu-quantity">အရေအတွက်</label>
-                            <input type="number" class="form-control" id="modal-menu-quantity">
+                            <input value="1" type="number" class="form-control" id="modal-menu-quantity">
                         </div>
                     </div>
                 </div>
@@ -221,47 +273,60 @@
         @csrf
         <input type="hidden" name="id" value="{{ $order->id }}">
     </form>
+    <div id="history-container">
 
-    <div class="menugroups-flex-container">
-        <div class="menugroups-flex">
-            <div data-id="all" class="menugroups-flex-item">
-                အားလုံး
-            </div>
-            @forelse($menu_groups as $menu_group)
-            <div data-id="{{$menu_group->id}}" class="menugroups-flex-item">
-                {{$menu_group->name}}
-            </div>
-            @empty
-            NO MENU GROUP
-            @endforelse
-        </div>
     </div>
-    <input type="text" id="menuSearchInput" class="form-control" placeholder="ရှာပါ" role="search">
-    <div class="menus-grid">
-        @foreach ($menus as $menu)
-        <div 
-        data-menugroup-id="{{$menu->menu_group->id}}"
-        data-menu-id="{{$menu->id}}"
-        data-menu-name="{{$menu->name}}"                
-        data-menu-price="{{$menu->price}}"                
-        data-menu-code="{{$menu->code}}"
-        class="menus-grid-item"
-        title="{{$menu->name}} ({{$menu->code}})" 
-        @if ($menu->image)
-        style="background-size:cover;background-image: url('/storage/menu_images/{{$menu->image}}')">        
-        @else 
-        style="background-size:cover;background-image: url('/images/default.png')">                
-        @endif
-        <span class="price">{{$menu->price}}</span>
-        <span class="caption {{ $menu->stock_menu()->exists() && $menu->stock_menu->status == 1 ? 'stock_menu' : '' }}">{{$menu->name}}</span>
-        </div>     
-        @endforeach
+    <input type="text" id="menuSearchInput" class="form-control mb-4" placeholder="ရှာပါ" role="search">
+    <div class="parent-container">
+        <div class="left-container">
+
+            <div class="menus-grid">
+                @foreach ($menus as $menu)
+                <div 
+                data-menugroup-id="{{$menu->menu_group->id}}"
+                data-menu-id="{{$menu->id}}"
+                data-menu-name="{{$menu->name}}"                
+                data-menu-price="{{$menu->price}}"                
+                data-menu-code="{{$menu->code}}"
+                class="menus-grid-item"
+                title="{{$menu->name}} ({{$menu->code}})" 
+
+                @if ($menu->image)
+                style="box-shadow: 0 0 0 2px {{$menu->menu_group->color}}, 10px 10px 0 0 {{$menu->menu_group->color}};background-size:cover;background-image: url('/storage/menu_images/{{$menu->image}}')">        
+                @else
+                style="box-shadow: 0 0 0 2px {{$menu->menu_group->color}}, 10px 10px 0 0 {{$menu->menu_group->color}};background-repeat:no-repeat;background-size:100px 100px;background-image: url('/images/default-menu.svg')">        
+                @endif
+                @if ($menu->stock_menu != null && $menu->stock_menu->status == 1)
+                <span class="stock-mark">📈</span>
+                @endif
+                <span class="price {{ $menu->stock_menu != null && $menu->stock_menu->status == 1 ? 'stock_menu_price' : '' }}">{{$menu->price}}</span>
+                <span class="caption {{ $menu->stock_menu != null && $menu->stock_menu->status == 1 ? 'stock_menu_caption' : '' }}">{{$menu->name}}</span>
+                </div>     
+                @endforeach
+            </div>
+        </div>
+        <div class="right-container">
+            <div class="menugroups-flex-container">
+                <div class="menugroups-flex">
+                    <div data-id="all" class="menugroups-flex-item">
+                        အားလုံး
+                    </div>
+                    @forelse($menu_groups as $menu_group)
+                    <div data-id="{{$menu_group->id}}" class="menugroups-flex-item" style="background-color:{{$menu_group->color}}">
+                        {{$menu_group->name}}
+                    </div>
+                    @empty
+                    NO MENU GROUP
+                    @endforelse
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 @endsection
 @section('script')
 <script>    
-    const orderAlert = new Audio('/sounds/kitchen-alert.wav');
+    const orderAlert = new Audio('/sounds/quick-chime.wav');
 
     let bulkInsertModal;
     window.addEventListener('load', () => {        
@@ -272,6 +337,9 @@
     const token=document.querySelector('#_token').value;            
 
     const ticker = document.querySelector('#ticker');    
+
+    const historyContainer = document.querySelector("#history-container");
+    let historyArr = []
 
     const menuSearchInput=document.querySelector('#menuSearchInput');
     
@@ -303,6 +371,7 @@
     const modalMenuQuantity = document.querySelector('#modal-menu-quantity');
     const modalMenuId = document.querySelector('#modal-menu-id');
     const modalMenuPrice = document.querySelector('#modal-menu-price');
+    const modalMenuEditLink = document.querySelector('#modal-menu-edit-link');
 
     modalMenuOrderBtn.addEventListener('click', modalMenuOrderBtnHandler);
 
@@ -329,7 +398,8 @@
         modalMenuName.value = e.target.dataset['menuName'];
         modalMenuId.value = e.target.dataset['menuId'];
         modalMenuPrice.value = e.target.dataset['menuPrice'];
-        modalMenuQuantity.value = e.target.dataset['menuQuantity'];
+        modalMenuQuantity.value = e.target.dataset['menuQuantity'] || 1;
+        modalMenuEditLink.href = `/admin/menus/${e.target.dataset['menuId']}/edit`;
         bulkInsertModal.show();
     }
 
@@ -391,7 +461,7 @@
     }
 
     function addOrderMenuApiCall (menuId, menuName, menuPrice, menuQuantity) {
-        const waiterId = 1;        
+        const waiterId = 1; //TODO
         const orderId = {{$order->id}};        
 
         fetch(`/api/addOrderMenu`, {
@@ -423,16 +493,32 @@
                     }).showToast();
                     return;
             }
-
+            
             ticker.classList.add('badge', 'bg-success');            
             let menuQuantityDisplay = menuQuantity;
             if (ticker.innerHTML.split(' x ')[0] === menuName) {
                 menuQuantityDisplay = +ticker.innerHTML.split(' x ')[1] + 1;     
                 console.log(menuQuantityDisplay)                           
                 ticker.innerHTML = `${menuName} x ${menuQuantityDisplay}`;
+                historyContainer.innerHTML += ticker.innerHTML;
             }
             ticker.innerHTML = `${menuName} x ${menuQuantityDisplay}`;
 
+            //truncate history items
+            historyArr = historyArr.slice(0, 50);
+            let historyMenuQuantityDisplay = menuQuantity;  
+            if (historyArr.length > 0 && historyArr[0].split(' x ')[0] === menuName) {
+                historyMenuQuantityDisplay = +historyArr[0].split(' x ')[1] + 1;
+                historyArr[0] = `${menuName} x ${historyMenuQuantityDisplay}`;              
+            } else {
+                let arrItem = `${menuName} x ${historyMenuQuantityDisplay}`;
+                historyArr.unshift(arrItem);
+            }
+
+            historyContainer.innerHTML = "";
+            for (let historyItem of historyArr) {
+                historyContainer.innerHTML += `${historyItem}  &nbsp;&nbsp;&nbsp; `;
+            }
             orderAlert.play();
         })
         .catch (err => {

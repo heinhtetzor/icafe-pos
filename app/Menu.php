@@ -23,7 +23,7 @@ class Menu extends Model
     public static function getActiveMenus($store_id) {
         return Menu::where('status', 1)
         ->where('store_id', $store_id)
-        ->with('stock_menu')->get();
+        ->with('stock_menu', 'menu_group')->get();
     }
     
     //dangerous

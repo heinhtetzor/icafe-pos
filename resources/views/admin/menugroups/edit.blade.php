@@ -8,23 +8,34 @@
             @if (session('error'))
             <p class="alert alert-danger">{{ session('error') }}</p>
             @endif
+
+            
             <input name="store_id" type="hidden" value="{{Auth::guard('admin_account')->user()->store_id}}"/>
-            <div class="form-group">
-                <label for="name">Menu အုပ်စု အမည်</label>
-                <input value="{{$menu_group->name}}" name="name" type="text" class="form-control" placeholder="Enter Table Name" required>
-                <p style="color:red">{{ $errors->first('name') }}</p>
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="name">Menu အုပ်စု အမည်</label>
+                    <input value="{{$menu_group->name}}" name="name" type="text" class="form-control" placeholder="Enter Table Name" required>
+                    <p style="color:red">{{ $errors->first('name') }}</p>
+                </div>
+    
+                <div class="form-group">
+                    <label for="name">Color</label>
+                    <input value="{{$menu_group->color}}" name="color" type="color" class="form-control" placeholder="Enter Table Name" required>
+                    <p style="color:red">{{ $errors->first('color') }}</p>
+                </div>
+    
+                <input @if ($menu_group->print_slip == 1) checked  @endif name="print_slip" value="yes" class="form-check-input" type="checkbox" id="print_slip_radio">
+                <label class="form-check-label" for="print_slip_radio">
+                စလစ်ထုတ်မည်
+                </label>
+    
+                <br>
+                <br>
+    
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <a class="btn btn-info" href="{{ route('menugroups.index') }}">Back</a>
             </div>
-
-            <input @if ($menu_group->print_slip == 1) checked  @endif name="print_slip" value="yes" class="form-check-input" type="checkbox" id="print_slip_radio">
-            <label class="form-check-label" for="print_slip_radio">
-            စလစ်ထုတ်မည်
-            </label>
-
-            <br>
-            <br>
-
-            <button type="submit" class="btn btn-primary">Submit</button>
-            <a class="btn btn-info" href="{{ route('menugroups.index') }}">Back</a>
         </form>
         <hr>
         <button 

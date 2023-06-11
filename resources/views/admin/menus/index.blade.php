@@ -10,6 +10,7 @@
     <header class="header">
         <h2>Menus</h2>
         <h4>Create New Menu</h4>
+    </header>
         @if  (session('msg'))
         <p class="alert alert-success">
             {{ session('msg') }}
@@ -18,36 +19,39 @@
         <section>
             <form action="{{ route('menus.store') }}" method="post" enctype="multipart/form-data">
                 @csrf
-                {{-- menu name --}}
-                <div class="form-group">
-                    <label for="name">Menu Name</label>
-                    <input autofocus name="name" type="text" class="form-control" placeholder="Enter Menu Name" required>
-                    <p style="color:red">{{ $errors->first('name') }}</p>
+                <div class="col-md-4">
+                    {{-- menu name --}}
+                    <div class="form-group">
+                        <label for="name">Menu Name</label>
+                        <input autofocus name="name" type="text" class="form-control" placeholder="Enter Menu Name" required>
+                        <p style="color:red">{{ $errors->first('name') }}</p>
+                    </div>
+                    {{-- menu group select --}}
+                    <div class="form-group">
+                        <label for="name">Choose Menu Group</label>
+                        <select name="menu_group_id" id="" required class="form-control">
+                            <option>=====</option>
+                            @foreach ($menu_groups as $menu_group)
+                            <option value="{{$menu_group->id}}">{{$menu_group->name}}</option>
+                            @endforeach
+                        </select>
+                        <p style="color:red">{{ $errors->first('menu_group_id') }}</p>
+                    </div>
+                    {{-- menu price --}}
+                    <div class="form-group">
+                        <label for="name">Price</label>
+                        <input name="price" type="number" class="form-control" placeholder="Enter Price" required>
+                        <p style="color:red">{{ $errors->first('price') }}</p>
+                    </div>
+                    {{-- meny image --}}
+                    <div class="form-group">
+                        <label for="name">Upload Image</label>
+                        <input name="image" type="file" class="form-control">
+                        <p style="color:red">{{ $errors->first('image') }}</p>
+                    </div>
+                    <button class="btn btn-primary">Submit</button>
+
                 </div>
-                {{-- menu group select --}}
-                <div class="form-group">
-                    <label for="name">Choose Menu Group</label>
-                    <select name="menu_group_id" id="" required class="form-control">
-                        <option>=====</option>
-                        @foreach ($menu_groups as $menu_group)
-                        <option value="{{$menu_group->id}}">{{$menu_group->name}}</option>
-                        @endforeach
-                    </select>
-                    <p style="color:red">{{ $errors->first('menu_group_id') }}</p>
-                </div>
-                {{-- menu price --}}
-                <div class="form-group">
-                    <label for="name">Price</label>
-                    <input name="price" type="number" class="form-control" placeholder="Enter Price" required>
-                    <p style="color:red">{{ $errors->first('price') }}</p>
-                </div>
-                {{-- meny image --}}
-                <div class="form-group">
-                    <label for="name">Upload Image</label>
-                    <input name="image" type="file" class="form-control">
-                    <p style="color:red">{{ $errors->first('image') }}</p>
-                </div>
-                <button class="btn btn-primary">Submit</button>
             </form>
         </section>
 
@@ -86,5 +90,5 @@
                 </tbody>
             </table>
         </section>
-    </header>
+
 @endsection

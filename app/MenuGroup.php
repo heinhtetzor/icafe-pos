@@ -7,7 +7,7 @@ use Symfony\Component\CssSelector\XPath\Extension\FunctionExtension;
 
 class MenuGroup extends Model
 {
-    protected $fillable = ['name', 'print_slip', 'store_id'];
+    protected $fillable = ['name', 'print_slip', 'store_id', 'color'];
     public function menus () {
         return $this->hasMany('App\Menu');
     }

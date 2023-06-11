@@ -90,7 +90,7 @@
 <script>
 	(()=> {
 		const kitchenColor = "{{Auth()->guard('kitchen')->user()->color}}";
-		const kitchenAlert = new Audio('/sounds/kitchen-alert.wav');
+		const kitchenAlert = new Audio('/sounds/quick-chime.wav');
 		
 		const name = document.querySelector('#name');
 		name.style.color = getContrastYIQ(kitchenColor);

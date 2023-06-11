@@ -21,7 +21,7 @@
                         </div>
                         <div class="form-group">
                             <label for="passcode">🔐 Passcode</label>
-                            <input type="password" class="form-control" id="passcode-txt" autocomplete=off>
+                            <input type="password" class="form-control" id="passcode-txt" autocomplete="off">
                         </div>  
                     </div>                  
                 </div>
@@ -273,7 +273,7 @@
                     orderMenuId = e.target.dataset['id'];
                     document.querySelector('#cancel-modal-title').innerHTML = `Cancel ${e.target.dataset['menuName']} x ${e.target.dataset['menuQuantity']}`;
                     document.querySelector('#passcode-txt').value = "";
-                    document.querySelector('#cancel-quantity').value = "";
+                    document.querySelector('#cancel-quantity').value = "1";
                     passcodeModal.show();                    
                     const passcodeConfirmButton = document.querySelector('#passcode-confirm-btn');
 
