@@ -27,7 +27,7 @@ class ReportController extends Controller
 
     public function stockMenus (Request $request) 
     {
-
+        $store_id = Auth()->guard('admin_account')->user()->store_id;
         $fromTime = "";
         $toTime = "";
         if ($request->has('date')) {
@@ -44,8 +44,11 @@ class ReportController extends Controller
         if ($request->stockMenu) {
             $ms = $request->stockMenu;
         }        
-        $all_menus = StockMenu::with('menu')->get();
-        $all_menu_groups = MenuGroup::all();
+        // $all_menus = StockMenu::with('menu')->get();
+        $all_menus = StockMenu::whereHas('menu', function ($q) use ($store_id) {
+            $q->where('store_id', $store_id);
+        });
+        $all_menu_groups = MenuGroup::where('store_id',$store_id)->get();
 
         if ($request->has('menuGroup')) {            
             $results = ExpenseStockMenu::whereHas('stockMenu', function($q) use ($mgs) {
@@ -137,8 +140,9 @@ class ReportController extends Controller
             $is = $request->item;
         }
 
-        $all_items = Item::with('menu_group')->get();
-        $all_menu_groups = MenuGroup::all();
+        $store_id = Auth()->guard('admin_account')->user()->store_id;
+        $all_items = Item::where('store_id', $store_id)->with('menu_group')->get();
+        $all_menu_groups = MenuGroup::where('store_id', $store_id)->get();
 
         
         if ($request->has('menuGroup')) {
@@ -257,11 +261,12 @@ class ReportController extends Controller
         if ($request->waiter) {
             $ws = $request->waiter;
         }
-        
-        $all_menus = Menu::with('menu_group')->get();
-        $all_menu_groups = MenuGroup::all();
-        $all_tables = Table::all();
-        $all_waiters = Waiter::all();
+
+        $store_id = Auth()->guard('admin_account')->user()->store_id;
+        $all_menus = Menu::where('store_id', $store_id)->with('menu_group')->get();
+        $all_menu_groups = MenuGroup::where('store_id', $store_id)->get();
+        $all_tables = Table::where('store_id', $store_id)->get();
+        $all_waiters = Waiter::where('store_id', $store_id)->get();
 
         if ($request->has('menuGroup')) {
             $results = OrderMenu::whereHas('menu', function($q) use ($mgs) {
@@ -371,9 +376,9 @@ class ReportController extends Controller
             $toTime=Carbon::parse($to)->endOfDay();            
         }        
 
-
+        $store_id = Auth()->guard('admin_account')->user()->store_id;
         //get all menu groups by order name desc
-        $menu_groups = MenuGroup::orderby('name')->get();
+        $menu_groups = MenuGroup::where('store_id', $store_id)->orderby('name')->get();
         $menuGroupsWithSales = [];
         $menuGroupsWithExpenses = [];
 
@@ -383,6 +388,7 @@ class ReportController extends Controller
         ->join('orders', 'orders.id', '=', 'order_menus.order_id')                      
         ->selectRaw('menu_groups.id as id, menu_groups.name as name, SUM(order_menus.quantity) as quantity, SUM(order_menus.quantity*order_menus.price) as total')
         ->where('orders.status', '=', '1')
+        ->where('orders.store_id', '=', $store_id)
         ->whereBetween('orders.created_at', [$fromTime, $toTime])
         ->groupBy('menu_groups.id')
         ->get();  
@@ -393,6 +399,7 @@ class ReportController extends Controller
         ->join('expenses', 'expenses.id', '=', 'expense_items.expense_id')                      
         ->selectRaw('expense_items.is_general_item, menu_groups.id as id, menu_groups.name as name, SUM(expense_items.quantity) as quantity, SUM(expense_items.quantity*expense_items.cost) as total')
         ->where('expenses.status', '=', '1')
+        ->where('expenses.store_id', '=', $store_id)
         ->whereBetween('expenses.datetime', [$fromTime, $toTime])
         ->groupBy('expense_items.menu_group_id')
         ->get();
@@ -405,14 +412,16 @@ class ReportController extends Controller
         ->join('menu_groups', 'menu_groups.id', '=', 'menus.menu_group_id')
         ->selectRaw('menu_groups.id as id, menu_groups.name as name, SUM(expense_stock_menus.quantity) as quantity, SUM(expense_stock_menus.quantity*expense_stock_menus.cost) as total')
         ->where('expenses.status', '=', '1')
+        ->where('expenses.store_id', '=', $store_id)
         ->whereBetween('expenses.datetime', [$fromTime, $toTime])
         ->groupBy('menu_groups.id')
         ->get();        
         
 
-        $generalExpenses = ExpenseItem::whereHas('expense', function ($q) use ($fromTime, $toTime) {
+        $generalExpenses = ExpenseItem::whereHas('expense', function ($q) use ($fromTime, $toTime, $store_id) {
             $q->whereBetween('datetime', [$fromTime, $toTime]);
             $q->where('status', '1');
+            $q->where('store_id', $store_id);
         })
         ->selectRaw('is_general_item, SUM(quantity) as quantity, SUM(quantity*cost) as total')
         ->where('is_general_item', '1')
@@ -448,12 +457,14 @@ class ReportController extends Controller
             $dailySales[$day->format("d-M-Y")] = 0;
         }
 
+        $store_id = Auth()->guard('admin_account')->user()->store_id;
 
         $orderMenus = DB::table('order_menus')
         ->join('orders', 'orders.id', '=', 'order_menus.order_id')
         ->selectRaw('DATE(orders.created_at) as date, SUM(quantity*price) as total')
         ->whereBetween('orders.created_at', [$fromTime, $toTime])
         ->where('orders.status', '1')
+        ->where('store_id', $store_id)
         ->groupBy('date')
         ->get();
         

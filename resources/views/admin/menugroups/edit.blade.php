@@ -8,6 +8,7 @@
             @if (session('error'))
             <p class="alert alert-danger">{{ session('error') }}</p>
             @endif
+            <input name="store_id" type="hidden" value="{{Auth::guard('admin_account')->user()->store_id}}"/>
             <div class="form-group">
                 <label for="name">Menu အုပ်စု အမည်</label>
                 <input value="{{$menu_group->name}}" name="name" type="text" class="form-control" placeholder="Enter Table Name" required>

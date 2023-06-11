@@ -31,6 +31,7 @@ class OrderController extends Controller
     function submitOrder (Request $request, $tableId, $waiterId) {        
         try {
             DB::beginTransaction();
+            $store_id = Auth()->guard('admin_account')->user()->store_id ?? Auth()->guard('waiter')->user()->store_id;
             //early return if orderMenus is empty
             if(count($request->get('orderMenus'))===0) {
                 return ["isOk"=>FALSE];
@@ -43,7 +44,8 @@ class OrderController extends Controller
                 $orderData = [
                     'status'=>0,
                     'table_id'=>$tableId,
-                    'invoice_no'=>Order::generateInvoiceNumber()
+                    'invoice_no'=>Order::generateInvoiceNumber(),
+                    'store_id'=>$store_id
                 ];
             
                 $order = Order::create($orderData);
@@ -207,14 +209,16 @@ class OrderController extends Controller
             $fromTime=now()->startOfDay();
             $toTime=now()->endOfDay();
             $isToday=TRUE;
-        }        
+        }
 
+        $store_id = Auth()->guard('admin_account')->user()->store_id;
         $orderMenuGroups=DB::table('order_menus')
                       ->join('menus', 'order_menus.menu_id', '=', 'menus.id')
                       ->join('menu_groups', 'menus.menu_group_id', '=', 'menu_groups.id')
                       ->join('orders', 'orders.id', '=', 'order_menus.order_id')                      
                       ->selectRaw('menu_groups.id as id, menu_groups.name as name, SUM(order_menus.quantity) as quantity, SUM(order_menus.quantity*order_menus.price) as total')
-                      ->where('orders.status', '=', '1')                      
+                      ->where('orders.status', '=', '1')
+                      ->where('orders.store_id', $store_id)
                       ->whereBetween('orders.created_at', [$fromTime, $toTime])
                       ->groupBy('menu_groups.id')
                       ->get();  

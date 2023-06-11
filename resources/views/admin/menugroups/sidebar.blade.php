@@ -4,6 +4,7 @@
         <li class="list-item">
             <form action="{{ route('menugroups.store') }}" method="post" class="list-item-add-new">
                 @csrf                
+                <input name="store_id" type="hidden" value="{{Auth::guard('admin_account')->user()->store_id}}"/>
                 <input id="name" autofocus name="name" type="text" class="form-control" placeholder="Enter Menu Group Name" required>
                 {{-- <p style="color:red">{{ $errors->first('name') }}</p> --}}                
                 <button id="btn" class="btn btn-primary" type="submit">Add</button>

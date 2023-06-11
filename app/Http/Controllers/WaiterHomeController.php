@@ -54,8 +54,10 @@ class WaiterHomeController extends Controller
     }
 
     //home aka Tables list
-    function home() {        
-        $existing_express = Order::where('created_at', '>=', Carbon::today()->startOfDay())
+    function home() {       
+        $store_id = Auth()->guard('waiter')->user()->store_id; 
+        $existing_express = Order::where('store_id', $store_id)
+        ->where('created_at', '>=', Carbon::today()->startOfDay())
         ->where('table_id', 'express')
         ->where('status', 0)
         ->first();
@@ -67,8 +69,9 @@ class WaiterHomeController extends Controller
     //POS view for waiter
     // $id = tableId
     function pos($id) {
-        $menus=Menu::getActiveMenus();
-        $menu_groups=MenuGroup::getMenuGroups();
+        $store_id = Auth()->guard('waiter')->user()->store_id;
+        $menus=Menu::getActiveMenus($store_id);
+        $menu_groups=MenuGroup::getMenuGroups($store_id);
         $table=Table::findorfail($id);
         $currentOrder=$this->getActiveOrder($id);
         $order_menus=Array();
@@ -97,7 +100,8 @@ class WaiterHomeController extends Controller
     function orders($orderId) {
         $order=Order::findorfail($orderId);
         $orderMenus=$order->order_menus;
-        $passcode=Setting::getPasscode();
+        $store_id = Auth()->guard('admin_account')->user()->store_id;
+        $passcode=Setting::getPasscode($store_id);
         return view("waiter.orders", [
             'orderMenus'=>$orderMenus,
             'passcode'=>$passcode

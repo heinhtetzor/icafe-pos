@@ -37,7 +37,8 @@ class TableGroupController extends Controller
     public function store(Request $request)
     {
         TableGroup::create([
-            "name" => $request->name
+            "name" => $request->name,
+            "store_id" => $request->store_id
         ]);
         return redirect('/admin/tables');
     }

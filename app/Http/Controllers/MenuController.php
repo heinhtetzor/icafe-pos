@@ -20,8 +20,9 @@ class MenuController extends Controller
      */
     public function index()
     {
-        $menu_groups = MenuGroup::orderBy('name')->get();
-        $menus = Menu::orderBy('name')->get();
+        $store_id = Auth()->guard('admin_account')->user()->store_id;
+        $menu_groups = MenuGroup::where('store_id', $store_id)->orderBy('name')->get();
+        $menus = Menu::where('store_id', $store_id)->orderBy('name')->get();
         return view('admin.menus.index', [
             'menus' => $menus,
             'menu_groups' => $menu_groups
@@ -92,7 +93,8 @@ class MenuController extends Controller
      */
     public function edit($id)
     {
-        $menu_groups = MenuGroup::orderBy('name')->get();
+        $store_id = Auth()->guard('admin_account')->user()->store_id;
+        $menu_groups = MenuGroup::where('store_id', $store_id)->orderBy('name')->get();
         $menu = Menu::findorfail($id);
         return view('admin.menus.edit', [
             'menu' => $menu,

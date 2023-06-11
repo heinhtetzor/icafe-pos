@@ -14,7 +14,12 @@ class StockMenuController extends Controller
      */
     public function index(Request $request)
     {
-        $stock_menus = StockMenu::where('status', StockMenu::STATUS_ACTIVE);
+        $store_id = Auth()->guard('admin_account')->user()->store_id;
+        $stock_menus = StockMenu::whereHas('menu', function ($q) use ($store_id) {
+                            $q->where('store_id', $store_id);
+                        })
+                        ->where('status', StockMenu::STATUS_ACTIVE);
+
         $stock_menus->when(!is_null ($request->sortByBalance), function ($q) use ($request) {
             $q->orderBy('balance', $request->sortByBalance);
         });

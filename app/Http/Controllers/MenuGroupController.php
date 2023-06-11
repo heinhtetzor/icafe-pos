@@ -17,8 +17,9 @@ class MenuGroupController extends Controller
      */
     public function index()
     {
-        $menu_groups = MenuGroup::orderBy('name')->get();
-        $menus = Menu::all();
+        $store_id = Auth()->guard('admin_account')->user()->store_id;
+        $menu_groups = MenuGroup::where('store_id', $store_id)->orderBy('name')->get();
+        $menus = Menu::where('store_id', $store_id)->get();
         return view('admin.menugroups.index', [
             'menu_groups' => $menu_groups,
             'menus' => $menus,
@@ -57,7 +58,8 @@ class MenuGroupController extends Controller
     public function show($id)
     {
         $menu_group = MenuGroup::findorfail($id);
-        $menu_groups = MenuGroup::orderBy('created_at', 'ASC')->get();
+        $store_id = Auth()->guard('admin_account')->user()->store_id;
+        $menu_groups = MenuGroup::where('store_id', $store_id)->orderBy('created_at', 'ASC')->get();
         $menus = Menu::where('menu_group_id', $id)->get();
         return view('admin.menugroups.show', [
             'menus' => $menus,
@@ -90,7 +92,6 @@ class MenuGroupController extends Controller
      */
     public function update(MenuGroupRequest $request, $id)
     {        
-        // dd($request->all());
 
         if (empty($request->print_slip))
         {

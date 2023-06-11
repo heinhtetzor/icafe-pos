@@ -15,6 +15,7 @@
     <section>
         <form action="{{ route('items.store') }}" method="POST">
             @csrf
+            <input name="store_id" type="hidden" value="{{Auth::guard('admin_account')->user()->store_id}}"/>
             <div class="row">
                 <div class="col-md-3">
                     <div class="form-group">

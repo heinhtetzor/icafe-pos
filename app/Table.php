@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Table extends Model
 {
-    const EXPRESS = 0;
+    const EXPRESS = 99999;
 
     public function rules() {
         return [
@@ -14,13 +14,16 @@ class Table extends Model
             'table_group_id' => 'required'
         ];
     }
-    protected $fillable = ['name', 'table_group_id', 'status', 'is_processing'];
+    protected $fillable = ['name', 'table_group_id', 'status', 'is_processing', 'store_id'];
     
     public function table_status () {
         return $this->hasOne('App\TableStatus');
     }
     public static function getTablesAsc () {
-        return Table::orderBy('name')->get();
+        $store_id = Auth()->guard('admin_account')->user()->store_id;
+        return Table::where('store_id', $store_id)
+        ->orderBy('name')
+        ->get();
     }
 
     public function setIsProcessing ($isProcessing) {

@@ -8,6 +8,7 @@
         <form action="{{ route('kitchens.update', $kitchen->id) }}" method="post">
             @csrf
             @method('put')
+            <input name="store_id" type="hidden" value="{{Auth::guard('admin_account')->user()->store_id}}"/>
             <div class="form-group">
                 <label for="name">Kitchen Name</label>
                 <input value="{{$kitchen->name}}" name="name" type="text" class="form-control" placeholder="Enter Waiter Name" required>

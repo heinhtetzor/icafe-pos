@@ -13,6 +13,7 @@
         <section>
             <form action="{{ route('waiters.store') }}" method="post">
                 @csrf
+                <input name="store_id" type="hidden" value="{{Auth::guard('admin_account')->user()->store_id}}"/>
                 <div class="form-group">
                     <label for="name">Waiter Name</label>
                     <input autofocus name="name" type="text" class="form-control" placeholder="Enter Waiter Name" required>

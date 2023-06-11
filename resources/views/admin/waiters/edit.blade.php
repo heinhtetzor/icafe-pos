@@ -8,6 +8,7 @@
         <form action="{{ route('waiters.update', $waiter->id) }}" method="post">
             @csrf
             @method('put')
+            <input name="store_id" type="hidden" value="{{Auth::guard('admin_account')->user()->store_id}}"/>
             <div class="form-group">
                 <label for="name">Waiter Name</label>
                 <input value="{{$waiter->name}}" name="name" type="text" class="form-control" placeholder="Enter Waiter Name" required>

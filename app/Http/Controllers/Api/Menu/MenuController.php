@@ -12,20 +12,27 @@ class MenuController extends Controller
 {
     public function index ()
     {
-        $menus = Menu::getActiveMenus();
+        $store_id = Auth()->guard('admin_account')->user()->store_id;
+        $menus = Menu::getActiveMenus($store_id);
         return response()->json([
             "data" => $menus,
         ]);
     }
 
     public function getMenusByMenuGroup () {
-        $menugroups = MenuGroup::with('menus')->get();
+        $store_id = Auth()->guard('admin_account')->user()->store_id;
+        $menugroups = MenuGroup::where('store_id', $store_id)->with('menus')->get();
         return $menugroups->toJson();
     }
 
     public function getStockMenus (Request $request)
     {
-        $stock_menus = StockMenu::with('menu')->get();
+        $store_id = Auth()->guard('admin_account')->user()->store_id;
+        $stock_menus = StockMenu::whereHas('menu', function ($q) use ($store_id) {
+            $q->where('store_id', $store_id);
+        })
+        ->with('menu')
+        ->get();
         return response()->json([
             "stock_menus" => $stock_menus
         ]);     

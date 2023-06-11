@@ -14,6 +14,7 @@
         <section>
             <form action="{{ route('tablegroups.store') }}" method="post">
                 @csrf
+                <input name="store_id" type="hidden" value="{{Auth::guard('admin_account')->user()->store_id}}"/>
                 <div class="form-group">
                     <label for="name">အမည်</label>
                     <input type="text" autofocus name="name" class="form-control" placeholder="Enter Table Group Name" required>

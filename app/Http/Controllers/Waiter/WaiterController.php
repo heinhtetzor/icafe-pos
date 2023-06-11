@@ -17,7 +17,10 @@ class WaiterController extends Controller
         ]);
     }
     function menus ($tableId) {
-        $menuGroups = MenuGroup::with('menus')->get();
+        $store_id = Auth()->guard('admin_account')->user()->store_id;
+        $menuGroups = MenuGroup::where('store_id', $store_id)
+        ->with('menus')
+        ->get();
         return view('client.waiter.menus', [
             'menuGroups' => $menuGroups
         ]);

@@ -32,8 +32,8 @@ class PrintController extends Controller
     public function printMenuReport (Request $request) 
     {
         try {
-            // dd("$request->lines");
-            PrintService::printOrderMenuReport($request->lines);
+            $store_id = Auth()->guard('admin_account')->user()->store_id;
+            PrintService::printOrderMenuReport($request->lines, $store_id);
             return ["message" => "printed"];
         }
         catch (\Exception $e) {

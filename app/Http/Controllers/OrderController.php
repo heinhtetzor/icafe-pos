@@ -28,12 +28,14 @@ class OrderController extends Controller
     }
     //$id = orderId
     public function day(Request $request) {
+        $store_id = Auth()->guard('admin_account')->user()->store_id;
         if ($request->has('invoiceNo')) {
-            $order = Order::where('invoice_no', $request->invoiceNo)->first();  
+            $order = Order::where('store_id', $store_id)
+            ->where('invoice_no', $request->invoiceNo)->first();  
             if (is_null($order)) {
                 return redirect()->back()->with('msg', 'မရှိပါ');
             }
-            return $this->show($order->id);
+            return $this->show($request, $order->id);
         }
 
 
@@ -54,8 +56,9 @@ class OrderController extends Controller
         }
         // dd($fromTime, $toTime);
         //get today orders
-        $orders=Order::orderBy('created_at', 'DESC')
+        $orders=Order::where('store_id', $store_id)
                 ->whereBetween('created_at', [$fromTime, $toTime])
+                ->orderBy('created_at', 'DESC')
                 ->simplePaginate(20);
 
         return view('admin.orders.day', [
@@ -106,7 +109,8 @@ class OrderController extends Controller
         if ($request->edit == "true") {
             $is_edit_mode = true;
         }
-        $passcode = Setting::getPasscode();
+        $store_id = Auth()->guard('admin_account')->user()->store_id;
+        $passcode = Setting::getPasscode($store_id);
         
         $order=Order::findorfail($id);
         $orderMenus=$this->getOrderMenusGrouped($order);
@@ -121,7 +125,8 @@ class OrderController extends Controller
             });
         }
         
-        $waiters = Waiter::all();
+        $store_id = Auth()->guard('admin_account')->user()->store_id;
+        $waiters = Waiter::where('store_id', $store_id)->get();
         
         return view('admin.orders.show', [
             'order'=>$order,

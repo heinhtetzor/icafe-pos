@@ -26,11 +26,11 @@ class MenuGroupRequest extends FormRequest
         switch ($this->method()) {
             case 'POST':
                 return [
-                    'name' => 'required|unique:menu_groups'
+                    'name' => 'required'
                 ];
             case 'PUT':
                 return [
-                    'name' => 'required|unique:menu_groups,name,' . $this->route('menugroup')
+                    'name' => 'required'
                 ];
             default: break;
         }

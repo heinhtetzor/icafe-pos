@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Item extends Model
 {
     protected $fillable = [
-        "name", "cost", "is_general_item", "menu_group_id"
+        "name", "cost", "is_general_item", "menu_group_id", "store_id"
     ];
 
     public function menu_group ()

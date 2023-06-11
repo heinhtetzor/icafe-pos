@@ -8,7 +8,8 @@ class TableGroup extends Model
 {
     protected $fillable = [
         "name",
-        "status"
+        "status",
+        "store_id",
     ];
 
     public function tables() 

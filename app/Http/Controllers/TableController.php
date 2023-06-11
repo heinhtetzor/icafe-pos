@@ -18,8 +18,9 @@ class TableController extends Controller
      */
     public function index()
     {
-        $tables = Table::orderBy('name')->get();
-        $tables_groups = TableGroup::all();
+        $store_id = Auth()->guard('admin_account')->user()->store_id;
+        $tables = Table::where('store_id', $store_id)->orderBy('name')->get();
+        $tables_groups = TableGroup::where('store_id', $store_id)->get();
         return view('admin.tables.index', [
             'tables' => $tables,
             'table_groups' => $tables_groups
@@ -48,7 +49,8 @@ class TableController extends Controller
         // we also create new TableStatus record too
         $table = Table::create($request->all());
         TableStatus::create([
-            'table_id' => $table->id
+            'table_id' => $table->id,
+            "store_id" => $request->store_id
         ]);
         return redirect()->back()->with('msg', 'Table successfully created.');
     }

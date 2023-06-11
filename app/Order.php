@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 class Order extends Model
 {
-    protected $fillable = ['status', 'table_id', 'waiter_id', 'invoice_no', 'total'];
+    protected $fillable = ['status', 'table_id', 'waiter_id', 'invoice_no', 'total', 'store_id'];
 
     protected $casts = [        
         "delete_logs" => 'array'
@@ -29,9 +29,10 @@ class Order extends Model
     public function waiter() {
         return $this->belongsTo('App\Waiter');
     }
-    public static function getExpressOrders ()
+    public static function getExpressOrders ($store_id)
     {
         $express_orders = Order::where('table_id', Table::EXPRESS)
+        ->where('store_id', $store_id)
         ->orderby('created_at', 'DESC')
         ->simplePaginate(10);
         return $express_orders;
@@ -41,7 +42,11 @@ class Order extends Model
         //get today datevap
         $today = Carbon::today();
         $today_string = $today->format('Y-m-d');
-        $latest_order = Order::whereDate('created_at', $today)->orderby('created_at', 'DESC')->first();
+        $store_id = Auth()->guard('admin_account')->user()->store_id ?? Auth()->guard('waiter')->user()->store_id;
+        $latest_order = Order::where('store_id', $store_id)
+                        ->whereDate('created_at', $today)
+                        ->orderby('created_at', 'DESC')
+                        ->first();
         if (!empty($latest_order)) {
             $arr = explode("_", $latest_order->invoice_no);
             $number = intval($arr[1]) + 1;

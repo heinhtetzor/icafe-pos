@@ -8,6 +8,7 @@
         <form action="{{ route('admin_accounts.update', $admin_account->id) }}" method="post">
             @csrf
             @method('put')
+            <input name="store_id" type="hidden" value="{{Auth::guard('admin_account')->user()->store_id}}"/>
             <div class="form-group">
                 <label for="name">Username</label>
                 <input value="{{$admin_account->username}}" name="username" type="text" class="form-control" placeholder="Enter Username" required>

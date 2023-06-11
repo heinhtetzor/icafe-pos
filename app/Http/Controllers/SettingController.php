@@ -26,7 +26,8 @@ class SettingController extends Controller
     }
     public function shop ()
     {
-        $settings = Setting::all();
+        $store_id = Auth()->guard('admin_account')->user()->store_id;
+        $settings = Setting::where('store_id', $store_id)->get();
         $shop_name = "";
         $shop_line_1 = "";
         $shop_line_2 = "";
@@ -71,7 +72,8 @@ class SettingController extends Controller
 
     public function savePasscode (Request $request)
     {
-        $old_passcode = Setting::getPasscode();
+        $store_id = Auth()->guard('admin_account')->user()->store_id;
+        $old_passcode = Setting::getPasscode($store_id);
         if ($request->old_passcode_value !== $old_passcode) {
             return redirect()->back()->with('error', "Wrong old passcode.");
         }
@@ -89,32 +91,38 @@ class SettingController extends Controller
 
     public function saveShop (Request $request)
     {
+        $store_id = Auth()->guard('admin_account')->user()->store_id;
         Setting::updateOrCreate([
-            "key" => "shop_name"
+            "key" => "shop_name",
+            "store_id" => $store_id
         ], [
         	"value" => $request->shop_name
         ]);
 
         Setting::updateOrCreate([
-            "key" => "shop_line_1"
+            "key" => "shop_line_1",
+            "store_id" => $store_id
         ], [
         	"value" => $request->shop_line_1
         ]);
 
         Setting::updateOrCreate([
-            "key" => "shop_line_2"
+            "key" => "shop_line_2",
+            "store_id" => $store_id
         ], [
         	"value" => $request->shop_line_2
         ]);
 
         Setting::updateOrCreate([
-            "key" => "printer_connector"
+            "key" => "printer_connector",
+            "store_id" => $store_id
         ], [
             "value" => $request->printer_connector
         ]);
 
         Setting::updateOrCreate([
-            "key" => "bill_footer_text"
+            "key" => "bill_footer_text",
+            "store_id" => $store_id
         ], [
             "value" => $request->bill_footer_text
         ]);
@@ -124,8 +132,9 @@ class SettingController extends Controller
 
     public function getAll ()
     {
+        $store_id = Auth()->guard('admin_account')->user()->store_id;
     	return response()->json([
-    		"settings" => Setting::all()
+    		"settings" => Setting::where('store_id', $store_id)->get()
     	]);
     }
 }

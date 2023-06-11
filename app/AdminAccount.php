@@ -11,14 +11,24 @@ class AdminAccount extends Authenticatable
 {
     use Notifiable;
     protected $fillable = [
-        "username", "password"
+        "username", "password", "store_id"
     ];
     protected $hidden = [
         "password"
     ];
+    protected $appends = ['store_name'];
 
     public function setPasswordAttribute($value) {
         $this->attributes['password'] = Hash::make($value);
+    }
+
+
+    public function getStoreNameAttribute() {
+        return $this->store->name ?? "";
+    }
+
+    public function store () {
+        return $this->belongsTo(Store::class);
     }
     
 }

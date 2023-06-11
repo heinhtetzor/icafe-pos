@@ -15,6 +15,7 @@
         <form action="{{ route('items.update', $item->id) }}" method="POST">
             @csrf
             @method('PUT')
+            <input name="store_id" type="hidden" value="{{Auth::guard('admin_account')->user()->store_id}}"/>
             <div class="form-group">
                 <label for="name">အမျိုးအမည်</label>
                 <input value="{{$item->name}}" autofocus name="name" type="text" class="form-control" placeholder="အမည် ထည့်သွင်းပါ" required>

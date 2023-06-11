@@ -10,7 +10,8 @@ class MenuGroupController extends Controller
 {
     public function index()
     {
-        $menu_groups = MenuGroup::orderBy('name')->get();
+        $store_id = Auth()->guard('admin_account')->user()->store_id;
+        $menu_groups = MenuGroup::where('store_id', $store_id)->orderBy('name')->get();
         return response()->json([
             "data" => $menu_groups,
         ]);

@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Hash;
 class Kitchen extends Authenticatable
 {
 	use Notifiable;
-    protected $fillable=['name', 'color', 'username', 'password', 'panel_size', 'font_size'];
+    protected $fillable=['name', 'color', 'username', 'password', 'panel_size', 'font_size', 'store_id'];
     protected $hidden=['password'];
 
 	public function setPasswordAttribute($value) {

@@ -15,7 +15,8 @@ class Expense extends Model
         "type",
         "datetime",
         "remarks",
-        "user_id"
+        "user_id",
+        "store_id",
     ];
  
     protected $casts = [
@@ -41,7 +42,10 @@ class Expense extends Model
         //get today datevap
         $today = Carbon::today()->today();
         $today_string = $today->format('Y-m-d');
-        $latest_order = Expense::whereDate('datetime', $today)->orderby('datetime', 'DESC')->first();        
+        $store_id = Auth()->guard('admin_account')->user()->store_id;
+        $latest_order = Expense::where('store_id', $store_id)
+                        ->whereDate('datetime', $today)->orderby('datetime', 'DESC')
+                        ->first();
 
         if (!empty($latest_order)) {
             // dd($today_string, $latest_order->invoice_no);

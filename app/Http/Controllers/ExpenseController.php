@@ -15,13 +15,15 @@ use Illuminate\Support\Facades\URL;
 class ExpenseController extends Controller
 {
     public function index (Request $request)
-    {        
+    {
+        $store_id = Auth()->guard('admin_account')->user()->store_id;        
         if ($request->has('invoiceNo')) {
-            $expense = Expense::where('invoice_no', $request->invoiceNo)->first();  
+            $expense = Expense::where('store_id', $store_id)
+            ->where('invoice_no', $request->invoiceNo)->first();  
             if (is_null($expense)) {
                 return redirect()->back()->with('error', 'မရှိပါ');
             }
-            return $this->show($expense->id);
+            return $this->show($request, $expense->id);
         }
 
         $fromTime = null;
@@ -41,8 +43,9 @@ class ExpenseController extends Controller
         }
         // dd($fromTime, $toTime);
         //get today orders
-        $expenses=Expense::orderBy('datetime', 'DESC')
+        $expenses=Expense::where('store_id', $store_id)
                 ->whereBetween('datetime', [$fromTime, $toTime])
+                ->orderBy('datetime', 'DESC')
                 ->simplePaginate(20);
         return view('admin.expenses.index', [
             'expenses' => $expenses,
@@ -54,7 +57,10 @@ class ExpenseController extends Controller
 
     public function create ()
     {                        
-        $expenses = Expense::orderby('datetime', 'DESC')->simplePaginate(10);
+        $store_id = Auth()->guard('admin_account')->user()->store_id;
+        $expenses = Expense::where('store_id', $store_id)
+        ->orderby('datetime', 'DESC')
+        ->simplePaginate(10);
         return view('admin.expenses.create', [            
             "invoice_no" => Expense::generateInvoiceNumber(),
             "expenses" => $expenses
@@ -68,17 +74,24 @@ class ExpenseController extends Controller
         {
             return redirect(route('expenses.show', $expense->id));
         }
+
+        $store_id = Auth()->guard('admin_account')->user()->store_id;
         if ($expense->type == Expense::TYPE_NON_STOCK) {
-            $items = Item::orderby('name')->get();
+            $items = Item::where('store_id', $store_id)
+                    ->orderby('name')
+                    ->get();
         }
         if ($expense->type == Expense::TYPE_STOCK) {
-            $items = StockMenu::whereHas('menu', function ($q) {
+            $items = StockMenu::whereHas('menu', function ($q) use ($store_id) {
+                $q->where('store_id', $store_id);
                 $q->orderBy('name');
             })
             ->where('status', StockMenu::STATUS_ACTIVE)
             ->get();   
         }
-        $menu_groups = MenuGroup::orderBy('name')->get();
+        $menu_groups = MenuGroup::where('store_id', $store_id)
+                        ->orderBy('name')
+                        ->get();
         return view('admin.expenses.create', [
             "expense" => $expense,
             "items" => $items,
@@ -88,6 +101,7 @@ class ExpenseController extends Controller
 
     public function store (Request $request)
     {
+        $store_id = Auth()->guard('admin_account')->user()->store_id;
         $expense = Expense::create([
             "invoice_no" => Expense::generateInvoiceNumber(),
             "datetime" => $request->datetime,
@@ -95,7 +109,8 @@ class ExpenseController extends Controller
             "remarks" => $request->remarks,
             "type" => (int) $request->type,
             "status" => Expense::DRAFT,            
-            "user_id" => Auth()->guard('admin_account')->user()->id
+            "user_id" => Auth()->guard('admin_account')->user()->id,
+            "store_id" => $store_id
         ]);
         return $this->edit($expense->id);
     }
@@ -110,7 +125,9 @@ class ExpenseController extends Controller
         if ($request->from_search_result) {
             $from_search_result = true;
         }
-        $passcode = Setting::getPasscode();
+
+        $store_id = Auth()->guard('admin_account')->user()->store_id;
+        $passcode = Setting::getPasscode($store_id);
 
         $expense = Expense::findorfail($id);
 

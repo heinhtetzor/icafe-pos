@@ -9,7 +9,8 @@ use App\Waiter;
 class WaiterController extends Controller
 {
     public function index() {
-        $waiters = Waiter::all();
+        $store_id = Auth()->guard('admin_account')->user()->store_id;
+        $waiters = Waiter::where('store_id', $store_id)->get();
         return $waiters->toJson();
     }
 }

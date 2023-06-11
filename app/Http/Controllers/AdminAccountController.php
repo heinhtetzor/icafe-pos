@@ -17,7 +17,10 @@ class AdminAccountController extends Controller
      */
     public function index()
     {
-        $admin_accounts = AdminAccount::orderBy('username')->get();
+        $store_id = Auth()->guard('admin_account')->user()->store_id;
+        $admin_accounts = AdminAccount::where('store_id', $store_id)
+                        ->orderBy('username')
+                        ->get();
         return view('admin.admin_accounts.index', [
             'admin_accounts' => $admin_accounts
         ]);

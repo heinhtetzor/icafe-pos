@@ -8,6 +8,7 @@
         <form action="{{ route('tables.update', $table->id) }}" method="post">
             @csrf
             @method('put')
+            <input name="store_id" type="hidden" value="{{Auth::guard('admin_account')->user()->store_id}}"/>
             <div class="form-group">
                 <label for="name">Table Name or Table No</label>
                 <input value="{{$table->name}}" name="name" type="text" class="form-control" placeholder="Enter Table Name" required>

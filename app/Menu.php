@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Menu extends Model
 {
     protected $fillable = [
-        'name', 'code', 'price', 'image', 'status', 'created_at', 'updated_at', 'menu_group_id'
+        'name', 'code', 'price', 'image', 'status', 'created_at', 'updated_at', 'menu_group_id', 'store_id'
     ];
     public function menu_group () {
         return $this->belongsTo('App\MenuGroup');
@@ -20,11 +20,14 @@ class Menu extends Model
     {
         return $this->hasOne('App\StockMenu')->where('status', StockMenu::STATUS_ACTIVE);
     }
-    public static function getActiveMenus() {
-        return Menu::where('status', 1)->with('stock_menu')->get();
+    public static function getActiveMenus($store_id) {
+        return Menu::where('status', 1)
+        ->where('store_id', $store_id)
+        ->with('stock_menu')->get();
     }
     
     //dangerous
+    //need to optimise
     public static function getActiveMenusOrderByPopularity() 
     {
         return Menu::with('order_menu')

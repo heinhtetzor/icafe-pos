@@ -47,22 +47,25 @@ class AdminHomeController extends Controller
             return 'username';
         }
 
-
+        //Admin Table List
         //reusing waiter views
         public function tables()
         {
-            $table_groups = TableGroup::all();
+            $store_id = Auth()->guard('admin_account')->user()->store_id;
+            $table_groups = TableGroup::where('store_id', $store_id)->get();
             return view('waiter.index', [
                 "table_groups" => $table_groups
             ]);
         }
 
+        //Admin Table POS view
         public function pos($id)
         {
             // $menus=Menu::getActiveMenus();
-            $menus=Menu::getActiveMenus();
-            $menu_groups=MenuGroup::getMenuGroups();
-            $waiters=Waiter::all();
+            $store_id = Auth()->guard('admin_account')->user()->store_id;
+            $menus=Menu::getActiveMenus($store_id);
+            $menu_groups=MenuGroup::getMenuGroups($store_id);
+            $waiters=Waiter::where('store_id', $store_id)->get();
             $table=Table::findorfail($id);
             $currentOrder=$this->getActiveOrder($id);
             $order_menus=Array();
@@ -88,8 +91,9 @@ class AdminHomeController extends Controller
             ]);
         }
         function orders($orderId) {
+            $store_id = Auth()->guard('admin_account')->user()->store_id;
             $order=Order::findorfail($orderId);
-            $passcode=Setting::getPasscode();
+            $passcode=Setting::getPasscode($store_id);
             $orderMenus=$order->order_menus;
             return view("waiter.orders", [
                 'orderMenus'=>$orderMenus,

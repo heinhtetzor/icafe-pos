@@ -26,12 +26,12 @@ class ItemRequest extends FormRequest
         switch ($this->method()) {
             case 'POST' :
                 return [
-                    'name' => 'required|unique:items',
+                    'name' => 'required',
                     'cost' => 'required|required|regex:/^\d+(\.\d{1,2})?$/',                                        
                 ];
             case 'PUT' :
                 return [
-                    'name' => 'required|unique:items,name,'.$this->route('item'),
+                    'name' => 'required',
                     'cost' => 'required|required|regex:/^\d+(\.\d{1,2})?$/',                    
                 ];
             default: break;

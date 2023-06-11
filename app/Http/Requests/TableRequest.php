@@ -26,11 +26,11 @@ class TableRequest extends FormRequest
         switch ($this->method()) {
             case 'POST' :
                 return [
-                    'name' => 'required|unique:tables'
+                    'name' => 'required'
                 ];
             case 'PUT':
                 return [
-                    'name' => 'required|unique:tables,name,' . $this->route('table')
+                    'name' => 'required'
                 ];
 
             default: break;

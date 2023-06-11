@@ -25,6 +25,7 @@
                         <section>
                             <form class="inline-form" action="{{ route('menus.store') }}" method="POST" enctype="multipart/form-data">
                                 @csrf
+                                <input name="store_id" type="hidden" value="{{Auth::guard('admin_account')->user()->store_id}}"/>
                                 <input type="hidden" name="menu_group_id" value="{{$menu_group->id}}">
                                 <div class="form-group">
                                     <label for="name">အမျိုးအမည်</label>

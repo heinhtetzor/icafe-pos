@@ -16,6 +16,7 @@
         <section>
             <form action="{{ route('kitchens.store') }}" method="post">
                 @csrf
+                <input name="store_id" type="hidden" value="{{Auth::guard('admin_account')->user()->store_id}}"/>
                 <input type="hidden" name="panel_size" value="300">
                 <input type="hidden" name="font_size" value=16>
                 <div class="form-group">

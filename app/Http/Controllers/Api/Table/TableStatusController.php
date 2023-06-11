@@ -10,7 +10,8 @@ class TableStatusController extends Controller
 {
     public function index (Request $request)
     {
-        $groups = TableGroup::with('tables', 'tables.table_status')->get();
+        $store_id = Auth()->guard('admin_account')->user()->store_id ?? Auth()->guard('waiter')->user()->store_id;
+        $groups = TableGroup::where('store_id', $store_id)->with('tables', 'tables.table_status')->get();
         return response()->json($groups);
     }
 

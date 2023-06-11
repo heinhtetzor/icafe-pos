@@ -11,7 +11,7 @@ use Auth;
 class Waiter extends Authenticatable
 {
     use Notifiable;
-    protected $fillable = ['name', 'username', 'password', 'status'];
+    protected $fillable = ['name', 'username', 'password', 'status', 'store_id'];
     protected $hidden = ['password'];
 
     public function setPasswordAttribute($value) {

@@ -26,15 +26,15 @@ class KitchenRequest extends FormRequest
         switch ($this->method()) {
             case 'POST' :
                 return [
-                    'name' => 'required|unique:kitchens',
-                    'username' => 'required|unique:kitchens',
+                    'name' => 'required',
+                    'username' => 'required',
                     'password' => 'required',
                     'menu_groups' => 'required'
                 ];
             case 'PUT' :
                 return [
-                    'name' => 'required|unique:kitchens,name,'.$this->route('kitchen'),
-                    'username' => 'required|unique:kitchens,username,'.$this->route('kitchen'),
+                    'name' => 'required,'.$this->route('kitchen'),
+                    'username' => 'required,username,'.$this->route('kitchen'),
                 ];
             default: break;
         }

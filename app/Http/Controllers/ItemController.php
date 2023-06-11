@@ -17,8 +17,9 @@ class ItemController extends Controller
      */
     public function index()
     {
-        $items = Item::orderby('created_at', 'DESC')->paginate(100);
-        $menu_groups= MenuGroup::all();
+        $store_id = Auth()->guard('admin_account')->user()->store_id;
+        $items = Item::where('store_id', $store_id)->orderby('created_at', 'DESC')->paginate(100);
+        $menu_groups= MenuGroup::where('store_id', $store_id)->get();
         return view('admin.items.index', [
             "items" => $items,
             "menu_groups" => $menu_groups
@@ -46,6 +47,7 @@ class ItemController extends Controller
         $item = new Item();
         $item->name = $request->name;
         $item->cost = $request->cost;
+        $item->store_id = $request->store_id;
         if (!empty($request->is_general_item) && $request->is_general_item == 1)
         {
             $item->is_general_item = 1;
@@ -79,7 +81,8 @@ class ItemController extends Controller
     public function edit($id)
     {
         $item = Item::findorfail($id);
-        $menu_groups = MenuGroup::all();
+        $store_id = Auth()->guard('admin_account')->user()->store_id;
+        $menu_groups = MenuGroup::where('store_id', $store_id)->get();
         return view('admin.items.edit', [
             "menu_groups" => $menu_groups,
             "item" => $item
@@ -98,6 +101,7 @@ class ItemController extends Controller
         $item = Item::findorfail($id);        
         $item->name = $request->name;
         $item->cost = $request->cost;
+        $item->store_id = $request->store_id;
 
         if (!empty($request->is_general_item) && $request->is_general_item == 1)
         {
