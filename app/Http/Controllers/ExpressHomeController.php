@@ -14,7 +14,7 @@ class ExpressHomeController extends Controller
 {
     public function home ()
     {
-        $store_id = Auth()->guard('admin_account')->user()->store_id || Auth()->guard('waiter')->user()->store_id;
+        $store_id = Auth()->guard('admin_account')->user()->store_id ?? Auth()->guard('waiter')->user()->store_id;
         $menus = Menu::getActiveMenus($store_id);
         $menu_groups=MenuGroup::getMenuGroups($store_id);
         $expressOrders = Order::getExpressOrders($store_id);
