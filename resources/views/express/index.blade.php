@@ -1,11 +1,35 @@
 @extends('layouts.client')
 @section('style')
 <style>
+    /* mobile screens */
     @media screen and (max-width: 600px) {
         .left-container {
             width: 100% !important;
-        }  
+        }
+        .right-container {
+            display: none;
+        }
+        .started-time {
+            display: none;
+        }
+        .menus-grid {
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)) !important;
 
+        }
+        .menus-grid-item {
+            width: 100px !important;
+            height: 100px !important;
+        }
+        .caption {
+            width: 100px !important;
+        }
+    }
+
+    /* large screens */
+    @media screen and (min-width: 600px) {
+        .menugroups-top-container {
+            display: none;
+        }
     }
 
     #ticker 
@@ -95,7 +119,9 @@
         content: ' ကျပ်';
     }
     .top {
+        margin-top: 3.5rem;
         display: flex;
+        flex-wrap: wrap;
         justify-content: space-between;
     }
     .parent-container {
@@ -155,10 +181,20 @@
         font-size: 0.75rem;
         font-weight: 700;
     }
+    .menugroups-top-container {
+        white-space: nowrap;
+        overflow-x: scroll;
+        overflow-y: hidden;
+        height: 40px;
+    }
+    .menugroups-top-container-item {
+        display: inline-block;
+        padding: 3px;
+    }
 </style>
 @endsection
 @section('content')
-<div class="container">
+<div class="container-fluid">
     <input type="hidden" name="_token" id="_token" value="{{csrf_token()}}">
     {{-- bulk insert modal --}}
     <div class="modal fade" id="bulkInsertModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -240,7 +276,7 @@
             @if(Auth::guard('waiter')->check())  
                 <a style="font-size: 1.4rem; text-decoration: none; margin-right: 1rem;" href="{{route('waiter.home')}}">🔙 </a>
             @endif
-            <span class="badge bg-primary" style="font-size:1rem">
+            <span class="started-time badge bg-primary" style="font-size:1rem">
                 Started time - {{$order->created_at->format('h:i a')}}  {{ $order->created_at->format('d-M-Y') }}
             </span>
         </div>
@@ -248,16 +284,20 @@
         </span>
         @if(Auth::guard('admin_account')->check())  
         <div>
-            <a class="btn btn-warning" href="{{route('express.show', $order->id)}}">အကျဉ်းချုပ်</a>
+            <a class="btn btn-warning" href="{{route('express.show', $order->id)}}">
+                <i class="bi bi-calendar3"></i>
+            </a>
         
-            <a class="btn btn-info" href="{{route('admin.pos.orders', $order->id)}}">အသေးစိတ်</a>
+            <a class="btn btn-info" href="{{route('admin.pos.orders', $order->id)}}">
+                <i class="bi bi-card-list"></i>
+            </a>
 
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#payBillModal">
-                ရှင်းမည်
+                <i class="bi bi-cash"></i>
             </button>
 
             <button class="btn btn-danger" id="delete" onclick="deleteHandler()">
-                Delete
+                <i class="bi bi-trash"></i>
             </button>
         </div>
         @endif 
@@ -275,6 +315,18 @@
     </form>
     <div id="history-container">
 
+    </div>
+    <div class="menugroups-top-container">
+        <div data-id="all" class="menugroups-top-container-item ">
+            အားလုံး
+        </div>
+        @forelse($menu_groups as $menu_group)
+        <div data-id="{{$menu_group->id}}" class="menugroups-top-container-item " style="background-color:{{$menu_group->color}}">
+            {{$menu_group->name}}
+        </div>
+        @empty
+        NO MENU GROUP
+        @endforelse
     </div>
     <input type="text" id="menuSearchInput" class="form-control mb-4" placeholder="ရှာပါ" role="search">
     <div class="parent-container">
@@ -350,6 +402,7 @@
 
     const menuGridItems = document.querySelectorAll('.menus-grid-item');
     const menuGroupItems=document.querySelectorAll('.menugroups-flex-item');
+    const menuGroupTopItems = document.querySelectorAll('.menugroups-top-container-item');
 
     const payBillBtn = document.querySelector('#payBill');
     payBillBtn.addEventListener('click', payBillBtnHandler);
@@ -364,6 +417,9 @@
     //attaching event listeners for menu groups
     for(menuGroupItem of menuGroupItems) {
         menuGroupItem.addEventListener('click', menuGroupItemClickHandler);
+    }
+    for(menuGroupTopItem of menuGroupTopItems) {
+        menuGroupTopItem.addEventListener('click', menuGroupItemClickHandler);
     }
 
     const modalMenuOrderBtn = document.querySelector('#modal-menu-order-btn');
