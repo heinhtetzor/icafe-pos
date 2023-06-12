@@ -58,7 +58,7 @@ class WaiterHomeController extends Controller
         $store_id = Auth()->guard('waiter')->user()->store_id; 
         $existing_express = Order::where('store_id', $store_id)
         ->where('created_at', '>=', Carbon::today()->startOfDay())
-        ->where('table_id', 'express')
+        ->where('table_id', Table::EXPRESS)
         ->where('status', 0)
         ->first();
         return view("waiter.index", [            
