@@ -517,8 +517,8 @@
     }
 
     function addOrderMenuApiCall (menuId, menuName, menuPrice, menuQuantity) {
-        const waiterId = 1; //TODO
         const orderId = {{$order->id}};        
+        const waiterId = {{$order->waiter_id}}; //waiter who started express session
 
         fetch(`/api/addOrderMenu`, {
             headers: {

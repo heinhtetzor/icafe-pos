@@ -15,10 +15,21 @@
         <div class="card-body">
             <form action="{{route('express.store')}}" method="POST">
                 <input type="hidden" name="_token" id="_token" value="{{csrf_token()}}">
-                <button type="submit" class="btn btn-success">
+
+                <div class="form-group">                
+                    <label for="waiter_id">Waiter ရွေးပါ</label>
+                    <select required name="waiter_id" id="waiter-id" class="form-control">
+                        <option value="">----</option>
+                        @foreach ($waiters as $waiter)
+                        <option value="{{$waiter->id}}">{{$waiter->name}}</option>
+                        @endforeach
+                    </select>
+              </div>
+
+                <button type="submit" class="btn btn-success mt-4">
                     Start
                 </button>
-                <a class="btn btn-danger" href="{{route('admin.home')}}">Exit</a>
+                <a class="btn btn-danger mt-4" href="{{route('admin.home')}}">Exit</a>
             </form>
 
         </div>

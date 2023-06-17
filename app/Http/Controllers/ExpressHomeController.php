@@ -40,6 +40,7 @@ class ExpressHomeController extends Controller
         else 
         {
             return view('express.create', [
+                "waiters" => $waiters,
                 "expressOrders" => $expressOrders
             ]);
         }
@@ -63,20 +64,28 @@ class ExpressHomeController extends Controller
     public function create () //create new session
     {
         $store_id = Auth()->guard('admin_account')->user()->store_id;
-        $expressOrders = Order::getExpressOrders($store_id);    
+        $expressOrders = Order::getExpressOrders($store_id);
+        $waiters = Waiter::where('store_id', $store_id)
+        ->where('status', 1)
+        ->get();    
         return view('express.create', [
-            "expressOrders" => $expressOrders
+            "expressOrders" => $expressOrders,
+            "waiters" => $waiters
         ]);
     }
 
     public function store (Request $request)
     {
+        if (empty($request->waiter_id)) {
+            throw new \Exception("Waiter ရွေးပါ");
+        }
         $store_id = Auth()->guard('admin_account')->user()->store_id;
         Order::create([
             'store_id' => $store_id,
             "status" => 0,
             "table_id" => Table::EXPRESS,
-            "invoice_no" => Order::generateInvoiceNumber()
+            "invoice_no" => Order::generateInvoiceNumber(),
+            "waiter_id" => $request->waiter_id
         ]);
         return redirect('/admin/express');
     }
