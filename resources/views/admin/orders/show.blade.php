@@ -135,24 +135,25 @@
 
         <div class="row">
             <div class="col-md-8 list-container">
-                <table class="table invoice-table">
+                <table class="table table-sm table-hover">
                     <thead>
                         <tr>
-                            <th>Qty</th>
+                            <th style="padding:9px;">Qty</th>
                             <th></th>
                             <th>အမျိုးအမည်</th>
                             <th>နှုန်း</th>
+                            <th>စုစုပေါင်း</th>
                             <th></th>
-                            <th>-</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($orderMenus as $orderMenu)
+                        @if (!$orderMenu->isSummary)
                         <tr>
-                            <td>{{$orderMenu->quantity}}</td>
-                            <td>x</td>
+                            <td style="padding:9px;">{{$orderMenu->quantity}}</td>
+                            <td style="padding:9px;">x</td>
                             <td>{{$orderMenu->menu->name ?? ""}}</td>
-                            <td>{{$orderMenu->price}}</td>
+                            <td style="padding:9px;">{{$orderMenu->price}}</td>
                             <td>{{$orderMenu->price*$orderMenu->quantity}} ကျပ်</td>
                             <td>
                                 @if ($is_edit_mode)
@@ -162,6 +163,17 @@
                                 @endif
                             </td>
                         </tr>
+                        @endif
+                        @if ($orderMenu->isSummary)
+                            <tr style="font-weight: 900; border-bottom: 4px solid black;">
+                                <td style="padding:9px;">{{ $orderMenu->menuGroupQty }}</td>
+                                <td></td>
+                                <td>{{ $orderMenu->menuGroupName }}</td>
+                                <td></td>
+                                <td >{{ $orderMenu->menuGroupTotal }} ကျပ်</td>
+                                <td></td>
+                            </tr>
+                        @endif
                         @endforeach
                         <tr style="font-weight: 900">
                             <td align="center" colspan="4">စုစုပေါင်း</td>
@@ -206,7 +218,7 @@
                             @forelse($orderMenuGroups as $mg)
                             <tr>
                                 <td>{{$mg->name}}</td>
-                                <td>{{$mg->quantity}}</td>
+                                <td style="padding:9px;">{{$mg->quantity}}</td>
                                 <td>{{$mg->total}} ကျပ်</td>
                                 @php $grandTotal+=$mg->total; @endphp
                             </tr>
@@ -240,7 +252,6 @@
 @endsection
 
 @section('js')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js" integrity="sha512-s/XK4vYVXTGeUSv4bRPOuxSDmDlTedEpMEcAQk0t/FMd9V6ft8iXdwSBxV0eD60c6w/tjotSlKu9J2AAW1ckTA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>        
 <script>
     //for order menu deleting
     let passcodeModal; 
@@ -356,15 +367,6 @@
         })
     }
 
-
-    const ls = document.querySelector('.list-container');
-    html2canvas(ls, {
-        onrendered: function (canvas) {
-            let image = new Image();
-            image.src = canvas.toDataURL("image/png");
-            console.log(image);
-        }
-    })
     function deleteHandler () {
         if (confirm("Are you sure?")) {
             document.querySelector('#delete-form').submit();

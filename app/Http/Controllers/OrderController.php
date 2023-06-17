@@ -127,10 +127,39 @@ class OrderController extends Controller
         
         $store_id = Auth()->guard('admin_account')->user()->store_id;
         $waiters = Waiter::where('store_id', $store_id)->get();
+
+        //group order menus with menu group total lines
+        $orderMenusGrouped = [];
+        $menu_group_order_menus_map = [];
+        $menu_groups = []; //for mapping menu_group_id and name
+        foreach ($orderMenus as $orderMenu) {
+            if (array_key_exists($orderMenu->menu_group_id, $menu_group_order_menus_map)) {
+                array_push($menu_group_order_menus_map[$orderMenu->menu_group_id] ,$orderMenu);
+            } else {
+                $menu_group_order_menus_map[$orderMenu->menu_group_id] = [$orderMenu];
+                $menu_groups[$orderMenu->menu_group_id] = $orderMenu->menu_group_name;
+            }
+        }
+        foreach ($menu_group_order_menus_map as $menu_group_id => $orderMenus) {
+            $menu_group_total = 0;
+            $menu_group_qty = 0;
+            foreach ($orderMenus as $orderMenu) {
+                array_push($orderMenusGrouped, $orderMenu);
+                $menu_group_total += $orderMenu->quantity * $orderMenu->price;
+                $menu_group_qty += $orderMenu->quantity;
+            }
+            $menu_group_summary = (object)[
+                "isSummary" => true,
+                "menuGroupName" => $menu_groups[$menu_group_id],
+                "menuGroupQty" => $menu_group_qty,
+                "menuGroupTotal" => $menu_group_total
+            ];
+            array_push($orderMenusGrouped, $menu_group_summary);
+        }
         
         return view('admin.orders.show', [
             'order'=>$order,
-            'orderMenus'=>$orderMenus,
+            'orderMenus'=>$orderMenusGrouped,
             'orderMenuGroups'=>$orderMenuGroups,
             'total'=>$total,
             'is_edit_mode'=>$is_edit_mode,

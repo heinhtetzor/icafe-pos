@@ -35,9 +35,12 @@ trait OrderFunctions {
     //used in print bill
     static function getOrderMenusGrouped(Order $order) {
         return $order->order_menus()
-                     ->selectRaw("id, menu_id, SUM(quantity) as quantity, price, is_foc, status, created_at")
-                     ->groupBy('menu_id', 'is_foc')                     
-                     ->with('menu', 'menu.menu_group') 
+                     ->selectRaw("order_menus.id, order_menus.menu_id, SUM(order_menus.quantity) as quantity, order_menus.price, order_menus.is_foc, order_menus.status, order_menus.created_at, menus.menu_group_id as menu_group_id, menu_groups.name as menu_group_name")
+                     ->groupBy('order_menus.menu_id', 'order_menus.is_foc')                     
+                     ->join('menus', 'menus.id', '=', 'order_menus.menu_id')
+                     ->join('menu_groups', 'menus.menu_group_id', '=', 'menu_groups.id')
+                     ->orderBy('menu_groups.id', 'asc')
+                     ->orderBy('quantity', 'desc')
                      ->get();
     }
 
