@@ -71,7 +71,7 @@ class WaiterHomeController extends Controller
     function pos($id) {
         $store_id = Auth()->guard('waiter')->user()->store_id;
         $menus=Menu::getActiveMenus($store_id);
-        $menu_groups=MenuGroup::getMenuGroups($store_id);
+        $menu_groups=MenuGroup::getActiveMenuGroups($store_id);
         $table=Table::findorfail($id);
         $currentOrder=$this->getActiveOrder($id);
         $order_menus=Array();

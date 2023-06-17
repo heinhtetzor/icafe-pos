@@ -16,9 +16,11 @@ class ExpressHomeController extends Controller
     {
         $store_id = Auth()->guard('admin_account')->user()->store_id ?? Auth()->guard('waiter')->user()->store_id;
         $menus = Menu::getActiveMenus($store_id);
-        $menu_groups=MenuGroup::getMenuGroups($store_id);
+        $menu_groups=MenuGroup::getActiveMenuGroups($store_id);
         $expressOrders = Order::getExpressOrders($store_id);
-        $waiters = Waiter::where('store_id', $store_id)->get();
+        $waiters = Waiter::where('store_id', $store_id)
+        ->where('status', 1)
+        ->get();
 
         $existing_express = Order::where('created_at', '>=', Carbon::today()->startOfDay())
         ->where('store_id', $store_id)

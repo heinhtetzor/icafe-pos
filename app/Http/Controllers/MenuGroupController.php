@@ -106,7 +106,8 @@ class MenuGroupController extends Controller
         $data = [
             "name" => $request->name,
             "print_slip" => $print_slip,
-            "color" => $request->color
+            "color" => $request->color,
+            "status" => $request->status
         ];
 
         MenuGroup::findorfail($id)->update($data);

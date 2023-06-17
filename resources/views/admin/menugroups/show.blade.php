@@ -74,11 +74,11 @@
                         <div class="card-body">
                             <div class="grid">
                                 @foreach($menus as $menu)
-                                <a class="grid-item" href="{{route('menus.edit', $menu->id)}}">
+                                <a class="grid-item {{ $menu->status == 0 ? 'grid-item-inactive' : '' }}" href="{{route('menus.edit', $menu->id)}}">
                                     @if ($menu->image)
                                     <img src="/storage/menu_images/{{$menu->image}}"/>
                                     @else 
-                                    <img src="/images/default.png"/>
+                                    <img src="/images/default-menu.svg"/>
                                     @endif                                    
                                     <span class="menu-text">
                                         {{$menu->name}} <br> 

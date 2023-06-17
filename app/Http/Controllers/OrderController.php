@@ -126,7 +126,9 @@ class OrderController extends Controller
         }
         
         $store_id = Auth()->guard('admin_account')->user()->store_id;
-        $waiters = Waiter::where('store_id', $store_id)->get();
+        $waiters = Waiter::where('store_id', $store_id)
+        ->where('status', 1)
+        ->get();
 
         //group order menus with menu group total lines
         $orderMenusGrouped = [];

@@ -52,10 +52,21 @@
                 <p style="color:red">{{ $errors->first('image') }}</p>
             </div>
 
-            <input {{$menu->isStockMenu() ? "checked" : ""}} name="is_stock_menu" value="yes" class="form-check-input" type="checkbox" id="stock_menu_radio">
-            <label class="form-check-label" for="stock_menu_radio">
-                Stock Item
-            </label>
+            <div class="form-group">
+                <input {{$menu->isStockMenu() ? "checked" : ""}} name="is_stock_menu" value="yes" class="form-check-input" type="checkbox" id="stock_menu_radio">
+                <label class="form-check-label" for="stock_menu_radio">
+                    Stock Item
+                </label>
+            </div>
+            <br>
+
+            <div class="form-group">
+                <input type="hidden" name="status" value="0"/>
+                <input {{$menu->status == 1 ? "checked" : ""}} name="status" value="1" class="form-check-input" type="checkbox" id="active_menu_radio">
+                <label class="form-check-label" for="active_menu_radio">
+                    Active
+                </label>
+            </div>
             <br>
             
             <button type="submit" class="btn btn-primary">Submit</button>

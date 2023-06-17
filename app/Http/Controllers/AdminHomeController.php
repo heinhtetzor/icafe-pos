@@ -52,7 +52,9 @@ class AdminHomeController extends Controller
         public function tables()
         {
             $store_id = Auth()->guard('admin_account')->user()->store_id;
-            $table_groups = TableGroup::where('store_id', $store_id)->get();
+            $table_groups = TableGroup::where('store_id', $store_id)
+            ->where('status', 1)
+            ->get();
             return view('waiter.index', [
                 "table_groups" => $table_groups
             ]);
@@ -64,8 +66,10 @@ class AdminHomeController extends Controller
             // $menus=Menu::getActiveMenus();
             $store_id = Auth()->guard('admin_account')->user()->store_id;
             $menus=Menu::getActiveMenus($store_id);
-            $menu_groups=MenuGroup::getMenuGroups($store_id);
-            $waiters=Waiter::where('store_id', $store_id)->get();
+            $menu_groups=MenuGroup::getActiveMenuGroups($store_id);
+            $waiters=Waiter::where('store_id', $store_id)
+            ->where('status', 1)
+            ->get();
             $table=Table::findorfail($id);
             $currentOrder=$this->getActiveOrder($id);
             $order_menus=Array();

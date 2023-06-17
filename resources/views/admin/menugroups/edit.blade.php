@@ -25,12 +25,21 @@
                     <p style="color:red">{{ $errors->first('color') }}</p>
                 </div>
     
-                <input @if ($menu_group->print_slip == 1) checked  @endif name="print_slip" value="yes" class="form-check-input" type="checkbox" id="print_slip_radio">
-                <label class="form-check-label" for="print_slip_radio">
-                စလစ်ထုတ်မည်
-                </label>
-    
+                <div class="form-group">
+                    <input @if ($menu_group->print_slip == 1) checked  @endif name="print_slip" value="yes" class="form-check-input" type="checkbox" id="print_slip_radio">
+                    <label class="form-check-label" for="print_slip_radio">
+                    စလစ်ထုတ်မည်
+                    </label>
+                </div>
                 <br>
+
+                <div class="form-group">
+                    <input type="hidden" name="status" value="0"/>
+                    <input {{$menu_group->status == 1 ? "checked" : ""}} name="status" value="1" class="form-check-input" type="checkbox" id="active_menu_radio">
+                    <label class="form-check-label" for="active_menu_radio">
+                        Active
+                    </label>
+                </div>
                 <br>
     
                 <button type="submit" class="btn btn-primary">Submit</button>

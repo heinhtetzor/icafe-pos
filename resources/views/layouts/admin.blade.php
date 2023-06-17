@@ -75,6 +75,7 @@
         grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
         grid-gap: 1rem;
     }
+    /* used in admin panel menu grid */
     .grid-item {
         border: 1px solid rgb(148, 148, 148);
         border-radius: 8px;
@@ -82,6 +83,9 @@
         height: 150px;
         cursor: pointer;
         position: relative;
+    }
+    .grid-item-inactive {
+        opacity: 0.4;
     }
     .grid-item img {
         position: absolute;

@@ -14,6 +14,14 @@
                 <input value="{{$table->name}}" name="name" type="text" class="form-control" placeholder="Enter Table Name" required>
                 <p style="color:red">{{ $errors->first('name') }}</p>
             </div>
+
+            <div class="form-group">
+                <input type="hidden" name="status" value="0"/>
+                <input {{$table->status == 1 ? "checked" : ""}} name="status" value="1" class="form-check-input" type="checkbox" id="active_menu_radio">
+                <label class="form-check-label" for="active_menu_radio">
+                    Active
+                </label>
+            </div>
             <button type="submit" class="btn btn-primary">Submit</button>
             <a class="btn btn-info" href="{{route('tablegroups.show', $table->table_group_id)}}">Back</a>
         </form>

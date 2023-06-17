@@ -55,7 +55,7 @@
                             <i class="bi bi-lock"></i>
                             <i class="bi bi-lock"></i>
                         </td>
-                        <td>{{$waiter->status}}</td>
+                        <td>{{$waiter->status == 1 ? "Active" : "Inactive"}}</td>
                         <td>
                             <a href="{{ route('waiters.edit', $waiter->id) }}">Edit</a>
                         </td>

@@ -20,7 +20,7 @@
                     <input type="text" id="menuSearchInput" class="form-control mb-4" placeholder="ရှာပါ" role="search">
                     <div class="grid">                    
                         @foreach($menus as $menu)
-                        <a data-menu-code="{{ $menu->code }}" data-menu-name="{{ $menu->name }}" class="grid-item" href="{{route('menus.edit', $menu->id)}}">
+                        <a data-menu-code="{{ $menu->code }}" data-menu-name="{{ $menu->name }}" class="grid-item {{ $menu->status == 0 ? 'grid-item-inactive' : '' }}" href="{{route('menus.edit', $menu->id)}}">
                             @if ($menu->image)
                             <img src="/storage/menu_images/{{$menu->image}}"/>
                             @else 
