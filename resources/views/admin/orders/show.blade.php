@@ -166,7 +166,7 @@
                         @endif
                         @if ($orderMenu->isSummary)
                             <tr style="font-weight: 900; border-bottom: 4px solid black;">
-                                <td style="padding:9px;">{{ $orderMenu->menuGroupQty }}</td>
+                                <td>{{ $orderMenu->menuGroupQty }}</td>
                                 <td></td>
                                 <td>{{ $orderMenu->menuGroupName }}</td>
                                 <td></td>

@@ -17,6 +17,10 @@
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Kadwa&display=swap');
+        body {
+            font-family: 'Kadwa', serif;
+        }
         .topnav {
             position: fixed;
             top: 0;
