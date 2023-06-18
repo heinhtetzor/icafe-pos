@@ -12,6 +12,8 @@ use App\TableStatus;
 use Illuminate\Http\Request;
 use App\Http\Traits\OrderFunctions;
 use App\Menu;
+use App\PrintJob;
+use App\Services\PrintJobService;
 use App\Services\PrintService;
 use App\StockMenu;
 use Carbon\Carbon;
@@ -173,6 +175,9 @@ class OrderController extends Controller
 
 
             PrintService::printOrderSlipExpress($orderMenu);
+
+            $store_id = Auth()->guard('admin_account')->user()->store_id ?? Auth()->guard('waiter')->user()->store_id;
+            PrintJobService::createPendingJob($store_id, PrintJob::TYPE_ORDER_MENU_EXPRESS_SLIP, $orderMenu->id);
 
             DB::commit();
 

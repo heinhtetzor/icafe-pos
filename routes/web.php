@@ -94,6 +94,9 @@ Route::get('/composer-upgrade', function () {
 
 });
 
+Route::get('/print-jobs/process', 'PrintJobController@process')->name('print-job.execute');
+
+
 Route::group(['prefix' => 'admin'], function () {
     
     Route::get('/login', 'AdminHomeController@showAdminLogin')->name('admin.showLogin');
