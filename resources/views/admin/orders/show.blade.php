@@ -56,7 +56,7 @@
       </div>
     
     
-    {{-- passcode starts --}}
+    {{-- passcode modal starts --}}
     <div class="modal fade" id="passcodeModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -89,7 +89,38 @@
           </div>
         </div>
     </div> 
-    {{-- modal ends --}}
+    {{-- passcode modal ends --}}
+
+    {{-- email modal starts --}}
+    <div class="modal fade" id="emailModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="cancel-modal-title" id="exampleModalLabel">Send Email</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="modal-menu-id">
+                <div class="row">                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="email">Send to</label>
+                            <input required type="text" class="form-control" autocomplete="off" id="email">
+                        </div>
+                    </div>                  
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>                
+                <button id="email-confirm-btn" class="btn btn-primary">
+                    OK
+              </button>
+            </div>
+          </div>
+        </div>
+    </div> 
+    {{-- email modal ends --}}
 
     <div class="container">
         <h2><a href="javascript:history.back()">🔙</a>                        
@@ -116,6 +147,10 @@
                     🖨  Print Bill
                 </a>
                 @endif 
+
+                <button class="btn btn-success" id="send-email-button">
+                    📧  Email
+                </button>
 
             </ul>
         </div>
@@ -256,8 +291,14 @@
     //for order menu deleting
     let passcodeModal; 
 
+    //for sending email
+    let emailModal;
+
     window.addEventListener('load', () => {        
         passcodeModal = new bootstrap.Modal(document.getElementById('passcodeModal'), {
+            backdrop: true
+        })
+        emailModal = new bootstrap.Modal(document.getElementById('emailModal'), {
             backdrop: true
         })
     })
@@ -375,6 +416,67 @@
         else {
             return false;
         }
+    }
+
+    const sendEmailBtn = document.querySelector('#send-email-button');
+    sendEmailBtn.addEventListener('click', emailBtnHandler);
+
+    
+    function emailBtnHandler () {
+        emailModal.show();
+    }
+
+    const emailConfirmBtn = document.querySelector('#email-confirm-btn');
+    emailConfirmBtn.addEventListener('click', () => emailAction(orderId));
+    const email = document.querySelector('#email');
+    
+    function emailAction (orderId) {
+        if (!orderId || !email.value) {
+            alert("Email ထည့်သွင်းပါ")
+            return;
+        }
+        let valid = true;
+        const regex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        const email_arr = email.value.split(',');
+        
+        for (var i = 0; i < email_arr.length; i++) {
+            if( email_arr[i] === "" || !regex.test(email_arr[i].replace(/\s/g, ""))){
+                valid = false;
+            }
+        }
+
+        if (!valid) {
+            alert("Email မှားယွင်းနေသည်")
+        }
+
+        emailConfirmBtn.disabled = true;
+        fetch(`/api/email/order/${orderId}`, {
+            method: 'POST',
+            headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRF-Token": token
+            },
+            credentials: "same-origin",
+            body: JSON.stringify({
+                orderId,
+                email: email.value
+            })
+        }) 
+        .then(res => res.json())
+        .then(res => {
+            if (res.success && res.success === true) {
+                emailModal.hide();
+                alert("Email successfully sent!");
+            }            
+            emailConfirmBtn.disabled = false;
+        })
+        .catch (err => {
+            console.log("Error" + err);
+            alert("Error sending email");
+            emailConfirmBtn.disabled = false;
+        })
     }
 </script>
 @endsection

@@ -283,6 +283,8 @@ Route::group(['prefix' => 'api'], function() {
     //pay bill
     Route::get('/payBill/{orderId}/{waiterId}/{printBill}', 'Api\Order\OrderController@payBill');
     
+    //email
+    Route::post('/email/order/{order_id}', 'EmailController@sendOrder');
     //serve to customer
     Route::get('/serveToCustomer/{orderMenuId}', 'Api\Order\OrderController@serveToCustomer');
     Route::get('/serveAllToCustomer/{menuGroupId}', 'Api\Order\OrderController@serveAllToCustomer');
