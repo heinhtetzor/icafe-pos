@@ -80,20 +80,10 @@
     .caption {             
         position: absolute;
         bottom: 0;
-        /* right: 0; */
         background-color: black;
         width: 120px;
         color: white;       
-        /* white-space: nowrap;      */
         word-wrap: break-word;
-        /* display: inline-block; */
-        /* display: block;
-        white-space: nowrap;
-        overflow: hidden;
-        border: 2px solid rgb(155, 155, 155);
-        border-top: none;
-        background-color: rgb(255, 236, 174);
-        text-overflow: ellipsis; */
 
     }
     .price {

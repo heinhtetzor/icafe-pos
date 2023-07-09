@@ -9,6 +9,18 @@
         #cart-modal-button {
             display: inline-block;
         }       
+
+        .menus-grid {
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)) !important;
+
+        }
+        .menus-grid-item {
+            width: 100px !important;
+            height: 100px !important;
+        }
+        .caption {
+            width: 100px !important;
+        }
     }
     @media screen and (min-width: 600px) {
         #cart-modal-button {
@@ -31,23 +43,41 @@
         overflow-y: auto;
     }
     .menus-grid {        
-        display: grid;
+        /* display: grid;
         grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
         grid-row-gap: 2rem;
         grid-column-gap: 4px;
         max-height: 65vh;
-        overflow-y: auto;
+        overflow-y: auto; */
         /* padding-bottom: 3rem; */
+
+        padding-top: 5px;
+        padding-left: 5px;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        grid-row-gap: 2rem;
+        grid-column-gap: 12px;
+        max-height: 70vh;
+        overflow-y: scroll;
     }
     .menus-grid-item {
-        width: 100px;
+        /* width: 100px;
         height: 100px;
         border: 1px solid #d3d2d2;
+        cursor: pointer;
+        position: relative;         
+        overflow: hidden;
+        transition: all 0.3s ease-in-out; */
+
+        width: 120px;
+        height: 120px;
+        /* border: 1px solid #d3d2d2; */
         /* border-bottom: none; */
         cursor: pointer;
         position: relative;         
         overflow: hidden;
         transition: all 0.3s ease-in-out;
+        box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
     }
     .menus-grid-item:hover, .menus-grid-item:active {
         /* border: 3px solid green; */
@@ -58,29 +88,34 @@
         pointer-events: none;        
     }
     .caption {             
+        /* position: absolute;
+        bottom: 0;
+        background-color: purple;
+        color: white;       
+        white-space: nowrap;      */
+
         position: absolute;
         bottom: 0;
-        /* right: 0; */
-        background-color: purple;
-        
+        background-color: black;
+        width: 120px;
         color: white;       
-        white-space: nowrap;     
-        /* display: inline-block; */
-        /* display: block;
-        white-space: nowrap;
-        overflow: hidden;
-        border: 2px solid rgb(155, 155, 155);
-        border-top: none;
-        background-color: rgb(255, 236, 174);
-        text-overflow: ellipsis; */
+        word-wrap: break-word;
 
     }
     .price {
-        position: absolute;
+        /* position: absolute;
         top: 0;
         right: 0;
         background-color: purple;
+        color: white; */
+
+        position: absolute;
+        top: 0;
+        right: 0;
+        background-color: black;
         color: white;
+        border-radius: 8px;
+        padding: 5px;
     }    
     .balance-badge {        
         position: absolute;
@@ -221,7 +256,7 @@
                         အားလုံး
                     </div>
                     @forelse($menu_groups as $menu_group)
-                    <div data-id="{{$menu_group->id}}" class="menugroups-flex-item">
+                    <div data-id="{{$menu_group->id}}" class="menugroups-flex-item" style="background-color:{{$menu_group->color}}">
                         {{$menu_group->name}}
                     </div>
                     @empty
@@ -246,10 +281,10 @@
                     class="menus-grid-item"
                     title="{{$menu->name}} ({{$menu->code}})"
                     @if ($menu->image)
-                    style="background-size:cover;background-image: url('/storage/menu_images/{{$menu->image}}')">        
-                    @else 
-                    style="background-size:cover;background-image: url('/images/default.png')">                
-                    @endif                    
+                    style="box-shadow: 0 0 0 2px {{$menu->menu_group->color}}, 10px 10px 0 0 {{$menu->menu_group->color}};background-size:cover;background-image: url('/storage/menu_images/{{$menu->image}}')">        
+                    @else
+                    style="box-shadow: 0 0 0 2px {{$menu->menu_group->color}}, 10px 10px 0 0 {{$menu->menu_group->color}};background-repeat:no-repeat;background-size:100px 100px;background-image: url('/images/default-menu.svg')">        
+                    @endif                  
                     <span class="price">{{$menu->price}}</span>
                     <span class="caption">{{$menu->name}}</span>
                     @if ($menu->stock_menu != null)
