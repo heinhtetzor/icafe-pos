@@ -174,7 +174,7 @@ class OrderController extends Controller
             }
 
 
-            PrintService::printOrderSlipExpress($orderMenu);
+            // PrintService::printOrderSlipExpress($orderMenu);
 
             $store_id = Auth()->guard('admin_account')->user()->store_id ?? Auth()->guard('waiter')->user()->store_id;
             PrintJobService::createPendingJob($store_id, PrintJob::TYPE_ORDER_MENU_EXPRESS_SLIP, $orderMenu->id);

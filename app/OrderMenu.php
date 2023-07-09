@@ -38,4 +38,8 @@ class OrderMenu extends Model
     function stockEntry () {
         return $this->hasOne('App\StockMenuEntry');
     }
+
+    function printJob () {
+        return $this->hasOne('App\PrintJob');
+    }
 }

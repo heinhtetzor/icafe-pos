@@ -94,7 +94,7 @@ Route::get('/composer-upgrade', function () {
 
 });
 
-Route::get('/print-jobs/process', 'PrintJobController@process')->name('print-job.execute');
+Route::post('/print-jobs/process', 'PrintJobController@process')->name('print-job.execute');
 
 
 Route::group(['prefix' => 'admin'], function () {
@@ -282,9 +282,13 @@ Route::group(['prefix' => 'api'], function() {
     
     //pay bill
     Route::get('/payBill/{orderId}/{waiterId}/{printBill}', 'Api\Order\OrderController@payBill');
+
+    //retrigger print job
+    Route::post('/print-jobs/update-to-pending/{print_job_id}', 'PrintJobController@updateToPending');
     
     //email
     Route::post('/email/order/{order_id}', 'EmailController@sendOrder');
+
     //serve to customer
     Route::get('/serveToCustomer/{orderMenuId}', 'Api\Order\OrderController@serveToCustomer');
     Route::get('/serveAllToCustomer/{menuGroupId}', 'Api\Order\OrderController@serveAllToCustomer');

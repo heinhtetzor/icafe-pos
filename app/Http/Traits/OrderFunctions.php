@@ -47,7 +47,7 @@ trait OrderFunctions {
     function getOrderMenusList(Order $order) {
                 
         return OrderMenu::where('order_id', $order->id)
-                        ->with('menu', 'waiter')  
+                        ->with('menu', 'waiter', 'printJob')  
                         ->orderBy('created_at', 'DESC')                  
                         ->simplePaginate(30);
     }

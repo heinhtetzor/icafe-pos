@@ -55,6 +55,7 @@
                     @endif
                     <td>အချိန်</td>
                     <td>Status</td>
+                    <td>Print</td>
                 </tr>
             </thead>
             <tbody>
@@ -79,15 +80,15 @@
                 backdrop: true
             })
         })
-        const socket = io('{{config('app.socket_url')}}');
+        // const socket = io('{{config('app.socket_url')}}');
 
-        socket.emit('join-room', {
-            roomId: 1
-        })
+        // socket.emit('join-room', {
+        //     roomId: 1
+        // })
 
-        socket.on('deliver-to-customer', data=> {            
-            fetchOrderMenus();
-        })
+        // socket.on('deliver-to-customer', data=> {            
+        //     fetchOrderMenus();
+        // })
 
         const token=document.querySelector('#_token').value;
         
@@ -151,6 +152,14 @@
                             @endif
                             <td>${new Date(orderMenu.created_at).toLocaleString('en-IN')}</td>
                             <td>${orderMenu.status==0 ? "🟠" : "🟢"}</td>
+                            <td>
+                            ${orderMenu.print_job ? 
+                                `<button class="btn btn-light print-toggle" data-print-job-id="${orderMenu.print_job.id}">🖨️</button>` 
+                                : 
+                                ''}
+                            
+                            
+                            </td>  
                         </tr>            
                         `
                 })                                
@@ -172,6 +181,11 @@
                 const cancelOrderMenuBtns = document.querySelectorAll('.cancel-order-menu');                
                 for (cancelOrderMenuBtn of cancelOrderMenuBtns) {
                     cancelOrderMenuBtn.addEventListener('click', cancelOrderMenuBtnHandler); 
+                }
+
+                const printOrderMenuBtns = document.querySelectorAll('.print-toggle');
+                for (printOrderMenuBtn of printOrderMenuBtns) {
+                    printOrderMenuBtn.addEventListener('click', printOrderMenuHandler);
                 }
 
                 function menuOptionSelectorHandler (e)
@@ -279,7 +293,33 @@
 
                     passcodeConfirmButton.addEventListener('click', cancelOrderMenuAction);                    
                 }
+
+                function printOrderMenuHandler (e) {
+                    const printJobId = e.target.dataset['printJobId'];
+                    console.log('hi')
+                    printOrderMenu(printJobId);
+                }
             })            
+        }
+
+        function printOrderMenu (printJobId) {
+            fetch(`/api/print-jobs/update-to-pending/${printJobId}`, {
+                method: 'POST',
+                headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "X-Requested-With": "XMLHttpRequest",
+                "X-CSRF-Token": token
+                },
+                credentials: "same-origin",
+            })
+            .then(res => res.json())
+            .then(res => {                    
+                if (res.isOk) {                                
+                    fetchOrderMenus();
+                }
+            })
+            .catch(err => console.log(err));
         }
 
 
