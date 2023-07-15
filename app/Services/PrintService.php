@@ -17,6 +17,9 @@ use App\Http\Traits\OrderFunctions;
 use App\Menu;
 use App\Waiter;
 
+/*
+\* Deprecating soon as we have moved to remote silent printing
+*/
 class PrintService {
     use OrderFunctions;
     public static function printOrderSummary (Order $order)
