@@ -27,13 +27,13 @@ class MenuRequest extends FormRequest
         switch ($this->method()) {
             case 'POST':
                 return [
-                    'name' => 'required|unique:menus',
+                    'name' => 'required',
                     'price' => 'required',
                     'menu_group_id' => 'required',
                 ];
                 case 'PUT':
                     return [
-                        'name' => 'required|unique:menus,name,' . $this->route('menu'),
+                        'name' => 'required',
                         'price' => 'required',
                         'menu_group_id' => 'required',
                     ];
