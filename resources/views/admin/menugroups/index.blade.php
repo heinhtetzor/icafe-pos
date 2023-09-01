@@ -24,7 +24,7 @@
                             @if ($menu->image)
                             <img src="/storage/menu_images/{{$menu->image}}"/>
                             @else 
-                            <img src="/images/default.png"/>
+                            <img src="/images/default-menu.svg"/>
                             @endif
                             <span class="menu-text">
                                 {{$menu->name}} <br> 
