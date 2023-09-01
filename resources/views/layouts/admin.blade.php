@@ -92,7 +92,7 @@
         height: 100%;
         width: 100%;
         object-fit: cover;
-        border: 4px solid blueviolet;
+        border: 4px solid black;
     }
     .grid-item .menu-text {
         width: 96% ;
@@ -103,7 +103,7 @@
         text-align: center;
         bottom: 10px;
         background-color: #fff;
-        color: blueviolet;
+        color: black;
         z-index: 1;
     }
 
