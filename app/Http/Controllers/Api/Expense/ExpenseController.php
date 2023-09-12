@@ -55,18 +55,63 @@ class ExpenseController extends Controller
             $toTime=now()->endOfDay();        
         }       
         $store_id = Auth()->guard('admin_account')->user()->store_id;
-        $expenseItemMenuGroups=DB::table('expense_items')
-                      ->join('items', 'expense_items.item_id', '=', 'items.id')
-                      ->leftjoin('menu_groups', 'items.menu_group_id', '=', 'menu_groups.id')
-                      ->join('expenses', 'expenses.id', '=', 'expense_items.expense_id')                      
-                      ->selectRaw('expense_items.is_general_item, menu_groups.id as id, menu_groups.name as name, SUM(expense_items.quantity) as quantity, ROUND(SUM(expense_items.quantity*expense_items.cost), 2) as total')
-                      ->where('expenses.status', '=', '1')
-                      ->where('expenses.store_id', '=', $store_id)                      
-                      ->whereBetween('expenses.datetime', [$fromTime, $toTime])
-                      ->groupBy('menu_groups.id')
-                      ->get();  
+
+
+        $expenseItemMenuGroups=DB::table('expenses')
+        ->join('expense_items', 'expenses.id', '=', 'expense_items.expense_id')
+        ->join('items', 'expense_items.item_id', '=', 'items.id') 
+        ->leftjoin('menu_groups as mg1', 'items.menu_group_id', '=', 'mg1.id')
+        ->selectRaw('expense_items.is_general_item, mg1.id as id, mg1.name as name, SUM(expense_items.quantity) as quantity, ROUND(SUM(expense_items.quantity*expense_items.cost), 2) as total')
+        ->where('expenses.status', '=', '1')
+        ->where('expenses.store_id', '=', $store_id)                      
+        ->whereBetween('expenses.datetime', [$fromTime, $toTime])
+        ->groupBy('mg1.id')
+        ->get();    
+        
+        $expenseStockMenuGroups=DB::table('expenses')
+        ->join('expense_stock_menus', 'expense_stock_menus.expense_id', '=', 'expenses.id')
+        ->join('stock_menus', 'expense_stock_menus.stock_menu_id', '=', 'stock_menus.id')
+        ->join('menus', 'menus.id', '=', 'stock_menus.menu_id')
+        ->leftjoin('menu_groups as mg1', 'mg1.id', '=', 'menus.menu_group_id')
+        ->selectRaw('mg1.id as id, mg1.name as name, SUM(expense_stock_menus.quantity) as quantity, ROUND(SUM(expense_stock_menus.quantity*expense_stock_menus.cost), 2) as total')
+        ->where('expenses.status', '=', '1')
+        ->where('expenses.store_id', '=', $store_id)                      
+        ->whereBetween('expenses.datetime', [$fromTime, $toTime])
+        ->groupBy('mg1.id')
+        ->get();    
+
+        //merge two array into one
+        $final_arr = [];
+        $map = [];
+        foreach ($expenseItemMenuGroups as $k => $expenseItem) {
+
+            if (array_search($expenseItem->id, $map)) {
+                foreach ($final_arr as $final_arr_item) {
+                    if ($final_arr_item->id == $expenseItem->id) {
+                        $final_arr_item->total += $expenseItem->total;
+                    }
+                }
+            } else {
+                array_push($final_arr, $expenseItem);
+                array_push($map, $expenseItem->id);
+            }
+        }
+        foreach ($expenseStockMenuGroups as $k => $expenseStockMenu) {
+            # code...
+            if (array_search($expenseStockMenu->id, $map)) {
+                foreach ($final_arr as $final_arr_item) {
+                    if ($final_arr_item->id == $expenseStockMenu->id) {
+                        $final_arr_item->total += $expenseStockMenu->total;
+                    }
+                }
+            } else {
+                array_push($final_arr, $expenseStockMenu);
+                array_push($map, $expenseStockMenu->id);
+            }
+        }
+
         return response()->json([
-            "expenseItemMenuGroups" => $expenseItemMenuGroups
+            "expenseItemMenuGroups" => $final_arr,
         ]);
     }
 
