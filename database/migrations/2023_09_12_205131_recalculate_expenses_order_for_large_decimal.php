@@ -20,15 +20,24 @@ class RecalculateExpensesOrderForLargeDecimal extends Migration
 
         foreach ($expenses_with_overflow_number as $expense) {
             $expense_items = $expense->expense_items;
-            if (is_null($expense_items)) {
-                continue;
+            if (!is_null($expense_items)) {
+                $expense_total = $expense_items->sum(function($t) {
+                    return $t->quantity * $t->cost;
+                });
+                $expense->total = $expense_total;
+                $expense->save();
             }
-            $expense_total = $expense_items->sum(function($t) {
-                return $t->quantity * $t->cost;
-            });
+
+            $expense_stock_menus = $expense->expense_stock_menus;
+            if (!is_null($expense_stock_menus)) {
+                $expense_total = $expense_stock_menus->sum(function($t) {
+                    return $t->quantity * $t->cost;
+                });
+                $expense->total = $expense_total;
+                $expense->save();
+            }
         
-            $expense->total = $expense_total;
-            $expense->save();
+            
         }
     }
 
