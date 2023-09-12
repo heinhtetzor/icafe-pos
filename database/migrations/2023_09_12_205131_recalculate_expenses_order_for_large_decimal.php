@@ -15,7 +15,9 @@ class RecalculateExpensesOrderForLargeDecimal extends Migration
      */
     public function up()
     {
-        $expenses_with_overflow_number = Expense::where('total', '>=', 999999.99)->orWhere('total', '=', '0.00')
+        $expenses_with_overflow_number = Expense::where('total', '>=', 999999.99)
+        ->orWhere('total', '=', '0.00')
+        ->where('status', Expense::SUBMITTED)
         ->get();
 
         foreach ($expenses_with_overflow_number as $expense) {
