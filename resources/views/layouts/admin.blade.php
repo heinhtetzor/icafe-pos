@@ -214,6 +214,7 @@
                 <img src="/logo.png" width="40" height="40" alt="logo">
                 
             </a>
+            <span class="topnav-brand topnav-text"></span>
         </div>
         
         <div class="topnav-center">
@@ -282,8 +283,8 @@
 
         }
 
-        const topNav = document.querySelector('.topnav-brand');
-        topNav.innerHTML = localStorage.getItem('shop_name');
+        const topNav = document.querySelector('.topnav-text');
+        topNav.innerHTML += localStorage.getItem('shop_name');
         
         
     </script>

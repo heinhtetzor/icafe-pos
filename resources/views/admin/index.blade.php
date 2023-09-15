@@ -164,7 +164,7 @@
         res.settings.forEach (setting => {
             localStorage.setItem(setting.key, setting.value);
         })
-        document.querySelector('.topnav-brand').innerHTML = localStorage.getItem('shop_name');
+        document.querySelector('.topnav-text').innerHTML = localStorage.getItem('shop_name');
     })
     .catch (err => {
         console.log(err);
