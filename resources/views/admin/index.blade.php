@@ -158,13 +158,17 @@
 @endsection
 @section('js')
 <script>
-    //window.addEventListener ('load', () => {       
-        //const imgCover = document.querySelector (".img-cover");
-        //imgCover.style.backgroundImage = `url('images/thadingyut/tdg.png')`;
-        //imgCover.style.backgroundRepeat = "no-repeat";
-        //imgCover.style.backgroundSize = "cover";
-        //imgCover.style.opacity = "0.7";
-    //})
+    fetch (`/admin/settings/getAll`)
+    .then (res => res.json())
+    .then (res => {
+        res.settings.forEach (setting => {
+            localStorage.setItem(setting.key, setting.value);
+        })
+        document.querySelector('.topnav-brand').innerHTML = localStorage.getItem('shop_name');
+    })
+    .catch (err => {
+        console.log(err);
+    })    
 </script>
  
 @endsection

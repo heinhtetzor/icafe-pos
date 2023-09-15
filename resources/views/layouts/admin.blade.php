@@ -282,24 +282,9 @@
 
         }
 
-        // get all if no in localstorage        
-        const shopName = localStorage.getItem('shop_name');
         const topNav = document.querySelector('.topnav-brand');
+        topNav.innerHTML = localStorage.getItem('shop_name');
         
-        if (!shopName) {
-            fetch (`/admin/settings/getAll`)
-            .then (res => res.json())
-            .then (res => {
-                res.settings.forEach (setting => {
-                    localStorage.setItem(setting.key, setting.value);
-                })
-            })
-            .catch (err => {
-                console.log(err);
-            })    
-        }
-
-        topNav.innerHTML += localStorage.getItem('shop_name');
         
     </script>
     @yield('js')
