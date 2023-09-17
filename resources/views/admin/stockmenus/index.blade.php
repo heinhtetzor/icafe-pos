@@ -1,5 +1,7 @@
 @extends('layouts.admin')
 @section('css')
+<link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" type="text/css">
+
 	<style>
 		body {
 			background-color: #ffffff;
@@ -23,44 +25,58 @@
 			overflow: hidden;
 			text-overflow: ellipsis;
 		}
-		.grid-stock-menu-item-badge {
-
-		}
 	</style>
 @endsection
 @section('content')
 <div class="container" id="app">
 	<h4><a href="{{route('admin.home')}}">🔙 </a> ရောင်းကုန် ပစ္စည်းများ
-		@if (request()->query('sortByBalance') === 'ASC')
-		<a style="float:right" class="btn btn-secondary" href="{{route('stockmenus.index', ['sortByBalance'=>'DESC'])}}">↕️<a>	
-		@else
-		<a style="float:right" class="btn btn-secondary" href="{{route('stockmenus.index', ['sortByBalance'=>'ASC'])}}">↕️<a>	
-		@endif
-		@if (request()->query('sortByAlpha') === 'ASC')
-		<a style="float:right" class="btn btn-secondary" href="{{route('stockmenus.index', ['sortByAlpha'=>'DESC'])}}">🔠<a>
-		@else
-		<a style="float:right" class="btn btn-secondary" href="{{route('stockmenus.index', ['sortByAlpha'=>'ASC'])}}">🔠<a>	
-		@endif
-		<a style="float:right" class="btn btn-secondary" href="{{route('stockmenus.index')}}">🔄<a>	
 		<a class="btn btn-success" href="{{route('expenses.create')}}">🟢 စာရင်းသွင်းရန်</a>		
 	</h4>
-	<form method="GET" action="{{route('stockmenus.index')}}">
-		<input type="text" class="col-md-3" name="search" placeholder="ရှာပါ" value="{{request()->query('search')}}">
-		<button class="btn btn-dark">Search</button>
-	</form>
 	<br>
-	<div class="grid-stock-menu">
-		@foreach ($stock_menus as $stock_menu)
-		<a href="{{ route('stockmenus.show', $stock_menu->id) }}" class="grid-stock-menu-item">
-			<div class="grid-stock-menu-item-name">
-				{{$stock_menu->menu->name}} 
-			</div>
-			{{ $stock_menu->balance }}
-		</a>
-		@endforeach	
-	</div>
+
+	<table id="stock-menus-table" class="table table-striped table-bordered table-sm">
+		<thead>
+			<tr>
+				<th>Code</th>
+				<th>အမျိုးအမည်</th>
+				<th>လက်ကျန်</th>
+				<!-- <th>တန်ဖိုး</th> -->
+			</tr>
+		</thead>
+		<tbody>
+			@foreach ($stock_menus as $stock_menu)
+			<tr>
+				<td>
+					{{$stock_menu->menu->code}}
+				</td>
+				<td>
+					<a href="{{ route('stockmenus.show', $stock_menu->id) }}">
+							{{ $stock_menu->menu->name }}
+					</a>
+				</td>
+				<td>
+					{{ $stock_menu->balance }}			
+				</td>
+				<!-- <td>
+					
+				</td> -->
+			</tr>
+			@endforeach
+		</tbody>
+	</table>
+
 </div>
 @endsection
 @section('js')
+<script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" type="text/javascript"></script>
+<script>
+	const dataTable = new simpleDatatables.DataTable("#stock-menus-table", {
+		searchable: true,
+		fixedHeight: false,
+		sortable: true,
+		perPage: 50,
+		perPageSelect: [10, 20, 50, 100, 200]
+	})
 
+</script>
 @endsection
