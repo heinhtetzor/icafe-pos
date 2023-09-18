@@ -248,6 +248,14 @@ class ExpenseController extends Controller
                 $cancel_quantity = $request->cancelQuantity;
             }
 
+            if ($cancel_quantity < 1) {
+                throw new Exception("Cancel quantity cannot be less than 1");
+            }
+
+            if ($cancel_quantity > $item->quantity) {
+                throw new Exception("Cancel quantity cannot be less than the existing quantity");
+            }
+
             //if expense is submitted and it is stock
             //only confirmed have stock 
             if ($expense->status == Expense::SUBMITTED && $request->type == Expense::TYPE_STOCK) { // reduce stock level item quantity
@@ -264,12 +272,19 @@ class ExpenseController extends Controller
                 $item->quantity = $item->quantity - $cancel_quantity;
             }
             
-            if ($item->quantity == 0) {
-                // $item->stockMenu->stockMenuEntries()->delete();
-                $item->delete();
-            } 
-            else {
-                $item->save();
+
+            $item->save();
+            
+
+            //record stock entry transaction
+            if ($request->type == Expense::TYPE_STOCK) {
+                $stock_menu->stockMenuEntries()->create([
+                    "expense_stock_menu_id" => $item->id,
+                    "cost" => $item->cost,
+                    "in" => 0,
+                    "out" => $cancel_quantity,
+                    "balance" => $stock_menu->balance
+                ]);
             }
 
             if ($expense->status == Expense::SUBMITTED && $cancel_quantity > 0) {

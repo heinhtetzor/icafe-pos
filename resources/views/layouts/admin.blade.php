@@ -212,9 +212,8 @@
         <div class="topnav-left">
             <a class="topnav-brand" href="/admin">
                 <img src="/logo.png" width="40" height="40" alt="logo">
-                
+                <span class="topnav-brand topnav-text"></span>
             </a>
-            <span class="topnav-brand topnav-text"></span>
         </div>
         
         <div class="topnav-center">

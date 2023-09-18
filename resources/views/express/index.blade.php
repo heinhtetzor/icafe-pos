@@ -213,7 +213,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="modal-menu-quantity">အရေအတွက်</label>
-                            <input value="1" type="number" class="form-control" id="modal-menu-quantity">
+                            <input value="1" type="number" class="form-control" id="modal-menu-quantity" min="0">
                         </div>
                     </div>
                 </div>
