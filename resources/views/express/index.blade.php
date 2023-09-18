@@ -429,7 +429,10 @@
             return;
         }
         originalMenuItems.forEach (x => {                
-            if (!x.dataset['menuName'].includes(text) && !x.dataset['menuCode'].includes(text)) {
+            const textLower = text.toLowerCase();
+            const menuCodeLower = x.dataset['menuCode'].toLowerCase();
+            const menuNameLower = x.dataset['menuName'].toLowerCase();
+            if (!menuNameLower.includes(textLower) && !menuCodeLower.includes(textLower)) {
                 x.style.display = 'none';
             }
         })            

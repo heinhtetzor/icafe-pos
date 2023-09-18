@@ -47,7 +47,6 @@
     const originalMenuItems=[...document.querySelector('.grid').children];
 
     function menuSearchInputHandler (e) {
-        console.log(e.target.value);
         filterByTextSearch(originalMenuItems, e.target.value);
     }
 
@@ -59,8 +58,10 @@
             return;
         }
         originalMenuItems.forEach (x => {      
-            console.log(x)          
-            if (!x.dataset['menuName'].includes(text) && !x.dataset['menuCode'].includes(text)) {
+            const textLower = text.toLowerCase();
+            const menuCodeLower = x.dataset['menuCode'].toLowerCase();
+            const menuNameLower = x.dataset['menuName'].toLowerCase();
+            if (!menuNameLower.includes(textLower) && !menuCodeLower.includes(textLower)) {
                 x.style.display = 'none';
             }
         })            
