@@ -199,7 +199,7 @@
                             </td>
                         </tr>
                         @endif
-                        @if ($orderMenu->isSummary)
+                        @if ($orderMenu->isSummary && $order->table_id == '99999')
                             <tr style="font-weight: 900; border-bottom: 4px solid black;">
                                 <td>{{ $orderMenu->menuGroupQty }}</td>
                                 <td></td>
