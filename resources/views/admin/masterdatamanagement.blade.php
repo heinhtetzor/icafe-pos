@@ -15,7 +15,7 @@
     <h4>Sales</h4>
     <div class="row">
         <div class="col-md-3 icon">
-            <a href="{{route('menugroups.index')}}">
+            <a href="{{route('menus.index')}}">
                 <div class="card round-card bg-primary text-white">
                     <div class="card-header">
                         <h4 class="card-title">Menus</h4>

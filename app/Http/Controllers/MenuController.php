@@ -18,13 +18,27 @@ class MenuController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $store_id = Auth()->guard('admin_account')->user()->store_id;
         $menu_groups = MenuGroup::where('store_id', $store_id)->orderBy('name')->get();
-        $menus = Menu::where('store_id', $store_id)->orderBy('name')->get();
+        $menus = Menu::where('store_id', $store_id);
+        
+        if (!empty($request->menu_group_id)) {
+            $menus->where('menu_group_id', $request->menu_group_id);
+        }
+
+        if ($request->has('status')) {
+            $menus->where('status', $request->status);
+        }
+
+        if (!empty($request->search)) {
+            $menus->where('name', 'like', '%'. $request->search .'%')->orWhere('code', 'like', '%'. $request->search .'%');
+        }
+
+        
         return view('admin.menus.index', [
-            'menus' => $menus,
+            'menus' => $menus->orderBy('name')->paginate(15),
             'menu_groups' => $menu_groups
         ]);
     }
@@ -36,7 +50,12 @@ class MenuController extends Controller
      */
     public function create()
     {
-        //
+        $store_id = Auth()->guard('admin_account')->user()->store_id;
+        $menu_groups = MenuGroup::where('store_id', $store_id)->orderBy('name')->get();
+
+        return view('admin.menus.create', [
+            "menu_groups" => $menu_groups
+        ]);
     }
 
     /**

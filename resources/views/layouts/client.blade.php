@@ -120,7 +120,7 @@
                 </span>
             </div>
             {{-- <div class="topnav-item">                
-                <span class="badge rounded-pill bg-success"> Logged in as {{Auth()->guard('waiter')->user()->name}}</span>
+                <span class="badge rounded-pill bg-success">{{Auth()->guard('waiter')->user()->name}}</span>
             </div> --}}
             <div class="topnav-item">
                 <a class="logout-button" href="#" onclick="event.preventDefault();document.querySelector('#logout-form').submit();">
@@ -134,7 +134,7 @@
             @if(Auth::guard('kitchen')->check())
             
             {{-- <div class="topnav-item">                
-                <span class="badge rounded-pill bg-success"> Logged in as {{Auth()->guard('kitchen')->user()->name}}</span>
+                <span class="badge rounded-pill bg-success">{{Auth()->guard('kitchen')->user()->name}}</span>
             </div> --}}
             <div class="topnav-item">
                 <a class="logout-button" href="#" onclick="event.preventDefault();document.querySelector('#logout-form').submit();">
@@ -149,7 +149,7 @@
             @if(Auth::guard('admin_account')->check())
             
             {{-- <div class="topnav-item">                
-                <span class="badge rounded-pill bg-success"> Logged in as {{Auth()->guard('admin_account')->user()->name}}</span>
+                <span class="badge rounded-pill bg-success">{{Auth()->guard('admin_account')->user()->name}}</span>
             </div> --}}
             <div class="topnav-item">
                 <a class="logout-button" href="#" onclick="event.preventDefault();document.querySelector('#logout-form').submit();">

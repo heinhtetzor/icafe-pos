@@ -227,7 +227,7 @@
         <div class="topnav-right">
             @if(Auth::guard('admin_account')->check())
             <div class="topnav-item">                
-                <span class="badge rounded-pill bg-success"> Logged in as {{Auth()->guard('admin_account')->user()->username}} ({{Auth()->guard('admin_account')->user()->store_name}})</span>
+                <span class="badge rounded-pill bg-success"> {{Auth()->guard('admin_account')->user()->username}} ({{Auth()->guard('admin_account')->user()->store_name}})</span>
             </div>
             @endif            
 

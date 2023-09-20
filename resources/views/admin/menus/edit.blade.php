@@ -2,7 +2,7 @@
 @section('content')
 <div class="container">
     <h2>
-    <a href="{{route('menugroups.show', $menu->menu_group_id)}}">🔙</a>
+    <a href="{{ route('menus.index') }}">🔙</a>
     Editing {{ $menu->name}}</h2>  
     @if (session('msg'))
         <div class="alert alert-success">{{ session('msg') }}</div>
