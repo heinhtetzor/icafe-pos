@@ -27,6 +27,10 @@
                         <input autofocus name="name" type="text" class="form-control" placeholder="Enter Menu Name" required>
                         <p style="color:red">{{ $errors->first('name') }}</p>
                     </div>
+                    <div class="form-group">
+                        <label for="code">Code</label>
+                        <input type="text" name="code" type="text" class="form-control" placeholder="Enter Code" required> 
+                    </div>
                     {{-- menu group select --}}
                     <div class="form-group">
                         <label for="name">Choose Menu Group</label>
