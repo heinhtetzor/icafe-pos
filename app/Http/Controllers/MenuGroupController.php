@@ -34,7 +34,7 @@ class MenuGroupController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.menugroups.create');
     }
 
     /**

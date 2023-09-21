@@ -27,6 +27,18 @@
             </a>
         </div>
         <div class="col-md-3 icon">
+            <a href="{{route('menugroups.index')}}">
+                <div class="card round-card bg-primary text-white">
+                    <div class="card-header">
+                        <h4 class="card-title">Menu Groups</h4>
+                    </div>
+                    <div class="card-body">
+                        {{-- Waiter accounts and Admin Account Management --}}
+                    </div>                
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3 icon">
             <a href="{{route('tables.index')}}">
                 <div class="card round-card bg-warning text-dark">
                     <div class="card-header">

@@ -6,37 +6,34 @@
 </style>
 @endsection
 @section('content')
-    <div class="content">
-        @include('admin.menugroups.sidebar')
-        <div class="main">
-            <div class="card">
-                <div class="card-header">
-                    <h4 class="card-title">
-                        <a class="btn btn-danger" href="{{route('admin.masterdatamanagement')}}">←</a>
-                        All
-                    </h4>
-                </div>
-                <div class="card-body">
-                    <input type="text" id="menuSearchInput" class="form-control mb-4" placeholder="ရှာပါ" role="search">
-                    <div class="grid">                    
-                        @foreach($menus as $menu)
-                        <a data-menu-code="{{ $menu->code }}" data-menu-name="{{ $menu->name }}" class="grid-item {{ $menu->status == 0 ? 'grid-item-inactive' : '' }}" href="{{route('menus.edit', $menu->id)}}">
-                            @if ($menu->image)
-                            <img src="/storage/menu_images/{{$menu->image}}"/>
-                            @else 
-                            <img src="/images/default-menu.svg"/>
-                            @endif
-                            <span class="menu-text">
-                                {{$menu->name}} <br> 
-                                {{$menu->price}} Ks
-                            </span>
-                            
+    <div class="container-fluid">
+        <h3><a href="{{ route('admin.masterdatamanagement') }}">🔙</a>  
+            အရောင်းပစ္စည်းအုပ်စုများ
+            <a type="button" class="btn btn-primary" href="/admin/menugroups/create">+ အသစ်</a>
+        </h3>
+        <table class="table table-condensed">
+            <thead class="table table-primary">
+                <tr>
+                    <th>Name</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($menu_groups as $menu_group)
+                <tr>
+                    <td>
+                        {{$menu_group->name}}
+                    </td>
+                    <td>
+                        <a class="list-item-link" href="{{ route('menugroups.edit', $menu_group->id) }}">
+                            Edit
                         </a>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-        </div>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+
+        </table>
     </div>
 @endsection
 

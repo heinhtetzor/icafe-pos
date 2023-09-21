@@ -48,7 +48,7 @@
                         <input name="price" type="number" class="form-control" placeholder="Enter Price" required>
                         <p style="color:red">{{ $errors->first('price') }}</p>
                     </div>
-                    {{-- meny image --}}
+                    {{-- menu image --}}
                     <div class="form-group">
                         <label for="name">Upload Image</label>
                         <input name="image" type="file" class="form-control">

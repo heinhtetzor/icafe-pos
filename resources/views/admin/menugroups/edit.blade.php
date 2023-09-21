@@ -15,13 +15,13 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label for="name">Menu အုပ်စု အမည်</label>
-                    <input value="{{$menu_group->name}}" name="name" type="text" class="form-control" placeholder="Enter Table Name" required>
+                    <input value="{{$menu_group->name}}" name="name" type="text" class="form-control" placeholder="Enter Menu Group Name" required>
                     <p style="color:red">{{ $errors->first('name') }}</p>
                 </div>
     
                 <div class="form-group">
                     <label for="name">Color</label>
-                    <input value="{{$menu_group->color}}" name="color" type="color" class="form-control" placeholder="Enter Table Name" required>
+                    <input value="{{$menu_group->color}}" name="color" type="color" class="form-control" placeholder="Enter Menu Group Name" required>
                     <p style="color:red">{{ $errors->first('color') }}</p>
                 </div>
     
