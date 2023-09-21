@@ -84,6 +84,7 @@ class ExpenseController extends Controller
         if ($expense->type == Expense::TYPE_STOCK) {
             $items = StockMenu::whereHas('menu', function ($q) use ($store_id) {
                 $q->where('store_id', $store_id);
+                $q->where('status', 1);
                 $q->orderBy('name');
             })
             ->where('status', StockMenu::STATUS_ACTIVE)

@@ -16,7 +16,8 @@ class StockMenuController extends Controller
     {
         $store_id = Auth()->guard('admin_account')->user()->store_id;
         $stock_menus = StockMenu::whereHas('menu', function ($q) use ($store_id) {
-                            $q->where('store_id', $store_id);
+                            $q->where('store_id', $store_id)
+                            ->where('status', '1');
                         })
                         ->where('status', StockMenu::STATUS_ACTIVE);
 
