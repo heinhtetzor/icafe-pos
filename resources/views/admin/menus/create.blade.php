@@ -19,6 +19,7 @@
         <section>
             <form action="{{ route('menus.store') }}" method="post" enctype="multipart/form-data">
                 @csrf
+                <input name="store_id" type="hidden" value="{{Auth::guard('admin_account')->user()->store_id}}"/>
                 <div class="col-md-4">
                     {{-- menu name --}}
                     <div class="form-group">
