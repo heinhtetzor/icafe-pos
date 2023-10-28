@@ -23,7 +23,7 @@
     .card {
         height: 200px;        
     }    
-    //temp for thandingyut
+    /* temp for thandingyut */
     .img-cover {
         position: absolute;
         height: 1000px;
