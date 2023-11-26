@@ -25,12 +25,12 @@
     }    
     /* temp for thandingyut */
     .img-cover {
-        position: absolute;
+        /* position: absolute;
         height: 1000px;
         width: 98vw;
         background-image: url("/images/thadingyut/tdg-3.avif");
         background-size: cover;
-        filter: contrast(100%) opacity(70%);
+        filter: contrast(100%) opacity(70%); */
     }
     @media (max-width: 900px) {
         .img-cover {

@@ -2,7 +2,7 @@
 @section('content')
 <div class="container">
     <h2>
-    <a href="{{ route('menus.index') }}">🔙</a>
+    <a href="javascript:history.back()">🔙</a>
     Editing {{ $menu->name}}</h2>  
     @if (session('msg'))
         <div class="alert alert-success">{{ session('msg') }}</div>
@@ -70,7 +70,6 @@
             <br>
             
             <button type="submit" class="btn btn-primary">Submit</button>
-            <a class="btn btn-info" href="/admin/menugroups">Back</a>
         </form>
         <hr>
         <button 
