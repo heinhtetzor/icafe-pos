@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use App\Order;
 use App\Waiter;
 use Illuminate\Database\Eloquent\Model;

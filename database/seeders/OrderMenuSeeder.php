@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use App\Menu;
 use App\Order;
 use App\Waiter;
