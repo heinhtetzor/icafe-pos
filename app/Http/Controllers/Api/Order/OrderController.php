@@ -302,7 +302,8 @@ class OrderController extends Controller
         if ($printBill == "true")
         {
             $order = Order::findorfail($orderId);
-            PrintService::printOrderBill($order);
+
+            PrintJobService::createPendingJob($order->store_id, PrintJob::TYPE_ORDER_BILL, $order->id);
         }
 
         return ["isOk"=>TRUE];
