@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 use App\Order;
+use App\PrintJob;
+use App\Services\PrintJobService;
 use App\Services\PrintService;
 use Illuminate\Http\Request;
 
@@ -21,7 +23,7 @@ class PrintController extends Controller
     public function printOrderBill (Order $order)
     {
         try {
-            PrintService::printOrderBill($order);
+            PrintJobService::createPendingJob($order->store_id, PrintJob::TYPE_ORDER_BILL, $order->id);
             return redirect()->back();
         }
         catch (\Exception $e) {            
