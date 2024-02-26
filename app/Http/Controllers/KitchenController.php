@@ -19,7 +19,7 @@ class KitchenController extends Controller
     {
         $store_id = Auth()->guard('admin_account')->user()->store_id;
         $kitchens=Kitchen::where('store_id', $store_id)->orderBy('username')->get();
-        $menu_groups=MenuGroup::all();
+        $menu_groups=MenuGroup::where('store_id', $store_id)->get();
         return view('admin.kitchens.index', [
             'kitchens'=>$kitchens,
             'menu_groups'=>$menu_groups
